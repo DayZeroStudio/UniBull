@@ -17,7 +17,8 @@
         "sinon": "^1.14.1"
     },
     "scripts": {
-        "test": "mocha --watch --check-leaks --reporter spec test/",
+        "test": "mocha --check-leaks --reporter spec test/",
+        "autotest": "mocha --watch --check-leaks --reporter spec test/",
         "start": "node index.js"
     }
 }
