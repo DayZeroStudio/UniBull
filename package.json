@@ -19,6 +19,18 @@
     "scripts": {
         "test": "mocha --check-leaks --reporter spec test/",
         "autotest": "mocha --watch --check-leaks --reporter spec test/",
-        "start": "node index.js"
+        "start": "nodemon | bunyan",
+        "lint": "eslint ./index.js ./app/*"
+    },
+    "pre-commit": ["test", "lint"],
+    "eslintConfig": {
+        "env": {
+            "node": true,
+            "mocha": true
+        },
+        "rules": {
+            "camelcase": 0,
+            "no-wrap-func": 0
+        }
     }
 }
