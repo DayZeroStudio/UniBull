@@ -18,7 +18,10 @@ var log = bunyan.createLogger({
     }
 });
 
-var db = new DB("Evan", "Evan", "", {dialect: "postgres"});
+var db_cfg = require("./config/database");
+var db = new DB(db_cfg.db_name,
+        db_cfg.username, db_cfg.password,
+        {dialect: "postgres"});
 var UniBullDB = db.define("UniBull", {
     name: {type: DB.STRING}
 });
