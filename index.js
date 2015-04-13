@@ -33,6 +33,9 @@ app.engine("html", ejs.renderFile);
 app.set("views", path.join(process.cwd(), "views"));
 app.set("view engine", "html");
 
+var bodyParser = require("body-parser");
+app.use(bodyParser.json());
+
 app.get("/", function(req, res) {
     res.render("home");
 });
@@ -53,6 +56,17 @@ app.get("/bull/:name", function(req, res) {
     });
 });
 
+app.post("/bull/:name", function(req, res) {
+    var body = req.body;
+    var name = req.params.name;
+    log.info("POST bull {name: %s, body: %s", name, body);
+    UniBullDB.create({name: name})
+        .then(function(bull) {
+            log.info({bull: bull});
+        });
+    res.json({name: name, body: body});
+});
+
 app.use(function(req, res) {
     res.status(404).send("UniBull cannot find that page");
 });
@@ -69,7 +83,7 @@ var server = app.listen(PORT, function() {
     log.info("UniBull is now listening at http://%s:%s", host, PORT);
     UniBullDB.sync({force: isDev}).then(function() {
         return UniBullDB.create({
-            name: "[DATE YEAR=1993, MONTH=10, DAY=20"
+            name: "Uni Bull"
         });
     });
 });
