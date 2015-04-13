@@ -18,7 +18,7 @@ var log = bunyan.createLogger({
     }
 });
 
-var db = new DB("pancia", "pancia", "", {dialect: "postgres"});
+var db = new DB("Evan", "Evan", "", {dialect: "postgres"});
 var UniBullDB = db.define("UniBull", {
     name: {type: DB.STRING}
 });
@@ -34,6 +34,10 @@ app.set("views", path.join(process.cwd(), "views"));
 app.set("view engine", "html");
 
 app.get("/", function(req, res) {
+    res.render("login");
+});
+
+app.get("/home", function(req, res) {
     res.render("home");
 });
 
