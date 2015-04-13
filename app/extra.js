@@ -1,13 +1,13 @@
-var fjs = (function () {
+var extra = (function () {
     "use strict";
 
-    var fjs = {};
+    var extra = {};
 
-    fjs.life = function() {
+    extra.life = function() {
         return "drøle";
     };
 
-    return fjs;
+    return extra;
 })();
 
-module.exports = fjs;
+module.exports = extra;
