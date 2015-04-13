@@ -1,4 +1,4 @@
-var exp_fjs = (function () {
+var fjs = (function () {
     "use strict";
 
     var fjs = {};
@@ -10,9 +10,4 @@ var exp_fjs = (function () {
     return fjs;
 })();
 
-if (typeof (exports) !== "undefined") {
-    if (typeof (module) !== "undefined" && module.exports) {
-        exports = module.exports = exp_fjs;
-    }
-    exports.fjs = exp_fjs;
-}
+module.exports = fjs;
