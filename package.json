@@ -1,44 +1,46 @@
 {
-    "name": "UniBull",
-    "version": "0.0.1",
-    "description": "foobar",
-    "dependencies": {
-        "bunyan": "^1.3.4",
-        "ejs": "^2.3.1",
-        "express": "^4.12.3",
-        "lodash": "^3.6.0",
-        "pg": "^4.3.0",
-        "pg-hstore": "^2.3.2",
-        "sendevent": "^1.0.4",
-        "sequelize": "^2.0.5",
-        "uglify-js": "^2.4.19",
-        "watch": "^0.16.0"
+  "name": "UniBull",
+  "version": "0.0.1",
+  "description": "foobar",
+  "dependencies": {
+    "bcrypt": "^0.8.2",
+    "bunyan": "^1.3.4",
+    "ejs": "^2.3.1",
+    "express": "^4.12.3",
+    "lodash": "^3.6.0",
+    "pg": "^4.3.0",
+    "pg-hstore": "^2.3.2",
+    "sendevent": "^1.0.4",
+    "sequelize": "^2.0.5",
+    "uglify-js": "^2.4.19",
+    "watch": "^0.16.0"
+  },
+  "devDependencies": {
+    "chai": "^2.2.0",
+    "mocha": "^2.2.4",
+    "pre-commit": "^1.0.6",
+    "sinon": "^1.14.1"
+  },
+  "scripts": {
+    "test": "mocha --check-leaks --reporter spec test/",
+    "autotest": "mocha --watch --check-leaks --reporter spec test/",
+    "start": "nodemon --delay 2.5 | bunyan",
+    "lint": "eslint ./index.js ./app/*"
+  },
+  "pre-commit": [
+    "test",
+    "lint"
+  ],
+  "eslintConfig": {
+    "env": {
+      "node": true,
+      "mocha": true
     },
-    "devDependencies": {
-        "chai": "^2.2.0",
-        "mocha": "^2.2.4",
-        "pre-commit": "^1.0.6",
-        "sinon": "^1.14.1"
-    },
-    "scripts": {
-        "test": "mocha --check-leaks --reporter spec test/",
-        "autotest": "mocha --watch --check-leaks --reporter spec test/",
-        "start": "nodemon --delay 2.5 | bunyan",
-        "lint": "eslint ./index.js ./app/*"
-    },
-        "pre-commit": [
-            "test",
-            "lint"
-        ],
-    "eslintConfig": {
-        "env": {
-            "node": true,
-            "mocha": true
-        },
-        "rules": {
-            "camelcase": 0,
-            "no-shadow": 0,
-            "no-wrap-func": 0
-        }
+    "rules": {
+      "camelcase": 0,
+      "no-shadow": 0,
+      "new-cap": 0,
+      "no-wrap-func": 0
     }
+  }
 }

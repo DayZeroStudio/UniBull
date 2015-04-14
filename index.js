@@ -1,30 +1,13 @@
 "use strict";
 
-var _ = require("lodash");
 var express = require("express");
 var app = express();
+var fs = require("fs");
 var ejs = require("ejs");
 var path = require("path");
-var bunyan = require("bunyan");
-var DB = require("sequelize");
 
-var isDev = process.env.NODE_ENV !== "production";
-var log = bunyan.createLogger({
-    name: "UniBull",
-    src: isDev,
-    serializers: {
-        req: bunyan.stdSerializers.req,
-        res: bunyan.stdSerializers.res
-    }
-});
-
-var db_cfg = require("./config/database");
-var db = new DB(db_cfg.db_name,
-        db_cfg.username, db_cfg.password,
-        {dialect: "postgres"});
-var UniBullDB = db.define("UniBull", {
-    name: {type: DB.STRING}
-});
+var cfg = require("./config");
+var log = cfg.log;
 
 var extra = require("./app/extra.js");
 
@@ -47,31 +30,11 @@ app.get("/home", function(req, res) {
     res.render("home");
 });
 
-app.get("/bull", function(req, res) {
-    UniBullDB.findAll().then(function(db_data) {
-        var bulls = _.map(db_data, "dataValues");
-        res.json({bulls: bulls});
-    });
-});
-
-app.get("/bull/:name", function(req, res) {
-    log.info("requesting bull with name: '%s'", req.params.name);
-    UniBullDB.findAll().then(function(db_data) {
-        var bulls = _.map(db_data, "dataValues");
-        res.locals.bulls = JSON.stringify(bulls);
-        res.render("bulls", {bull: req.params.name});
-    });
-});
-
-app.post("/bull/:name", function(req, res) {
-    var body = req.body;
-    var name = req.params.name;
-    log.info("POST bull {name: %s, body: %s", name, body);
-    UniBullDB.create({name: name})
-        .then(function(bull) {
-            log.info({bull: bull});
-        });
-    res.json({name: name, body: body});
+fs.readdirSync("routes").forEach(function(file) {
+    var route = "./routes/" + file;
+    log.info("Adding route: (" + route + ")");
+    var routeApp = require(route);
+    app.use("/" + file.substr(0, file.indexOf(".")), routeApp);
 });
 
 app.use(function(req, res) {
@@ -88,10 +51,5 @@ var server = app.listen(PORT, function() {
     log.warn({extra: extra});
     var host = server.address().address;
     log.info("UniBull is now listening at http://%s:%s", host, PORT);
-    UniBullDB.sync({force: isDev}).then(function() {
-        return UniBullDB.create({
-            name: "Uni Bull"
-        });
-    });
 });
 
