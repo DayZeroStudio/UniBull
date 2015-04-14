@@ -16,9 +16,10 @@ module.exports = function(routePrefix, callback) {
     var cfg = require("../config");
     var log = cfg.log.logger;
 
-    var db = new DB(cfg.db.name,
-            cfg.db.username, cfg.db.password,
-            {dialect: "postgres"});
+    var db = new DB(cfg.db.name, cfg.db.username, cfg.db.password, {
+        dialect: "postgres",
+        logging: (cfg.isTest ? _.identity : log.debug.bind(log))
+    });
     var User = db.define("User", {
         username: {type: DB.STRING},
         password_hash: {type: DB.STRING},

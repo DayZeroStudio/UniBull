@@ -5,7 +5,7 @@ module.exports = function(CFG) {
     var bunyan = require("bunyan");
     cfg.logger = bunyan.createLogger({
         name: "UniBull",
-        src: CFG.isDev,
+        src: CFG.isDev || CFG.isTest,
         level: (CFG.isTest ? "warn"
                 : (CFG.isDev ? "debug" : "info")),
         serializers: {
