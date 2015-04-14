@@ -6,7 +6,8 @@ module.exports = (function() {
     cfg.env = process.env;
     cfg.PORT = cfg.env.PORT || 8080;
 
-    cfg.isDev = cfg.env.NODE_ENV !== "production";
+    cfg.isDev = cfg.env.NODE_ENV === "development";
+    cfg.isTest = cfg.env.NODE_ENV === "test";
 
     var frozenCFG = Object.freeze(_.cloneDeep(cfg));
     cfg.log = require("./logger.js")(frozenCFG);

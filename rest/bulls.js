@@ -1,4 +1,4 @@
-module.exports = function(/*routePrefix*/) {
+module.exports = function(routePrefix, callback) {
     "use strict";
     var express = require("express");
     var router = express.Router();
@@ -8,12 +8,6 @@ module.exports = function(/*routePrefix*/) {
 
     var cfg = require("../config");
     var log = cfg.log;
-
-    Bull.sync({force: cfg.isDev}).then(function() {
-        return Bull.create({
-            name: "Uni Bull"
-        });
-    });
 
     router.get("/", function(req, res) {
         Bull.findAll().then(function(dbData) {
@@ -39,5 +33,11 @@ module.exports = function(/*routePrefix*/) {
         res.json({name: name, body: body});
     });
 
-    return router;
+    return Bull.sync({force: cfg.isDev}).then(function() {
+        return Bull.create({
+            name: "Uni Bull"
+        });
+    }).then(function() {
+        return callback(router);
+    });
 };

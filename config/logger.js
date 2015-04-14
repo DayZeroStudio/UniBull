@@ -6,6 +6,8 @@ module.exports = function(CFG) {
     cfg.logger = bunyan.createLogger({
         name: "UniBull",
         src: CFG.isDev,
+        level: (CFG.isTest ? "warn"
+                : (CFG.isDev ? "debug" : "info")),
         serializers: {
             req: bunyan.stdSerializers.req,
             res: bunyan.stdSerializers.res

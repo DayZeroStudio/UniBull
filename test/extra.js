@@ -6,11 +6,6 @@ var should = chai.should();
 var extra = require("../app/extra");
 
 describe("app/extra", function(){
-    before(function(){ /* ... */ });
-    after(function(){ /* ... */ });
-    beforeEach(function(){ /* ... */ });
-    afterEach(function(){ /* ... */ });
-
     describe("#life", function(){
         context("when life is drøle", function(){
             it("should exist", function(){
@@ -28,3 +23,4 @@ describe("app/extra", function(){
         });
     });
 });
+

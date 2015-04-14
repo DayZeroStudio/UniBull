@@ -1,4 +1,4 @@
-module.exports = function(routePrefix) {
+module.exports = function(routePrefix, callback) {
     "use strict";
     var express = require("express");
     var router = express.Router();
@@ -34,28 +34,18 @@ module.exports = function(routePrefix) {
         email: {type: DB.STRING}
     });
 
-    User.sync({force: cfg.isDev}).then(function() {
-        return User.create({
-            username: "First User",
-            password: "mypasswd",
-            email: "first.user@email.com"
-        });
-    });
-
     var isRevokedCallback = function(req, payload, done) {
         var auth = req.headers.authorization;
         var token = auth.substr(auth.indexOf(" ")+1, auth.length);
-        try {
-            var decoded = jwt.verify(token, cfg.jwt.secret);
+        jwt.verify(token, cfg.jwt.secret, function(err, decoded) {
+            if (err) {return done(err); }
             return done(null, !decoded);
-        } catch(err) {
-            return done(err);
-        }
+        });
     };
     router.use("/", expressJwt({
         secret: cfg.jwt.secret,
         isRevoked: isRevokedCallback
-    }).unless({path: _.map(["/", "/login"], function(route) {
+    }).unless({path: _.map(["", "/", "/login"], function(route) {
         return routePrefix + route;
     })}));
 
@@ -80,16 +70,19 @@ module.exports = function(routePrefix) {
             }
             bcrypt.compare(req.query.password, user.password_hash,
                     function(err, isValid) {
-                        if (err) {res.json({error: err}); }
+                        if (err) {
+                            return res.json({error: err.message});
+                        }
                         if (isValid) {
                             var userInfo = {
                                 username: user.username,
                                 email: user.email
                             };
-                            var token = jwt.sign(userInfo, cfg.jwt.secret, {
+                            var token = "Bearer "+jwt.sign(userInfo, cfg.jwt.secret, {
                                 expiresInSeconds: cfg.jwt.timeoutInSeconds
                             });
-                            res.json({token: token, user: user});
+                            //TODO: put token in Authorization header
+                            res.json({token: token, user: userInfo});
                         } else {
                             res.json({error: "Failed to Authenticate"});
                         }
@@ -102,5 +95,14 @@ module.exports = function(routePrefix) {
         res.json({success: true});
     });
 
-    return router;
+    return User.sync({force: cfg.isDev}).then(function() {
+        return User.create({
+            username: "FirstUser",
+            password: "mypasswd",
+            email: "first.user@email.com"
+        });
+    }).then(function() {
+        return callback(router);
+    });
 };
+

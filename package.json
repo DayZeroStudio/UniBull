@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "foobar",
   "dependencies": {
+    "async": "^0.9.0",
     "bcrypt": "^0.8.2",
     "bunyan": "^1.3.4",
     "ejs": "^2.3.1",
@@ -21,11 +22,12 @@
     "chai": "^2.2.0",
     "mocha": "^2.2.4",
     "pre-commit": "^1.0.6",
-    "sinon": "^1.14.1"
+    "sinon": "^1.14.1",
+    "supertest": "^0.15.0"
   },
   "scripts": {
-    "test": "mocha --check-leaks --reporter spec test/",
-    "autotest": "mocha --watch --check-leaks --reporter spec test/",
+    "test": "NODE_ENV=test mocha --check-leaks --reporter spec test/ | bunyan",
+    "autotest": "NODE_ENV=test mocha --timeout 5000 --watch --check-leaks --reporter spec test/ | bunyan",
     "start": "nodemon --delay 2.5 | bunyan",
     "lint": "eslint ./index.js ./app/*"
   },
