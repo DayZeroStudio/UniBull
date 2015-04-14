@@ -1,23 +1,17 @@
-var cfg = (function() {
+module.exports = (function() {
     "use strict";
+    var _ = require("lodash");
     var cfg = {};
 
     cfg.env = process.env;
+    cfg.PORT = cfg.env.PORT || 8080;
+
     cfg.isDev = cfg.env.NODE_ENV !== "production";
 
-    var bunyan = require("bunyan");
-    cfg.log = bunyan.createLogger({
-        name: "UniBull",
-        src: cfg.isDev,
-        serializers: {
-            req: bunyan.stdSerializers.req,
-            res: bunyan.stdSerializers.res
-        }
-    });
-
-    cfg.db = require("./database.js");
+    var frozenCFG = Object.freeze(_.cloneDeep(cfg));
+    cfg.log = require("./logger.js")(frozenCFG);
+    cfg.jwt = require("./jsonwebtoken.js")(frozenCFG);
+    cfg.db = require("./database.js")(frozenCFG);
 
     return cfg;
 })();
-
-module.exports = cfg;

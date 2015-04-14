@@ -1,13 +1,20 @@
-var router = (function() {
+module.exports = function(routePrefix) {
     "use strict";
     var express = require("express");
     var router = express.Router();
-    var _ = require("lodash");
-    var DB = require("sequelize");
-    var bcrypt = require("bcrypt");
 
+    var bodyParser = require("body-parser");
+    router.use(bodyParser.json());
+
+    var DB = require("sequelize");
+
+    var bcrypt = require("bcrypt");
+    var expressJwt = require("express-jwt");
+    var jwt = require("jsonwebtoken");
+
+    var _ = require("lodash");
     var cfg = require("../config");
-    var log = cfg.log;
+    var log = cfg.log.logger;
 
     var db = new DB(cfg.db.name,
             cfg.db.username, cfg.db.password,
@@ -35,6 +42,23 @@ var router = (function() {
         });
     });
 
+    var isRevokedCallback = function(req, payload, done) {
+        var auth = req.headers.authorization;
+        var token = auth.substr(auth.indexOf(" ")+1, auth.length);
+        try {
+            var decoded = jwt.verify(token, cfg.jwt.secret);
+            return done(null, !decoded);
+        } catch(err) {
+            return done(err);
+        }
+    };
+    router.use("/", expressJwt({
+        secret: cfg.jwt.secret,
+        isRevoked: isRevokedCallback
+    }).unless({path: _.map(["/", "/login"], function(route) {
+        return routePrefix + route;
+    })}));
+
     router.get("/", function(req, res) {
         log.info("GET - Get all users");
         User.findAll().then(function(dbData) {
@@ -56,9 +80,16 @@ var router = (function() {
             }
             bcrypt.compare(req.query.password, user.password_hash,
                     function(err, isValid) {
-                        log.info(err);
+                        if (err) {res.json({error: err}); }
                         if (isValid) {
-                            res.json({user: user});
+                            var userInfo = {
+                                username: user.username,
+                                email: user.email
+                            };
+                            var token = jwt.sign(userInfo, cfg.jwt.secret, {
+                                expiresInSeconds: cfg.jwt.timeoutInSeconds
+                            });
+                            res.json({token: token, user: user});
                         } else {
                             res.json({error: "Failed to Authenticate"});
                         }
@@ -66,7 +97,10 @@ var router = (function() {
         });
     });
 
-    return router;
-})();
+    router.get("/stuff", function(req, res) {
+        log.info("GET - Stuff");
+        res.json({success: true});
+    });
 
-module.exports = router;
+    return router;
+};

@@ -1,19 +1,13 @@
-var router = (function() {
+module.exports = function(/*routePrefix*/) {
     "use strict";
     var express = require("express");
     var router = express.Router();
     var _ = require("lodash");
-    var DB = require("sequelize");
+    var bulls = require("../models/bulls");
+    var Bull = bulls.dbModel();
 
     var cfg = require("../config");
     var log = cfg.log;
-
-    var db = new DB(cfg.db.name,
-            cfg.db.username, cfg.db.password,
-            {dialect: "postgres"});
-    var Bull = db.define("UniBull", {
-        name: {type: DB.STRING}
-    });
 
     Bull.sync({force: cfg.isDev}).then(function() {
         return Bull.create({
@@ -46,6 +40,4 @@ var router = (function() {
     });
 
     return router;
-})();
-
-module.exports = router;
+};

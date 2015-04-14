@@ -1,6 +1,7 @@
-"use strict";
+module.exports = function(/*CFG*/) {
+    "use strict";
+    var cfg = {};
 
-var cfg = (function() {
     var dev_db_cfg = {
         name: process.env.DB_NAME || (function(){throw new Error(); })(),
         username: process.env.DB_USERNAME || (function(){throw new Error(); })(),
@@ -9,9 +10,12 @@ var cfg = (function() {
 
     switch (process.env.NODE_ENV || "development") {
         case "development":
-            return dev_db_cfg;
+            cfg.db = dev_db_cfg;
+            break;
         case "production":
-            return dev_db_cfg;//TODO: change once set up with heroku
+            //TODO: change once set up with heroku
+            cfg.db = dev_db_cfg;
+            break;
         default:
             throw new Error(
                     "Invalid NODE_ENV \""
@@ -19,7 +23,5 @@ var cfg = (function() {
                     + "\"");
     }
 
-    return dev_db_cfg;
-})();
-
-module.exports = cfg;
+    return cfg;
+};
