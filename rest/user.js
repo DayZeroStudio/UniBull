@@ -18,22 +18,29 @@ module.exports = function(routePrefix, callback) {
     var cfg = require("../config");
     var log = cfg.log.logger;
 
-    var isRevokedCallback = function(req, payload, done) {
+    function getTokenFromRequest(req) {
         var auth = req.headers.authorization;
-        var token = auth.substr(auth.indexOf(" ")+1, auth.length);
-        jwt.verify(token, cfg.jwt.secret, function(err, decoded) {
-            if (err) {return done(err); }
-            return done(null, !decoded);
-        });
-    };
+        if (auth&& auth.split(" ")[0] === "Bearer") {
+            return auth.split(" ")[1];
+        } else if (req.query
+                && req.query.token) {
+            return req.query.token;
+        }
+        return null;
+    }
+    var publicEndpoints = ["", "/", "/login", "/signup"];
     router.use("/", expressJwt({
         secret: cfg.jwt.secret,
-        isRevoked: isRevokedCallback
-    }).unless({
-        path: _.map(["", "/", "/login", "/signup"],
-                    _.curry(append)(routePrefix))
+        isRevoked: function isRevokedCallback(req, payload, done) {
+            var token = getTokenFromRequest(req);
+            jwt.verify(token, cfg.jwt.secret, function(err, decoded) {
+                if (err) {return done(err); }
+                return done(null, !decoded);
+            });
+        }}).unless({
+        path: _.map(publicEndpoints, _.curry(append)(routePrefix))
     }));
-    router.use(function(err, req, res, next) {
+    router.use(function catchTokenExpirationErrors(err, req, res, next) {
         if (err.name === "TokenExpiredError") {
             res.status(401).json({error: err.name});
         }
@@ -51,6 +58,7 @@ module.exports = function(routePrefix, callback) {
     function onValidUser(user, res) {
         var publicUserInfo = _.pick(user, ["username", "email"]);
         var token = "Bearer " + jwt.sign(publicUserInfo, cfg.jwt.secret, {
+            issuer: "UniBull",
             expiresInSeconds: cfg.jwt.timeoutInSeconds
         });
         //TODO: Put token in Authorization header
