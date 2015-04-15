@@ -8,6 +8,7 @@ module.exports = function(routePrefix, callback) {
 
     // Utility, Encryption, JWT
     var _ = require("lodash");
+    function append(a, b) {return a+b; }
     var expressJwt = require("express-jwt");
     var jwt = require("jsonwebtoken");
 
@@ -28,19 +29,33 @@ module.exports = function(routePrefix, callback) {
     router.use("/", expressJwt({
         secret: cfg.jwt.secret,
         isRevoked: isRevokedCallback
-    }).unless({path: _.map(["", "/", "/login"], function(route) {
-        return routePrefix + route;
-    })}));
+    }).unless({
+        path: _.map(["", "/", "/login", "/signup"],
+                    _.curry(append)(routePrefix))
+    }));
+    router.use(function(err, req, res, next) {
+        if (err.name === "TokenExpiredError") {
+            res.status(401).json({error: err.name});
+        }
+        next();
+    });
 
     router.get("/", function(req, res) {
         log.info("GET - Get all users");
         User.findAll().then(function(dbData) {
-            var users = _.chain(dbData)
-                .map("dataValues");
-            log.info({users: users});
+            var users = _.invoke(dbData, "get");
             res.json({users: users});
         });
     });
+
+    function onValidUser(user, res) {
+        var publicUserInfo = _.pick(user, ["username", "email"]);
+        var token = "Bearer " + jwt.sign(publicUserInfo, cfg.jwt.secret, {
+            expiresInSeconds: cfg.jwt.timeoutInSeconds
+        });
+        //TODO: Put token in Authorization header
+        res.status(200).json({token: token, user: publicUserInfo});
+    }
 
     router.get("/login", function(req, res) {
         log.info("GET - Authenticate");
@@ -48,37 +63,42 @@ module.exports = function(routePrefix, callback) {
             username: req.query.username
         }}).then(function(user) {
             if (user == null) {
-                res.json({error: "Failed to Find user"});
+                res.status(401).json({error: "Failed to Authenticate"});
                 return;
             }
             UserModel.isValidUser(user.password_hash, req.query.password,
                     function(err, isValid) {
                         if (err) {
-                            return res.json({error: err.message});
+                            return res.status(401).json({error: err.message});
                         }
                         if (isValid) {
-                            var userInfo = {
-                                username: user.username,
-                                email: user.email
-                            };
-                            var token = "Bearer "+jwt.sign(userInfo, cfg.jwt.secret, {
-                                expiresInSeconds: cfg.jwt.timeoutInSeconds
-                            });
-                            //TODO: put token in Authorization header
-                            res.json({token: token, user: userInfo});
+                            onValidUser(user, res);
                         } else {
-                            res.json({error: "Failed to Authenticate"});
+                            res.status(401).json({error: "Failed to Authenticate"});
                         }
                     });
         });
     });
 
-    router.get("/stuff", function(req, res) {
-        log.info("GET - Stuff");
-        res.json({success: true});
+    router.get("/restricted", function(req, res) {
+        log.info("GET - Restricted");
+        var auth = req.headers.authorization;
+        var token = auth.substr(auth.indexOf(" ")+1, auth.length);
+        res.json({
+            success: true,
+            decoded: jwt.decode(token)
+        });
     });
 
-    return User.sync({force: cfg.isDev}).then(function() {
+    router.post("/signup", function(req, res) {
+        User.create({
+            username: req.body.username,
+            password: req.body.password,
+            email: req.body.email
+        }).then(_.partialRight(onValidUser, res));
+    });
+
+    return User.sync({force: !cfg.isProd}).then(function() {
         return User.create({
             username: "FirstUser",
             password: "mypasswd",
