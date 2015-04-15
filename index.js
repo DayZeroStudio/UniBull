@@ -48,45 +48,45 @@ fs.readdirSync("views").forEach(function(view) {
 });
 
 async.series([
-        // For REST endpoints
-        function(seriesCallback) {
-            fs.readdir("rest", function(err, files) {
-                if (err) {throw err; }
-                log.info("files:", files);
-                async.each(files, function(file, eachCallback) {
-                    var filePath = "./rest/" + file;
-                    var route = "/rest/" + file.substr(0, file.indexOf("."));
-                    log.info("Adding REST endpoint: (" + route + ")");
-                    require(filePath)(route, function(router) {
-                        app.use(route, router);
-                        eachCallback(null);
-                    });
-                }, function(err) {
-                    if (err) {
-                        log.error(err);
-                    } else {
-                        log.info("Finished adding REST endpoints");
-                        seriesCallback(null);
-                    }
-                });
+// For REST endpoints
+function(seriesCallback) {
+    fs.readdir("rest", function(err, files) {
+        if (err) {throw err; }
+        log.info("files:", files);
+        async.each(files, function(file, eachCallback) {
+            var filePath = "./rest/" + file;
+            var route = "/rest/" + file.substr(0, file.indexOf("."));
+            log.info("Adding REST endpoint: (" + route + ")");
+            require(filePath)(route, function(router) {
+                app.use(route, router);
+                eachCallback(null);
             });
-        },
-        function(seriesCallback) {
-            //Error Handlers
-            app.use(function(req, res) {
-                res.status(404).send("UniBull cannot find that page");
-            });
-            app.use(function(err, req, res) {
-                log.error(err.stack);
-                res.status(500).send("You've made UniBull cry, you monster!");
-            });
-
-            //Start the server
-            var server = app.listen(cfg.PORT, function() {
-                var host = server.address().address;
-                log.info("UniBull is now listening at http://%s:%s", host, cfg.PORT);
+        }, function(err) {
+            if (err) {
+                log.error(err);
+            } else {
+                log.info("Finished adding REST endpoints");
                 seriesCallback(null);
-            });
-        }
+            }
+        });
+    });
+},
+function(seriesCallback) {
+    //Error Handlers
+    app.use(function(req, res) {
+        res.status(404).send("UniBull cannot find that page");
+    });
+    app.use(function(err, req, res) {
+        log.error(err.stack);
+        res.status(500).send("You've made UniBull cry, you monster!");
+    });
+
+    //Start the server
+    var server = app.listen(cfg.PORT, function() {
+        var host = server.address().address;
+        log.info("UniBull is now listening at http://%s:%s", host, cfg.PORT);
+        seriesCallback(null);
+    });
+}
 ]);
 

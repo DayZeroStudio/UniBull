@@ -27,7 +27,7 @@
   },
   "scripts": {
     "test": "NODE_ENV=test mocha --check-leaks --reporter spec test/ | bunyan",
-    "autotest": "NODE_ENV=test mocha --timeout 5000 --watch --check-leaks --reporter spec test/ | bunyan",
+    "autotest": "NODE_ENV=test mocha --watch --check-leaks --reporter spec test/ | bunyan",
     "start": "nodemon --delay 2.5 | bunyan",
     "lint": "eslint ./index.js ./app/*"
   },

@@ -21,26 +21,25 @@ describe(routePrefix, function() {
             done();
         });
     });
-    describe("/login", function() {
-        context("valid credentials", function() {
+    describe("after logging in", function() {
+        context("with valid credentials", function() {
             var validUser = {
                 username: "FirstUser",
                 password: "mypasswd"
             };
             var loginToApp = function(tokenCallback) {
                 request(app)
-                    .get("/rest/user/login")
+                    .get(routePrefix + "/login")
                     .query(validUser)
                     .expect(200)
                     .end(function(err, res) {
-                        if (err)
-                            return tokenCallback(err);
+                        if (err) return tokenCallback(err);
                         tokenCallback(null, res.body.token);
                     });
             };
             it("returns a jwt token", function(done) {
                 request(app)
-                    .get("/rest/user/login")
+                    .get(routePrefix + "/login")
                     .query(validUser)
                     .expect(200)
                     .expect("Content-Type", /json/)
@@ -59,26 +58,32 @@ describe(routePrefix, function() {
                     if (err)
                         return done(err);
                     request(app)
-                        .get("/rest/user/stuff")
+                        .get(routePrefix+"/stuff")
                         .set("Authorization", token)
                         .expect(200)
                         .expect({success: true}, done);
                 };
                 loginToApp(gotToken);
             });
-            it("is invalidated after cfg.jwt.timeoutInSeconds", function(done) {
+            it("the token is invalidated after cfg.jwt.timeoutInSeconds", function(done) {
                 var clock = sinon.useFakeTimers();
                 var gotToken = function(err, token) {
-                    if (err)
-                        return done(err);
+                    if (err) return done(err);
                     clock.tick(cfg.jwt.timeoutInSeconds * 1000);
                     request(app)
-                        .get("/rest/user/stuff")
+                        .get(routePrefix+"/stuff")
                         .set("Authorization", token)
                         .expect(500, done);
                     clock.restore();
                 };
-                loginToApp(gotToken);
+                request(app)
+                    .get(routePrefix + "/login")
+                    .query(validUser)
+                    .expect(200)
+                    .end(function(err, res) {
+                        if (err) return gotToken(err);
+                        gotToken(null, res.body.token);
+                    });
             });
         });
     });

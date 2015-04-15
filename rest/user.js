@@ -1,39 +1,21 @@
 module.exports = function(routePrefix, callback) {
     "use strict";
+    // For routing
     var express = require("express");
     var router = express.Router();
-
     var bodyParser = require("body-parser");
     router.use(bodyParser.json());
 
-    var DB = require("sequelize");
-
-    var bcrypt = require("bcrypt");
+    // Utility, Encryption, JWT
+    var _ = require("lodash");
     var expressJwt = require("express-jwt");
     var jwt = require("jsonwebtoken");
 
-    var _ = require("lodash");
+    // App
+    var UserModel = require("../models/user");
+    var User = UserModel.dbModel;
     var cfg = require("../config");
     var log = cfg.log.logger;
-
-    var db = new DB(cfg.db.name, cfg.db.username, cfg.db.password, {
-        dialect: "postgres",
-        logging: (cfg.isTest ? _.identity : log.debug.bind(log))
-    });
-    var User = db.define("User", {
-        username: {type: DB.STRING},
-        password_hash: {type: DB.STRING},
-        password: {
-            type: DB.VIRTUAL,
-            set: function(password) {
-                this.setDataValue("password", password);
-                var hashed = bcrypt.hashSync(password, 10);
-                this.setDataValue("password_hash", hashed);
-            },
-            validate: {len: [7, 64]}
-        },
-        email: {type: DB.STRING}
-    });
 
     var isRevokedCallback = function(req, payload, done) {
         var auth = req.headers.authorization;
@@ -69,7 +51,7 @@ module.exports = function(routePrefix, callback) {
                 res.json({error: "Failed to Find user"});
                 return;
             }
-            bcrypt.compare(req.query.password, user.password_hash,
+            UserModel.isValidUser(user.password_hash, req.query.password,
                     function(err, isValid) {
                         if (err) {
                             return res.json({error: err.message});
