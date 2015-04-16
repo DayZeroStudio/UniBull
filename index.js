@@ -24,9 +24,13 @@ app.set("view engine", "html");
 var bodyParser = require("body-parser");
 app.use(bodyParser.json());
 
+app.use(express.static(path.join(process.cwd(), "/public")));
+
 app.get("/", function(req, res) {
     res.render("login");
 });
+
+
 
 // For HTML pages
 fs.readdirSync("views").forEach(function(view) {
