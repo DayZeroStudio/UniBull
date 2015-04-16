@@ -30,8 +30,6 @@ app.get("/", function(req, res) {
     res.render("login");
 });
 
-
-
 // For HTML pages
 fs.readdirSync("views").forEach(function(view) {
     var file = view.substr(0, view.indexOf("."));
@@ -91,6 +89,4 @@ function(seriesCallback) {
         log.info("UniBull is now listening at http://%s:%s", host, cfg.PORT);
         seriesCallback(null);
     });
-}
-]);
-
+}]);

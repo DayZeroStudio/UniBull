@@ -116,4 +116,3 @@ module.exports = function(routePrefix, callback) {
         return callback(router);
     });
 };
-
