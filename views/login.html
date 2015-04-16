@@ -30,8 +30,11 @@
 $(document).ready(function() {
     $("#button").click(function() {
         var login = require("login");
+        var onLogin = login.onLogin;
+        var _ = login._;
+        console.log("1+2=", _.constant(3)());
         var fields = $("#myForm #username, #myForm #email, #myForm #password");
-        return login($, window, fields);
+        return onLogin($, window, fields);
     });
 });
     </script>

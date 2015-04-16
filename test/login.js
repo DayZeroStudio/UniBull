@@ -9,7 +9,7 @@ var _ = require("lodash");
 var cfg = require("../config");
 var log = cfg.log.logger;
 
-var login = require("../views/login.js");
+var login = require("../views/login.js").onLogin;
 
 describe("views/login.js", function() {
     context("when the user submits a login form", function() {
@@ -24,6 +24,7 @@ describe("views/login.js", function() {
             sinon.stub(jq, "ajax")
                 .yieldsTo("success", {redirect: "SUCCESS"});
 
+            //TODO: STUB console.log
             login(jq, window, fields);
 
             window.location.replace.firstCall.args[0]
