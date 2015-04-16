@@ -14,23 +14,21 @@ var cfg = require("../config");
 var log = cfg.log.logger;
 
 var routePrefix = "/rest/user";
-describe("<"+routePrefix+">", function() {
+describe("'"+routePrefix+"'", function() {
     before(function(done) {
         require(".."+routePrefix)(routePrefix, function(router) {
             app.use(routePrefix, router);
             done();
         });
     });
-    describe("get all users", function() {
-        context("foo", function() {
-            it("should return a list of all users", function(done) {
-                request(app)
-                    .get(routePrefix + "/")
-                    .expect(200)
-                    .expect(function(res) {
-                        res.body.users.should.have.length(1);
-                    }).end(done);
-            });
+    context("without authentication", function() {
+        it("'/' should return a list of all users", function(done) {
+            request(app)
+                .get(routePrefix + "/")
+                .expect(200)
+                .expect(function(res) {
+                    res.body.users.should.have.length(1);
+                }).end(done);
         });
     });
     describe("after logging in", function() {
@@ -49,7 +47,7 @@ describe("<"+routePrefix+">", function() {
                         callback(null, res.body);
                     });
             }
-            it("returns a jwt token & a redirect to /home", function(done) {
+            it("we are auth'd and redirected to '/home'", function(done) {
                 request(app)
                     .post(routePrefix + "/login")
                     .send(validUser)
@@ -65,7 +63,7 @@ describe("<"+routePrefix+">", function() {
                         done();
                     });
             });
-            it("returns a valid jwt token", function(done) {
+            it("we can view restricted pages", function(done) {
                 function gotToken(err, body) {
                     if (err)
                         return done(err);
@@ -81,18 +79,20 @@ describe("<"+routePrefix+">", function() {
                 }
                 loginToApp(gotToken);
             });
-            it("the token is invalidated after cfg.jwt.timeoutInSeconds", function(done) {
-                var clock = sinon.useFakeTimers();
-                function gotToken(err, body) {
-                    if (err) return done(err);
-                    clock.tick(cfg.jwt.timeoutInSeconds * 1000);
-                    request(app)
-                        .get(routePrefix+"/restricted")
-                        .set("Authorization", body.token)
-                        .expect(401, done);
-                    clock.restore();
-                }
-                loginToApp(gotToken);
+            context("for a long enough time", function() {
+                it("we are denied access", function(done) {
+                    var clock = sinon.useFakeTimers();
+                    function gotToken(err, body) {
+                        if (err) return done(err);
+                        clock.tick(cfg.jwt.timeoutInSeconds * 1000);
+                        request(app)
+                            .get(routePrefix+"/restricted")
+                            .set("Authorization", body.token)
+                            .expect(401, done);
+                        clock.restore();
+                    }
+                    loginToApp(gotToken);
+                });
             });
         });
     });
@@ -115,14 +115,19 @@ describe("<"+routePrefix+">", function() {
                         callback(null, res.body);
                     });
             }
-            it("/signup should return a jwt token & a redirect to /home", function(done) {
+            it("we are auth'd and redirected to '/home'", function(done) {
                 signupNewUser(_.uniqueId("newuser_"), function(err, body) {
                     if (err) return done(err);
                     request(app)
                         .get(routePrefix + "/restricted")
                         .set("Authorization", body.token)
                         .expect(200)
-                        .end(done);
+                        .end(function(err, res) {
+                            if (err) return done(err);
+                            if (!body.redirect)
+                                return done(Error("missing redirect"));
+                            done(null);
+                        });
                 });
             });
         });

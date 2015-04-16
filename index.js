@@ -32,13 +32,17 @@ app.get("/", function(req, res) {
 
 // For HTML pages
 fs.readdirSync("views").forEach(function(view) {
+    var type = view.substr(view.indexOf(".")+1, view.length);
+    if (type !== "html") {
+        log.warn("ignoring '/views/"+view+"'");
+        return;
+    }
     var file = view.substr(0, view.indexOf("."));
     var route = "/" + file;
-    log.info("Adding route: (" + route + ")");
-    var model;
+    log.info("Adding route: '" + route + "'");
     app.get(route, function(req, res) {
         try {
-            model = require(path.join(process.cwd(), "models", file + ".js"));
+            var model = require(path.join(process.cwd(), "models", file + ".js"));
             model.locals(req.query, function(locals) {
                 _.merge(res.locals, locals);
                 res.render(file);
