@@ -42,7 +42,7 @@ module.exports = function(routePrefix, callback) {
     }));
     router.use(function catchTokenExpirationErrors(err, req, res, next) {
         if (err.name === "TokenExpiredError") {
-            res.status(401).json({error: err.name});
+            return res.status(401).json({error: err.name});
         }
         next();
     });
@@ -69,33 +69,29 @@ module.exports = function(routePrefix, callback) {
         });
     }
 
-    router.get("/login", function(req, res) {
-        log.info("GET - Authenticate");
+    router.post("/login", function(req, res) {
+        log.info("POST - Authenticate");
         User.find({where: {
-            username: req.query.username
+            username: req.body.username
         }}).then(function(user) {
             if (user == null) {
-                res.status(401).json({error: "Failed to Authenticate"});
-                return;
+                return res.status(401)
+                    .json({error: "Failed to Authenticate"});
             }
-            UserModel.isValidUser(user.password_hash, req.query.password,
+            UserModel.isValidUser(user.password_hash, req.body.password,
                     function(err, isValid) {
-                        if (err) {
-                            return res.status(401).json({error: "Failed to Authenticate"});
+                        if (err || !isValid) {
+                            return res.status(401)
+                                .json({error: "Failed to Authenticate"});
                         }
-                        if (isValid) {
-                            onValidUser(user, res);
-                        } else {
-                            res.status(401).json({error: "Failed to Authenticate"});
-                        }
+                        onValidUser(user, res);
                     });
         });
     });
 
     router.get("/restricted", function(req, res) {
         log.info("GET - Restricted");
-        var auth = req.headers.authorization;
-        var token = auth.substr(auth.indexOf(" ")+1, auth.length);
+        var token = getTokenFromRequest(req);
         res.json({
             success: true,
             decoded: jwt.decode(token)

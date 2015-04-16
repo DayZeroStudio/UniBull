@@ -37,7 +37,7 @@ $(document).ready(function() {
         });
         //console.log(formData);
         $.ajax({
-            type: "GET",
+            type: "POST",
             url: "rest/user/login",
             data: $("#myForm").serialize(),
             error: function(res, textStatus, errorThrown) {
