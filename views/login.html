@@ -1,32 +1,31 @@
 <!DOCTYPE html>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-
 <html>
-<%- watchScript %>
-    <header><title>UNIBULL</title></header>
-    <body>Hello, world. This is my terrible login page.</body>
-    <div>
-    </div>
-<section class="loginform cf">
-<form id="myForm" name="login" method="post" accept-charset="utf-8">
-    <ul>
-        <li><label for="username">Username</label>
-        <input id="username" type="text" name="username" placeholder="username" ></li>
-        <li><label for="email">Email</label>
-        <input id="email" type="email" name="email" placeholder="yourname@email.com" ></li>
-        <li><label for="password">Password</label>
-        <input id="password" type="password" name="password" placeholder="password" ></li>
-        <li>
-        <button id="button"> SUBMIT </button>
-    </ul>
-</form>
-</section>
-    <div></div>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <%- watchScript %>
+        <title>UNIBULL</title>
+    </head>
     <body>
+        Hello, world. This is my terrible login page.
+        <section class="loginform cf">
+            <form id="myForm" name="login" accept-charset="utf-8">
+                <ul>
+                    <li><label for="username">Username</label>
+                        <input id="username" type="text" name="username" placeholder="username" ></li>
+                    <li><label for="email">Email</label>
+                        <input id="email" type="email" name="email" placeholder="yourname@email.com" ></li>
+                    <li><label for="password">Password</label>
+                        <input id="password" type="password" name="password" placeholder="password" ></li>
+                    <li>
+                        <button id="button"> SUBMIT </button>
+                </ul>
+            </form>
+        </section>
+        <div></div>
+
         Or, sign up here...
     </body>
-</html>
-<script>
+    <script>
 $(document).ready(function() {
     $("#button").click(function(){
         var formData = {};
@@ -41,9 +40,13 @@ $(document).ready(function() {
             type: "GET",
             url: "rest/user/login",
             data: $("#myForm").serialize(),
+            error: function(res, textStatus, errorThrown) {
+                console.log("res:" + res.responseText);
+                console.log("error: " + errorThrown);
+            },
             success: function(data) {
-                //console.log("data: ", data);
-                window.location.replace("http://localhost:8080/home/")
+                console.log("data: ", data);
+                window.location.replace(data.redirect);
             },
             dataType: "json",
             contentType: "application/json"
@@ -51,4 +54,5 @@ $(document).ready(function() {
         return false;
     })
 });
-</script>
+    </script>
+</html>

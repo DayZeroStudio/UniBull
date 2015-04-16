@@ -62,7 +62,11 @@ module.exports = function(routePrefix, callback) {
             expiresInSeconds: cfg.jwt.timeoutInSeconds
         });
         //TODO: Put token in Authorization header
-        res.status(200).json({token: token, user: publicUserInfo});
+        res.json({
+            token: token,
+            user: publicUserInfo,
+            redirect: "/home"
+        });
     }
 
     router.get("/login", function(req, res) {
@@ -77,7 +81,7 @@ module.exports = function(routePrefix, callback) {
             UserModel.isValidUser(user.password_hash, req.query.password,
                     function(err, isValid) {
                         if (err) {
-                            return res.status(401).json({error: err.message});
+                            return res.status(401).json({error: "Failed to Authenticate"});
                         }
                         if (isValid) {
                             onValidUser(user, res);

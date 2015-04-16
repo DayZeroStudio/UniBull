@@ -1,4 +1,4 @@
-/*eslint curly:0, no-unused-vars:0*/
+/*eslint curly:0, no-unused-vars:0, no-unused-expressions:0*/
 "use strict";
 
 var chai = require("chai");
@@ -49,17 +49,17 @@ describe("<"+routePrefix+">", function() {
                         tokenCallback(null, res.body.token);
                     });
             };
-            it("returns a jwt token", function(done) {
+            it("returns a jwt token & a redirect link", function(done) {
                 request(app)
                     .get(routePrefix + "/login")
                     .query(validUser)
                     .expect(200)
                     .expect("Content-Type", /json/)
                     .expect(function(res) {
-                        if (!_.has(res.body, "token"))
-                            return "res.body is missing the token field";
+                        res.body.token.should.exist;
                         if (!_.startsWith(res.body.token, "Bearer"))
                             return "token should start with 'Bearer '";
+                        res.body.redirect.should.have.length.above(0);
                     }).end(function(err, res) {
                         if (err) return done(err);
                         done();
@@ -73,6 +73,7 @@ describe("<"+routePrefix+">", function() {
                         .get(routePrefix+"/restricted")
                         .set("Authorization", token)
                         .expect(200)
+                        .expect("Content-Type", /json/)
                         .expect(function(res) {
                             res.body.decoded.should
                                 .include.keys(["username", "email"]);
