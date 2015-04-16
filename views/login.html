@@ -3,6 +3,7 @@
     <head>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
         <%- watchScript %>
+        <script src="js/login-bundle.js"></script>
         <title>UNIBULL</title>
     </head>
     <body>
@@ -27,32 +28,11 @@
     </body>
     <script>
 $(document).ready(function() {
-    $("#button").click(function(){
-        var formData = {};
-        $("#myForm #email, #myForm #password").each(function(i, v) {
-            // console.log(v);
-            // console.log($(v).attr("name"));
-            var name = $(v).attr("name");
-            formData[name] = $(v).val();
-        });
-        //console.log(formData);
-        $.ajax({
-            type: "POST",
-            url: "rest/user/login",
-            data: $("#myForm").serialize(),
-            error: function(res, textStatus, errorThrown) {
-                console.log("res:" + res.responseText);
-                console.log("error: " + errorThrown);
-            },
-            success: function(data) {
-                console.log("data: ", data);
-                window.location.replace(data.redirect);
-            },
-            dataType: "json",
-            contentType: "application/json"
-        })
-        return false;
-    })
+    $("#button").click(function() {
+        var login = require("login");
+        var fields = $("#myForm #username, #myForm #email, #myForm #password");
+        return login($, window, fields);
+    });
 });
     </script>
 </html>
