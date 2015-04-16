@@ -13,7 +13,7 @@ var login = require("../views/login.js").onLogin;
 
 describe("views/login.js", function() {
     context("when the user submits a login form", function() {
-        it("should make an ajax call", function() {
+        it("it should trigger an ajax call", function() {
             var fields = {each: _.identity};
             var jq = {ajax: _.identity};
             var window = {
@@ -24,8 +24,9 @@ describe("views/login.js", function() {
             sinon.stub(jq, "ajax")
                 .yieldsTo("success", {redirect: "SUCCESS"});
 
-            //TODO: STUB console.log
-            login(jq, window, fields);
+            sinon.stub(console, "log");
+            login(jq, window, fields); // UNIT UNDER TEST
+            console.log.restore();
 
             window.location.replace.firstCall.args[0]
                 .should.equal("SUCCESS");
