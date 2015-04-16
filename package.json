@@ -29,8 +29,8 @@
   "scripts": {
     "test": "NODE_ENV=test mocha --check-leaks --reporter spec test/ | bunyan",
     "autotest": "NODE_ENV=test mocha --watch --check-leaks --reporter spec test/ | bunyan",
-    "start": "nodemon --delay 2.5 | bunyan",
-    "lint": "eslint ./index.js ./test/* ./models/* ./rest/*"
+    "start": "nodemon --ignore public/ --delay 2.5 | bunyan",
+    "lint": "eslint ./index.js ./test/* ./views/*.js ./models/* ./rest/*"
   },
   "pre-commit": [
     "test",

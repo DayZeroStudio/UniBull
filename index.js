@@ -6,25 +6,28 @@ var app = express();
 var fs = require("fs");
 var ejs = require("ejs");
 var path = require("path");
+var bundle = require("browserify")();
 var async = require("async");
+
+var cwd = process.cwd();
 
 var cfg = require("./config");
 var log = cfg.log.logger;
 
 // For automagical html page reloading
 var reloadify = require("./lib/reloadify");
-reloadify(app, path.join(process.cwd(), "/views"));//TODO remove "/" ?
+reloadify(app, path.join(cwd, "/views"));//TODO remove "/" ?
 app.engine("html", ejs.renderFile);
 
 // From now on, when using res.render(str),
 // str will be treated as though its a .html file in views/
-app.set("views", path.join(process.cwd(), "views"));
+app.set("views", path.join(cwd, "views"));
 app.set("view engine", "html");
 
 var bodyParser = require("body-parser");
 app.use(bodyParser.json());
 
-app.use(express.static(path.join(process.cwd(), "/public")));
+app.use(express.static(path.join(cwd, "/public")));
 
 app.get("/", function(req, res) {
     res.render("login");
@@ -36,13 +39,26 @@ fs.readdirSync("views").forEach(function(view) {
     if (type !== "html") {
         log.warn("ignoring '/views/"+view+"'");
         return;
-    }
+    }// Only html files from here on out
     var file = view.substr(0, view.indexOf("."));
     var route = "/" + file;
+
+    if (fs.existsSync(path.join(cwd, "views", file+".js"))) {
+        bundle.require(path.join(cwd, "views", file+".js"), {
+            expose: file
+        });
+        bundle.bundle(function(err, src) {
+            if (err) {
+                return log.warn("{file: '%s', err: '%s'}", file, err.message);
+            }
+            fs.writeFile(path.join(cwd, "public", "js", file+"-bundle.js"), src);
+        });
+    }
+
     log.info("Adding route: '" + route + "'");
     app.get(route, function(req, res) {
         try {
-            var model = require(path.join(process.cwd(), "models", file + ".js"));
+            var model = require(path.join(cwd, "models", file + ".js"));
             model.locals(req.query, function(locals) {
                 _.merge(res.locals, locals);
                 res.render(file);
