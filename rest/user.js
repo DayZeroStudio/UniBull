@@ -103,6 +103,10 @@ module.exports = function(routePrefix, callback) {
             username: req.body.username,
             password: req.body.password,
             email: req.body.email
+        }).error(function(err) {
+            if (err) {
+                res.json({error: err.message});
+            }
         }).then(_.partialRight(onValidUser, res));
     });
 
