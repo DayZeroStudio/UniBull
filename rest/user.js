@@ -103,11 +103,12 @@ module.exports = function(routePrefix, callback) {
             username: req.body.username,
             password: req.body.password,
             email: req.body.email
-        }).error(function(err) {
+        }).then(_.partialRight(onValidUser, res))
+        .catch(function(err) {
             if (err) {
                 res.json({error: err.message});
             }
-        }).then(_.partialRight(onValidUser, res));
+        });
     });
 
     return User.sync({force: !cfg.isProd}).then(function() {
