@@ -6,7 +6,7 @@ var app = express();
 var fs = require("fs");
 var ejs = require("ejs");
 var path = require("path");
-var bundle = require("browserify")();
+var browserify = require("browserify");
 var async = require("async");
 
 var cwd = process.cwd();
@@ -43,17 +43,23 @@ fs.readdirSync("views").forEach(function(view) {
     var file = view.substr(0, view.indexOf("."));
     var route = "/" + file;
 
-    if (fs.existsSync(path.join(cwd, "views", file+".js"))) {
-        bundle.require(path.join(cwd, "views", file+".js"), {
-            expose: file
-        });
+    var jsFile = path.join(cwd, "views", file+".js");
+    fs.open(jsFile, "r", function(err, fd) {
+        if (err) {
+            return log.warn("err:", err.message);
+        }
+        log.warn("jsFile:", jsFile);
+        var readStream = fs.createReadStream(null, {fd: fd});
+        var bundle = browserify();
+        bundle.require(readStream);
         bundle.bundle(function(err, src) {
             if (err) {
                 return log.warn("{file: '%s', err: '%s'}", file, err.message);
             }
-            fs.writeFile(path.join(cwd, "public", "js", file+"-bundle.js"), src);
+            var bundleFile = path.join(cwd, "public", "js", file+"-bundle.js");
+            fs.writeFile(bundleFile, src);
         });
-    }
+    });
 
     log.info("Adding route: '" + route + "'");
     app.get(route, function(req, res) {
