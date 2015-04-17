@@ -28,7 +28,14 @@ $(document).ready(function() {
         var signup = require("signup");
         var onSignUp = signup.onSignUp;
         var fields = $("#myForm #username, #myForm #email, #myForm #password");
-        return onSignUp($, window, fields);
+        return onSignUp($, window, fields, function(err, data){
+            if(err){
+                return console.log(err);
+            }
+            if(data.redirect){
+                window.location.replace(data.redirect);
+            }
+        });
     });
 });
 </script>

@@ -2,7 +2,7 @@ module.exports = (function() {
     "use strict";
     var exports = {};
 
-    exports.onSignUp = function($, window, fields) {
+    exports.onSignUp = function($, window, fields, callback) {
         var formData = {};
         fields.each(function(i, v) {
             console.log(v);
@@ -18,10 +18,11 @@ module.exports = (function() {
             error: function(res, textStatus, errorThrown) {
                 console.log("res:" + res.responseText);
                 console.log("error: " + errorThrown);
+                return callback(errorThrown);
             },
             success: function(data) {
                 console.log("data: ", data);
-                window.location.replace(data.redirect);
+                return callback(null, data);
             },
             dataType: "json",
             contentType: "application/json"
