@@ -1,6 +1,6 @@
 module.exports = (function() {
     "use strict";
-    var ajax = require("./lib/ajax.js");
+    var ajax = require("../lib/ajax.js");
     var exports = {};
     exports.onSignUp = function($, fields, callback) {
         var formData = {};
