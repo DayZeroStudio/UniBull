@@ -2,7 +2,7 @@ module.exports = (function() {
     "use strict";
     var exports = {};
 
-    exports.onLogin = function($, window, fields) {
+    exports.onSignUp = function($, window, fields) {
         var formData = {};
         fields.each(function(i, v) {
             console.log(v);
@@ -13,7 +13,7 @@ module.exports = (function() {
         console.log(formData);
         $.ajax({
             type: "POST",
-            url: "rest/user/login",
+            url: "rest/user/signup",
             data: JSON.stringify(formData),
             error: function(res, textStatus, errorThrown) {
                 console.log("res:" + res.responseText);

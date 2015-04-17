@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-
+<script src="js/signup-bundle.js"></script>
 <html>
 <%- watchScript %>
     <header><title>UNIBULL</title></header>
@@ -8,7 +8,7 @@
     <div>
     </div>
 <section class="loginform cf">
-<form id="myForm" name="login" method="post" accept-charset="utf-8">
+<form id="myForm" name="signup" method="post" accept-charset="utf-8">
     <ul>
         <li><label for="username">Username</label>
         <input id="username" type="text" name="username" placeholder="username" ></li>
@@ -17,34 +17,18 @@
         <li><label for="password">Password</label>
         <input id="password" type="password" name="password" placeholder="password" ></li>
         <li>
-        <button id="button"> SUBMIT </button>
+        <button id="button"> SIGN UP </button>
     </ul>
 </form>
 </section>
 </html>
 <script>
 $(document).ready(function() {
-    $("#button").click(function(){
-        var formData = {};
-        $("#myForm #email, #myForm #password").each(function(i, v) {
-            // console.log(v);
-            // console.log($(v).attr("name"));
-            var name = $(v).attr("name");
-            formData[name] = $(v).val();
-        });
-        //console.log(formData);
-        $.ajax({
-            type: "GET",
-            url: "rest/user/signup",
-            data: $("#myForm").serialize(),
-            success: function(data) {
-                //console.log("data: ", data);
-                window.location.replace("http://localhost:8080/home/")
-            },
-            dataType: "json",
-            contentType: "application/json"
-        })
-        return false;
-    })
+    $("#button").click(function() {
+        var signup = require("signup");
+        var onSignUp = signup.onSignUp;
+        var fields = $("#myForm #username, #myForm #email, #myForm #password");
+        return onSignUp($, window, fields);
+    });
 });
 </script>
