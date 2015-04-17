@@ -8,7 +8,7 @@
     <div>
     </div>
 <section class="loginform cf">
-<form id="myForm" name="login" method="post" accept-charset="utf-8">
+<form id="myForm" name="signup" method="post" accept-charset="utf-8">
     <ul>
         <li><label for="username">Username</label>
         <input id="username" type="text" name="username" placeholder="username" ></li>
@@ -28,7 +28,7 @@ $(document).ready(function() {
         var signup = require("signup");
         var onSignUp = signup.onSignUp;
         var fields = $("#myForm #username, #myForm #email, #myForm #password");
-        return onLogin($, window, fields);
+        return onSignUp($, window, fields);
     });
 });
 </script>

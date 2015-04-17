@@ -2,8 +2,6 @@ module.exports = (function() {
     "use strict";
     var exports = {};
 
-    exports._ = require("lodash");
-
     exports.onLogin = function($, window, fields) {
         var formData = {};
         fields.each(function(i, v) {

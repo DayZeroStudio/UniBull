@@ -51,7 +51,7 @@ fs.readdirSync("views").forEach(function(view) {
         log.warn("jsFile:", jsFile);
         var readStream = fs.createReadStream(null, {fd: fd});
         var bundle = browserify();
-        bundle.require(readStream);
+        bundle.require(readStream, {expose: file});
         bundle.bundle(function(err, src) {
             if (err) {
                 return log.warn("{file: '%s', err: '%s'}", file, err.message);
