@@ -23,19 +23,22 @@
             </form>
         </section>
         <div></div>
-
-        Or, sign up <a href="http://localhost:8080/signup">here</a>
- 
+        Or, sign up <a href="/signup">here</a>
     </body>
     <script>
 $(document).ready(function() {
     $("#button").click(function() {
         var login = require("login");
         var onLogin = login.onLogin;
-        var _ = login._;
-        console.log("1+2=", _.constant(3)());
         var fields = $("#myForm #username, #myForm #email, #myForm #password");
-        return onLogin($, window, fields);
+        return onLogin($, fields, function(err, data){
+            if(err){
+                return console.log(err);
+            }
+            if(data.redirect){
+                window.location.replace(data.redirect);
+            }
+        });
     });
 });
     </script>
