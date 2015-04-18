@@ -13,23 +13,22 @@ var login = require("../views/login.js").onLogin;
 
 describe("views/login.js", function() {
     context("when the user submits a login form", function() {
-        it("it should trigger an ajax call", function() {
+        // Wrapping the test function with sinon.test is important,
+        // use it, and call this.[spy|stub|mock]()
+        // so that things get restored once the test is done.
+        it("it should trigger an ajax call", sinon.test(function() {
             var fields = {each: _.identity};
             var jq = {ajax: _.identity};
-            var window = {
-                location: {
-                    replace: sinon.spy()
-                }
-            };
-            sinon.stub(jq, "ajax")
-                .yieldsTo("success", {redirect: "SUCCESS"});
+            sinon.stub(jq, "ajax").yieldsTo("success", {
+                redirect: "SUCCESS"
+            });
+            var callback = this.spy();
+            this.stub(console, "log");
 
-            sinon.stub(console, "log");
-            login(jq, window, fields); // UNIT UNDER TEST
-            console.log.restore();
+            login(jq, fields, callback); // UNIT UNDER TEST
 
-            window.location.replace.firstCall.args[0]
-                .should.equal("SUCCESS");
+            callback.firstCall.args[1]
+                .should.deep.equal({redirect: "SUCCESS"});
             jq.ajax.firstCall.args[0].should.contain({
                 type: "POST",
                 data: "{}",
@@ -39,6 +38,6 @@ describe("views/login.js", function() {
             jq.ajax.calledWithMatch(sinon.match(function(value) {
                 return value.url.should.match(/login$/);
             }));
-        });
+        }));
     });
 });

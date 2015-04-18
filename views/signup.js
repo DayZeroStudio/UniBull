@@ -11,7 +11,7 @@ module.exports = (function() {
             formData[name] = $(v).val();
         });
         console.log(formData);
-        ajax.postJSON("rest/user/signup", formData, callback);
+        ajax.postJSON($, "rest/user/signup", formData, callback);
         return false;
     };
 

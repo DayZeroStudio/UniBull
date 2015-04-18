@@ -27,7 +27,7 @@ describe("'"+routePrefix+"'", function() {
                 .get(routePrefix + "/")
                 .expect(200)
                 .expect(function(res) {
-                    res.body.users.should.have.length(1);
+                    res.body.users.should.have.length.above(0);
                 }).end(done);
         });
     });
