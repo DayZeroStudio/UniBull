@@ -44,73 +44,57 @@
 	.fakewindowcontain .ui-widget-overlay {
 		position: absolute;
 	}
+    label {
+        display:inline-block;
+        text-align:right;
+        width: 140px;
+    }
 	select {
 		width: 200px;
 	}
-	</style>  
+	</style>
 </head>
     <body>
         <h1><center>Welcome to Unibull</center></h1>
         <section class="loginform cf">
             <form id="myForm" name="login" accept-charset="utf-8">
-                <!--<ul>
-                    <li><label for="username">Username</label>
-                        <input id="username" type="text" name="username" placeholder="username" ></li>
-                    <li><label for="email">Email</label>
-                        <input id="email" type="email" name="email" placeholder="yourname@email.com" ></li>
-                    <li><label for="password">Password</label>
-                        <input id="password" type="password" name="password" placeholder="password" ></li>
-                    <li>
-                        <button id="button"> SUBMIT </button>
-                </ul> -->
                 <center>
-        						<br><label for="usermail">Email</label></br>
-        						<input id="uname" type="email" name="usermail">
-        						<br><label for="password">Password</label></br>
-        						<input id="pw" type="password" name="password">
-        						<hr>
-        						<center><button id="loginButton">Login</button></center>
-								</center>
+        			<label for="username">Username</label>
+        			<input id="username" type="username" name="username" placeholder="Username">
+        			<br>
+                    <label for="password">Password</label>
+        			<input id="password" type="password" name="password" placeholder="Password">
+                    <br><br>
+        			<button id="loginButton">Login</button>
+				</center>
             </form>
         </section>
-        <div></div>
-       <!-- Or, sign up <a href="/signup">here</a> -->
-       <br></br>
-       <center><button id="signupButton">Sign Up</button></center>
+       <br>
+       <hr>
+       <center>New to UniBull? <button id="signupButton">Create an account!</button></center>
+        <br><a href="javascript:logout('token');">LOGOUT</a>
     </body>
-    
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> -->
+
 <script src="js/login-bundle.js"></script>
 <script src="jqueryui/external/jquery/jquery.js"></script>
 <script src="jqueryui/jquery-ui.js"></script>
 <script>
-/*$(document).ready(function() {
-    $("#button").click(function() {
-        var login = require("login");
-        var onLogin = login.onLogin;
-        var fields = $("#myForm #username, #myForm #email, #myForm #password");
-        return onLogin($, fields, function(err, data){
-            if(err){
-                return console.log(err);
-            }
-            if (data.redirect) {
-                window.location.href = data.redirect+queryToken;
-            }
-        });
-    });
-});*/
+function logout(name) {
+    document.cookie = name+"=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+}
 
 $( "#loginButton" ).button();
 $( "#loginButton" ).click(function() {
         var login = require("login");
         var onLogin = login.onLogin;
-        var fields = $("#myForm #username, #myForm #email, #myForm #password");
+        var fields = $("#myForm #username, #myForm #password");
         return onLogin($, fields, function(err, data){
             if(err){
                 return console.log(err);
             }
             if (data.redirect) {
-                window.location.href = data.redirect+queryToken;
+                document.cookie = "token="+data.token+";max-age="+(60*15);
+                window.location.href = data.redirect;
             }
         });
   });

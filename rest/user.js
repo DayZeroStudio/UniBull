@@ -22,9 +22,6 @@ module.exports = function(routePrefix, callback) {
         var auth = req.headers.authorization;
         if (auth&& auth.split(" ")[0] === "Bearer") {
             return auth.split(" ")[1];
-        } else if (req.query
-                && req.query.token) {
-            return req.query.token;
         }
         return null;
     }
@@ -61,8 +58,7 @@ module.exports = function(routePrefix, callback) {
             issuer: "UniBull",
             expiresInSeconds: cfg.jwt.timeoutInSeconds
         });
-        //TODO: Put token in Authorization header
-        res.json({
+        res.set({"Authorization": token}).json({
             token: token,
             user: publicUserInfo,
             redirect: "/home"
