@@ -47,6 +47,7 @@
     select {
         width: 200px;
     }
+
     </style>
 </head>
 <html>
@@ -54,17 +55,33 @@
 <script src="jqueryui/external/jquery/jquery.js"></script>
 <script src="jqueryui/jquery-ui.js"></script>
 <body>
-    <center>
-        <h1>UniBull Home</h1>
-        <p>Check out a <a href="/classroom">classroom</a></p>
-        <br>
-        <hr>
-        <br>
-        <button id="logout"> LOGOUT </button>
-    </center>
+    <h1>UniBull Home</h1>
+    <div id="tabs">
+        <ul>
+            <li><a href="#classes">Classrooms</a></li>
+            <li><a href="#clubs">Clubs</a></li>
+            <li><a href="#events">Events</a></li>
+        </ul>
+        <div id="classes">
+            <p> Fuck yo classes </p>
+            <p>Check out a <a href="/classroom">classroom</a></p>
+
+        </div>
+        <div id="clubs">
+            <p> Clubs are boring </p>
+        </div>
+        <div id="events">
+            <p> Events are all right I guess </p>
+        </div>
+    </div>
+    <br>
+    <hr>
+    <br>
+    <center><button id="logout"> LOGOUT </button></center>
     </body>
 </html>
 <script>
+$("#tabs").tabs();
 function logout(name) {
     document.cookie = name+"=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
 }
