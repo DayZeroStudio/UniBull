@@ -1,13 +1,81 @@
 <!DOCTYPE html>
-<html>
-<%- watchScript %> 
+<%- watchScript %>
+<html lang="us">
+	<link href="jqueryui/jquery-ui.css" rel="stylesheet">
+	<style>
+	body{
+		font: 82.5% "Lucida Console", Monaco, monospace;
+		margin: 50px;
+	}
+	.demoHeaders {
+		margin-top: 2em;
+	}
+	#dialog-link {
+		padding: .4em 1em .4em 20px;
+		text-decoration: none;
+		position: relative;
+	}
+	#dialog-link span.ui-icon {
+		margin: 0 5px 0 0;
+		position: absolute;
+		left: .2em;
+		top: 50%;
+		margin-top: -8px;
+	}
+	#icons {
+		margin: 0;
+		padding: 0;
+	}
+	#icons li {
+		margin: 2px;
+		position: relative;
+		padding: 4px 0;
+		cursor: pointer;
+		float: left;
+		list-style: none;
+	}
+	#icons span.ui-icon {
+		float: left;
+		margin: 0 4px;
+	}
+	.fakewindowcontain .ui-widget-overlay {
+		position: absolute;
+	}
+	select {
+		width: 200px;
+	}
+	</style> 
 <head>
   <title>UniBull Class</title>
 </head>
 
 <body>
-  <h1>UniBull</h1>
-  <p>Some Paragraph</p>
+  <center><h1>Class Rooms</h1></center>
+  <hr>
+  <div id="tabs">
+  	<ul>
+    	<li><a href="#tabs-1">Classrooms</a></li>
+    	<li><a href="#tabs-2">Clubs</a></li>
+    	<li><a href="#tabs-3">Events</a></li>
+    </ul>
+  	<div id="tabs-1">
+    	<p>Life is hard sometimes</p>  
+  	</div>
+	</div>
 </body>
+
+<script src="js/login-bundle.js"></script>
+<script src="jqueryui/external/jquery/jquery.js"></script>
+<script src="jqueryui/jquery-ui.js"></script>
+<script>
+$( "#tabs" ).tabs();
+
+
+
+
+
+
+
+</script>
 
 </html>
