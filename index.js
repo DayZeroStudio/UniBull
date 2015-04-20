@@ -10,78 +10,34 @@ var browserify = require("browserify");
 var async = require("async");
 
 var cwd = process.cwd();
-
 var cfg = require("./config");
 var log = cfg.log.logger;
 
-// For automagical html page reloading
+// For automagical HTML page reloading
 var reloadify = require("./lib/reloadify");
-reloadify(app, path.join(cwd, "/views"));//TODO remove "/" ?
+reloadify(app, path.join(cwd, "views"));
 app.engine("html", ejs.renderFile);
 
-// From now on, when using res.render(str),
-// str will be treated as though its a .html file in views/
+// From now on, when using res.render("str"),
+// it will lookup views/str.html
 app.set("views", path.join(cwd, "views"));
 app.set("view engine", "html");
+
+app.use(express.static(path.join(cwd, "/public")));
 
 var bodyParser = require("body-parser");
 app.use(bodyParser.json());
 
-app.use(express.static(path.join(cwd, "/public")));
+var cookieParser = require("cookie-parser");
+app.use(cookieParser());
 
 app.get("/", function(req, res) {
     res.render("login");
 });
 
-// For HTML pages
-fs.readdirSync("views").forEach(function(view) {
-    var type = view.substr(view.indexOf(".")+1, view.length);
-    if (type !== "html") {
-        log.warn("ignoring '/views/"+view+"'");
-        return;
-    }// Only html files from here on out
-    var file = view.substr(0, view.indexOf("."));
-    var route = "/" + file;
-
-    var jsFile = path.join(cwd, "views", file+".js");
-    fs.open(jsFile, "r", function(err, fd) {
-        if (err) {
-            return log.warn("err:", err.message);
-        }
-        log.warn("jsFile:", jsFile);
-        var readStream = fs.createReadStream(null, {fd: fd});
-        var bundle = browserify({
-            basedir: path.join(cwd, "views")
-        });
-        bundle.require(readStream, {
-            expose: file
-        });
-        bundle.bundle(function(err, src) {
-            if (err) {
-                return log.warn("{file: '%s', err: '%s'}", file, err.message);
-            }
-            var bundleFile = path.join(cwd, "public", "js", file+"-bundle.js");
-            fs.writeFile(bundleFile, src);
-        });
-    });
-
-    log.info("Adding route: '" + route + "'");
-    app.get(route, function(req, res) {
-        try {
-            var model = require(path.join(cwd, "models", file + ".js"));
-            model.locals(req.query, function(locals) {
-                _.merge(res.locals, locals);
-                res.render(file);
-            });
-        } catch(err) {
-            res.render(file);
-        }
-    });
-});
-
 async.series([
-// For REST endpoints
 function(seriesCallback) {
+    // Automagically app.use all rest/*.js
     fs.readdir("rest", function(err, files) {
         if (err) {throw err; }
         log.info("files:", files);
@@ -102,6 +58,101 @@ function(seriesCallback) {
             }
         });
     });
+},
+function(seriesCallback) {
+    // Authorization - JWT
+    var jwt = require("jsonwebtoken");
+    var expressJwt = require("express-jwt");
+    function getTokenFromRequest(req) {
+        var auth = req.headers.authorization;
+        var queryToken = req.query.token;
+        var cookieToken = req.cookies.token;
+        if (auth&& auth.split(" ")[0] === "Bearer") {
+            return auth.split(" ")[1];
+        } else if (queryToken
+                && queryToken.split(" ")[0] === "Bearer") {
+            return queryToken.split(" ")[1];
+        } else if (cookieToken
+                && cookieToken.split(" ")[0] === "Bearer") {
+            return cookieToken.split(" ")[1];
+        }
+        return null;
+    }
+    var publicHtmlPages = ["/login", "/signup"];
+    app.use(expressJwt({
+        secret: cfg.jwt.secret,
+        getToken: getTokenFromRequest,
+        isRevoked: function isRevokedCallback(req, payload, done) {
+            var token = getTokenFromRequest(req);
+            log.warn("payload", payload);
+            log.warn("token?", req.user);
+            jwt.verify(token, cfg.jwt.secret, function(err, decoded) {
+                if (err) {return done(err); }
+                return done(null, !decoded);
+            });
+        }
+    }).unless({
+        path: publicHtmlPages
+    }));
+    app.use(function catchAuthErrors(err, req, res, next) {
+        log.error(err);
+        if (err.name === "TokenExpiredError") {
+            return res.status(401).json({error: err.name});
+        } else if (err.name === "UnauthorizedError") {
+            return res.status(401).json({error: err.name});
+        }
+        next();
+    });
+
+    // Automagically render all views/*.html
+    fs.readdirSync("views").forEach(function(view) {
+        var type = view.substr(view.indexOf(".")+1, view.length);
+        if (type !== "html") {
+            log.debug("ignoring '/views/"+view+"'");
+            return;
+        }// Only html $file from here on out
+        var file = view.substr(0, view.indexOf("."));
+        var route = "/" + file;
+
+        // Try to make a bundle from 'views/${file}.js'
+        // to 'public/js/${file}-bundle.js'
+        var jsFile = path.join(cwd, "views", file+".js");
+        fs.open(jsFile, "r", function(err, fd) {
+            if (err) {
+                return log.debug("err:", err.message);
+            }
+            var readStream = fs.createReadStream(null, {fd: fd});
+            var bundle = browserify({
+                basedir: path.join(cwd, "views")
+            });
+            bundle.require(readStream, {
+                expose: file
+            });
+            bundle.bundle(function(err, src) {
+                if (err) {
+                    return log.debug("{file: '%s', err: '%s'}", file, err.message);
+                }
+                var bundleFile = path.join(cwd, "public", "js", file+"-bundle.js");
+                fs.writeFile(bundleFile, src);
+            });
+        });
+
+        // Try to add 'models/${file}.js' to the html's local variables
+        log.info("Adding route: '" + route + "'");
+        app.get(route, function(req, res) {
+            try {
+                var model = require(path.join(cwd, "models", file + ".js"));
+                model.locals(req.query, function(locals) {
+                    _.merge(res.locals, locals);
+                    res.render(file);
+                });
+            } catch(err) {
+                res.render(file);
+            }
+        });
+    });
+
+    seriesCallback(null);
 },
 function(seriesCallback) {
     //Error Handlers

@@ -24,8 +24,12 @@
         </section>
         <div></div>
         Or, sign up <a href="/signup">here</a>
+        <br><a href="javascript:logout('token');">LOGOUT</a>
     </body>
     <script>
+function logout(name) {
+    document.cookie = name+"=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+}
 $(document).ready(function() {
     $("#button").click(function() {
         var login = require("login");
@@ -36,7 +40,9 @@ $(document).ready(function() {
                 return console.log(err);
             }
             if (data.redirect) {
-                window.location.href = data.redirect+queryToken;
+                //var queryToken = "?token="+data.token;
+                document.cookie = "token="+data.token+";max-age="+(60*15);
+                window.location.href = data.redirect;
             }
         });
     });
