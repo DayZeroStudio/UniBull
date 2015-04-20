@@ -84,8 +84,6 @@ function(seriesCallback) {
         getToken: getTokenFromRequest,
         isRevoked: function isRevokedCallback(req, payload, done) {
             var token = getTokenFromRequest(req);
-            log.warn("payload", payload);
-            log.warn("token?", req.user);
             jwt.verify(token, cfg.jwt.secret, function(err, decoded) {
                 if (err) {return done(err); }
                 return done(null, !decoded);
