@@ -60,7 +60,7 @@
             <form id="myForm" name="login" accept-charset="utf-8">
                 <center>
         			<label for="username">Username</label>
-        			<input id="username" type="username" name="username" placeholder="Username">
+        			<input id="username" type="text" name="username" placeholder="Username">
         			<br>
                     <label for="password">Password</label>
         			<input id="password" type="password" name="password" placeholder="Password">
@@ -72,7 +72,14 @@
        <br>
        <hr>
        <center>New to UniBull? <button id="signupButton">Create an account!</button></center>
-        <br><a href="javascript:logout('token');">LOGOUT</a>
+        <br>
+        <br>
+        <center>
+            <button id="logoutButton">LOGOUT</button>
+            <!--
+            <a href="javascript:logout('token');">LOGOUT</a>
+        -->
+        </center>
     </body>
 
 <script src="js/login-bundle.js"></script>
@@ -100,7 +107,12 @@ $( "#loginButton" ).click(function() {
   });
 $( "#signupButton" ).button();
 $( "#signupButton" ).click(function() {
-	window.location.href = "/signup"
+    window.location.href = "/signup";
+});
+$("#logoutButton").button();
+$("#logoutButton").click(function() {
+    logout('token');
+    window.location.href = "/login";
 });
 
 </script>
