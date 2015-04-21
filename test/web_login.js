@@ -26,7 +26,6 @@ describe("testing front end login", function() {
                     log.warn(res.text.length);
                     var $ = cheerio.load(res.text);
                     $("title").text().should.equal("UniBull Login Page");
-                    $("title").text().should.not.contain("UniBull");
                 }).end(done);
         });
     });

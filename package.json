@@ -30,14 +30,11 @@
     "supertest": "^0.15.0"
   },
   "scripts": {
-    "test": "NODE_ENV=test mocha --check-leaks --reporter spec test/ | bunyan",
-    "autotest": "NODE_ENV=test mocha --watch --check-leaks --reporter spec test/ | bunyan",
-    "start": "nodemon --ignore public/ --delay 2.5 | bunyan",
-    "lint": "eslint ./index.js ./test/* ./views/*.js ./models/* ./rest/*"
+    "test": "make test",
+    "start": "make start"
   },
   "pre-commit": [
-    "test",
-    "lint"
+    "test"
   ],
   "eslintConfig": {
     "env": {
