@@ -47,6 +47,11 @@
     .fakewindowcontain .ui-widget-overlay {
         position: absolute;
     }
+    .formBox {
+        padding: 15px 10px 15px;
+        width: 400px;
+        border: thick solid #000000;
+    }
     label {
         display:inline-block;
         text-align:right;
@@ -58,29 +63,39 @@
     </style>  
 </head>
 <html>
+<center>
     <header><title>Sign up for UniBull</title></header>
     <body>
-        <h1><center>Thanks for choosing UniBull! 
-            <br>Please fill out the form below.</center></h1>
-    <section class="signupform">
-    <form id="myForm" name="signup" accept-charset="utf-8">
-        <center>
-        <br><label for="username">Username</label>
-        <input id="username" type="text" name="Username" placeholder="Username" >
-        <br><label for="email">Email</label>
-        <input id="email" type="email" name="email" placeholder="yourname@email.com" >
-        <br><label for="password">Password</label>
-        <input id="password" type="password" name="password" placeholder="Password" >
-        <br><label for="password">Confirm Password</label>
-        <input id="passwordconfirm" type="password" name="password" placeholder="Password" >
-        <br>
+        <h1>Thanks for choosing UniBull! 
+        <br>Please fill out the form below.
+        </h1>
+    <div class="formBox">
+        <section class="signupform">
+            <form id="myForm" name="signup" accept-charset="utf-8">
+                <label for="username">Username</label>
+                <input id="username" type="text" name="Username" placeholder="Username" >
+                <label for="email">Email</label>
+                <input id="email" type="email" name="email" placeholder="yourname@email.com" >
+                <label for="password">Password</label>
+                <input id="password" type="password" name="password" placeholder="Password" >
+                <label for="password">Confirm Password</label>
+                <input id="confirmpassword" type="password" name="password" placeholder="Password" >
+            </form>
+        </section>
         <br>
         <button id="submit_button"> SUBMIT </button>
-    </center>
-</form>
-</section>
+        <br>
+    </div>
+        <br><hr><br>
+        <button id="loginLink"> LOGIN PAGE </button>
+        <br><br><hr>
+</center>
 </html>
 <script>
+$("#loginLink").button();
+$("#loginLink").click(function(){
+    window.location.href="/";
+})
 $("#submit_button").button();
 $(document).ready(function() {
     $("#submit_button").click(function() {
