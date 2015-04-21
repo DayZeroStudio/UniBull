@@ -1,6 +1,7 @@
 node_modules
 .tern-project
 *.log
+*.log.*
 .*rc
 public/js/*-bundle.js
 **/.*

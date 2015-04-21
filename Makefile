@@ -23,10 +23,9 @@ test-server: lint
 		&& NODE_ENV=test $(MOCHA) ${MOCHA_OPTS} ./test/server | bunyan
 
 test-selenium: lint
-	@java -jar ${SELENIUM_SERVER} -log selenium.log &\
-		echo $$! > .SEL_PID
-	@set -o pipefail && NODE_ENV=test $(MOCHA) ${MOCHA_OPTS} ./test/selenium | bunyan
-	@kill $$(cat .SEL_PID)
+	@java -jar ${SELENIUM_SERVER} -log selenium.log 2> selenium.err &
+	@set -o pipefail\
+	   	&& NODE_ENV=test $(MOCHA) ${MOCHA_OPTS} ./test/selenium | bunyan
 
 autotest:
 	@nodemon ${AUTOTEST_IGNORES} --exec "make test-server"
