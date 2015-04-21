@@ -10,13 +10,13 @@ var _ = require("lodash");
 
 var app = require("express")();
 
-var cfg = require("../config");
+var cfg = require("../../config");
 var log = cfg.log.logger;
 
 var routePrefix = "/rest/user";
 describe("'"+routePrefix+"'", function() {
     before(function(done) {
-        require(".."+routePrefix)(routePrefix, function(router) {
+        require("../../"+routePrefix)(routePrefix, function(router) {
             app.use(routePrefix, router);
             done();
         });

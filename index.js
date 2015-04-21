@@ -93,7 +93,6 @@ function uniBull(PORT, callback) {
             path: publicHtmlPages
         }));
         app.use(function catchAuthErrors(err, req, res, next) {
-            log.error(err);
             if (err.name === "TokenExpiredError") {
                 return res.status(401).json({error: err.name});
             } else if (err.name === "UnauthorizedError") {

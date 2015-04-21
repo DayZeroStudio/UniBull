@@ -6,10 +6,10 @@ chai.should();
 var sinon = require("sinon");
 var _ = require("lodash");
 
-var cfg = require("../config");
+var cfg = require("../../config");
 var log = cfg.log.logger;
 
-var login = require("../views/login.js").onLogin;
+var login = require("../../views/login.js").onLogin;
 
 describe("views/login.js", function() {
     context("when the user submits a login form", function() {
