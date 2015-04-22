@@ -23,9 +23,6 @@ function uniBull(PORT, callback) {
 
     app.use(express.static(path.join(cwd, "public")));
 
-    app.use(require("body-parser").json());
-    app.use(require("cookie-parser")());
-
     app.get("/", function(req, res) {
         res.render("login");
     });

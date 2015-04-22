@@ -19,7 +19,7 @@ module.exports = function(routePrefix, callback) {
 
     var publicEndpoints = _.map(["", "/", "/login", "/signup"],
             _.partial(append, routePrefix));
-    require("../app/auth.js")(router, publicEndpoints);
+    require("../app/auth.js").setupAuth(router, publicEndpoints);
 
     router.get("/", function(req, res) {
         log.info("GET - Get all users");
@@ -64,8 +64,10 @@ module.exports = function(routePrefix, callback) {
 
     router.get("/restricted", function(req, res) {
         log.info("GET - Restricted");
+        var auth = require("../app/auth.js");
         res.json({
-            success: true
+            success: true,
+            decoded: auth.decodeRequest(req)
         });
     });
 

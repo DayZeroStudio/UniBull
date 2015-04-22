@@ -9,7 +9,7 @@ module.exports = function setupHtmlPages(done) {
     var router = express.Router();
 
     var publicEndpoints = ["/login", "/signup"];
-    require("../app/auth.js")(router, publicEndpoints);
+    require("../app/auth.js").setupAuth(router, publicEndpoints);
 
     // Automagically render all views/*.html
     var fs = require("fs");
