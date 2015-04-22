@@ -18,8 +18,8 @@ var options = {
 describe("testing front end sign up", function() {
     this.timeout(1000*60*15);//== 15 minutes
     var client = {};
-    var PORT = 9090;
-    var baseUrl = "http://localhost:" + PORT + "/signup";
+    var PORT = 9091;
+    var baseUrl = "http://localhost:" + PORT;
     before(function(done) {
         require("../../index.js")(PORT, function() {
             client = driver.remote(options);
@@ -28,11 +28,12 @@ describe("testing front end sign up", function() {
     });
     context("once on the sign up page", function() {
         it("should have content", function(done) {
-            client.url(baseUrl)
+            client.url(baseUrl + "/signup")
             .title(function(err, res) {
                 if (err) {done(err); }
                 res.value.should.contain("Signup");
-            });
+            })
+            .call(done);
         });
     });
     context("when the user fills out the form", function() {
@@ -40,20 +41,17 @@ describe("testing front end sign up", function() {
             var username = "TestUser";
             var email = "testemail@gmail.com";
             var password = "mypasswd";
-            client.url(baseUrl + "/signup");
-            client
+            client.url(baseUrl + "/signup")
                 .setValue("#username", username)
                 .setValue("#email", email)
                 .setValue("#password", password)
-                .setValue("#confirmpassword", password);
-            });
-        it("should authenticate upon clicking submit", function(done) {
-            client.url(baseUrl)
-            .click("#submit").title(function(err, res) {
-                if (err) {done(err); }
-                res.value.should.contain("Home");
-                return done();
-            });
+                .setValue("#confirmpassword", password)
+                .click("#submit")
+                .title(function(err, res) {
+                    if (err) {done(err); }
+                    res.value.should.contain("Home");
+                })
+                .call(done);
         });
     });
     after(function(done) {
