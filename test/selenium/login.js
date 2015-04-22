@@ -9,23 +9,26 @@ var cfg = require("../../config");
 var log = cfg.log.logger;
 
 var options = {
+    port: cfg.webdriver.server.port,
     desiredCapabilities: {
-        browserName: "firefox"
+        browserName: cfg.webdriver.name
     }
 };
 
 describe("testing front end login", function() {
-    this.timeout(9999999);
+    this.timeout(1000*60*15);//== 15 minutes
     var client = {};
+    var PORT = 9090;
+    var baseUrl = "http://localhost:" + PORT;
     before(function(done) {
-        require("../../index.js")(9090, function() {
+        require("../../index.js")(PORT, function() {
             client = driver.remote(options);
             client.init(done);
         });
     });
     context("#sanitycheck", function() {
         it("should have content", function(done) {
-            client.url("localhost:9090")
+            client.url(baseUrl)
             .title(function(err, res) {
                 if (err) {done(err); }
                 res.value.should.contain("Login");

@@ -32,6 +32,7 @@ function uniBull(PORT, callback) {
 
     // WARNING: Order does matter
     //      app/views.js adds app level authentication
+    // TODO: change to use routers?
     var async = require("async");
     async.series([
     function(done) {

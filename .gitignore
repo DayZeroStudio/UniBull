@@ -6,4 +6,5 @@ node_modules
 public/js/*-bundle.js
 **/.*
 selenium-server-standalone-*.jar
+phantomjs
 *.err

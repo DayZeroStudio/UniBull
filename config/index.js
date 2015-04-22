@@ -14,6 +14,7 @@ module.exports = (function() {
     cfg.log = require("./logger.js")(frozenCFG);
     cfg.jwt = require("./jsonwebtoken.js")(frozenCFG);
     cfg.db = require("./database.js")(frozenCFG);
+    cfg.webdriver = require("./webdriver.js")(frozenCFG);
 
     return cfg;
 })();
