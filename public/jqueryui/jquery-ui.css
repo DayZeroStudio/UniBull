@@ -830,7 +830,8 @@ body .ui-tooltip {
 /* Component containers
 ----------------------------------*/
 .ui-widget {
-	font-family: Helvetica,Arial,sans-serif;
+	font-family: monospace;
+;
 	font-size: 1.1em;
 }
 .ui-widget .ui-widget {
