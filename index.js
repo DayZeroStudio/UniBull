@@ -30,9 +30,6 @@ function uniBull(PORT, callback) {
         res.render("login");
     });
 
-    // WARNING: Order does matter
-    //      app/views.js adds app level authentication
-    // TODO: change to use routers?
     var async = require("async");
     async.series([
     function(done) {
@@ -43,7 +40,11 @@ function uniBull(PORT, callback) {
         });
     },
     function(done) {
-        require("./app/views.js")(app, done);
+        require("./app/views.js")(function(err, router) {
+            if (err) {return done(err); }
+            app.use(router);
+            return done();
+        });
     },
     function setupErrorHandlers(seriesCallback) {
         //Error Handlers

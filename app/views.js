@@ -1,47 +1,15 @@
 "use strict";
-module.exports = function setupHtmlPages(app, done) {
+module.exports = function setupHtmlPages(done) {
     var path = require("path");
     var _ = require("lodash");
     var cfg = require("../config");
     var log = cfg.log.logger;
     var cwd = process.cwd();
+    var express = require("express");
+    var router = express.Router();
 
-    // Authorization - JWT
-    var jwt = require("jsonwebtoken");
-    var expressJwt = require("express-jwt");
-    function getTokenFromRequest(req) {
-        var auth = req.headers.authorization;
-        var cookieToken = req.cookies.token;
-        if (auth&& auth.split(" ")[0] === "Bearer") {
-            return auth.split(" ")[1];
-        } else if (cookieToken
-                && cookieToken.split(" ")[0] === "Bearer") {
-            return cookieToken.split(" ")[1];
-        }
-        return null;
-    }
-    var publicHtmlPages = ["/login", "/signup"];
-    app.use(expressJwt({
-        secret: cfg.jwt.secret,
-        getToken: getTokenFromRequest,
-        isRevoked: function isRevokedCallback(req, payload, done) {
-            var token = getTokenFromRequest(req);
-            jwt.verify(token, cfg.jwt.secret, function(err, decoded) {
-                if (err) {return done(err); }
-                return done(null, !decoded);
-            });
-        }
-    }).unless({
-        path: publicHtmlPages
-    }));
-    app.use(function catchAuthErrors(err, req, res, next) {
-        if (err.name === "TokenExpiredError") {
-            return res.status(401).json({error: err.name});
-        } else if (err.name === "UnauthorizedError") {
-            return res.status(401).json({error: err.name});
-        }
-        next();
-    });
+    var publicEndpoints = ["/login", "/signup"];
+    require("../app/auth.js")(router, publicEndpoints);
 
     // Automagically render all views/*.html
     var fs = require("fs");
@@ -80,7 +48,7 @@ module.exports = function setupHtmlPages(app, done) {
 
         // Try to add 'models/${file}.js' to the html's local variables
         log.info("Adding route: '" + route + "'");
-        app.get(route, function(req, res) {
+        router.get(route, function(req, res) {
             try {
                 var model = require(path.join(cwd, "models", file + ".js"));
                 model.locals(req.query, function(locals) {
@@ -93,5 +61,5 @@ module.exports = function setupHtmlPages(app, done) {
         });
     });
 
-    return done(null);
+    return done(null, router);
 };
