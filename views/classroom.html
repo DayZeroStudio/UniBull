@@ -44,6 +44,9 @@
 	select {
 		width: 200px;
 	}
+    #forum{
+        width: 600px;
+    }
 	</style> 
 <head>
   <title>UniBull Class</title>
@@ -51,24 +54,17 @@
 
 <body>
   <center><h1>Class Rooms</h1></center>
+  <button id="homepage"> Home </button>
   <hr>
-  <div id="tabs">
-  	<ul>
-    	<li><a href="#tabs-1">Classrooms</a></li>
-    	<li><a href="#tabs-2">Clubs</a></li>
-    	<li><a href="#tabs-3">Events</a></li>
-    </ul>
-  	<div id="tabs-1">
-    	<p>Life is hard sometimes</p>  
-  	</div>
-	</div>
-    <div id="accordion">
-    <h3>First</h3>
-    <div>Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.</div>
-    <h3>Second</h3>
-    <div>Phasellus mattis tincidunt nibh.</div>
-    <h3>Third</h3>
-    <div>Nam dui erat, auctor a, dignissim quis.</div>
+    <div id="forum">
+        <div id="accordion">
+        <h3>First</h3>
+        <div>Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.</div>
+        <h3>Second</h3>
+        <div>Phasellus mattis tincidunt nibh.</div>
+        <h3>Third</h3>
+        <div>Nam dui erat, auctor a, dignissim quis.</div>
+    </div>
 </div>
 </body>
 
@@ -78,10 +74,10 @@
 <script>
 $("#tabs").tabs();
 $("#accordion").accordion();
-
-
-
-
+$("#homepage").button();
+$("#homepage").click(function(){
+    window.location.href = "/home";
+});
 
 
 </script>
