@@ -5,6 +5,7 @@ var chai = require("chai");
 chai.should();
 var driver = require("webdriverio");
 
+var _ = require("lodash");
 var cfg = require("../../config");
 var log = cfg.log.logger;
 
@@ -47,6 +48,7 @@ describe("testing front end sign up", function() {
                 .setValue("#password", password)
                 .setValue("#confirmpassword", password)
                 .click("#submit")
+                .saveScreenshot(cfg.genScreenshotPath("submit"))
                 .title(function(err, res) {
                     if (err) {done(err); }
                     res.value.should.contain("Home");

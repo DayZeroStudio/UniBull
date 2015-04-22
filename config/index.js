@@ -16,5 +16,14 @@ module.exports = (function() {
     cfg.db = require("./database.js")(frozenCFG);
     cfg.webdriver = require("./webdriver.js")(frozenCFG);
 
+    cfg.screenshotsDir = "./tmp/screenshots/";
+    cfg.genScreenshotPath = function(name) {
+        return cfg.screenshotsDir
+            + cfg.webdriver.name + "_"
+            + name + "_"
+            + _.now()
+            + ".png";
+    };
+
     return cfg;
 })();
