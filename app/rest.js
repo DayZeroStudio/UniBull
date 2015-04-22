@@ -1,9 +1,13 @@
 "use strict";
-function setupRestEndpoints(app, done) {
+module.exports = function setupRestEndpoints(done) {
     var fs = require("fs");
+    var _ = require("lodash");
     var async = require("async");
     var cfg = require("../config");
     var log = cfg.log.logger;
+    var express = require("express");
+    var outerRouter = express.Router();
+
     // Automagically app.use all rest/*.js
     fs.readdir("rest", function(err, files) {
         if (err) {throw err; }
@@ -13,17 +17,9 @@ function setupRestEndpoints(app, done) {
             var route = "/rest/" + file.substr(0, file.indexOf("."));
             log.info("Adding REST endpoint: (" + route + ")");
             require(filePath)(route, function(router) {
-                app.use(route, router);
+                outerRouter.use(route, router);
                 eachCallback(null);
             });
-        }, function(err) {
-            if (err) {
-                log.error(err);
-            } else {
-                log.info("Finished adding REST endpoints");
-                done(null);
-            }
-        });
+        }, _.partial(done, _, outerRouter));
     });
-}
-module.exports = setupRestEndpoints;
+};

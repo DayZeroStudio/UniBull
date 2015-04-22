@@ -73,8 +73,8 @@ describe("'"+routePrefix+"'", function() {
                         .expect(200)
                         .expect("Content-Type", /json/)
                         .expect(function(res) {
-                            res.body.decoded.should
-                                .include.keys(["username", "email"]);
+                            res.body.success.should
+                                .equal(true);
                         }).end(done);
                 }
                 loginToApp(gotToken);

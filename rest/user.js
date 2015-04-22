@@ -9,7 +9,6 @@ module.exports = function(routePrefix, callback) {
     // Utility, Encryption, JWT
     var _ = require("lodash");
     function append(a, b) {return a+b; }
-    var expressJwt = require("express-jwt");
     var jwt = require("jsonwebtoken");
 
     // App
@@ -18,31 +17,9 @@ module.exports = function(routePrefix, callback) {
     var cfg = require("../config");
     var log = cfg.log.logger;
 
-    function getTokenFromRequest(req) {
-        var auth = req.headers.authorization;
-        if (auth&& auth.split(" ")[0] === "Bearer") {
-            return auth.split(" ")[1];
-        }
-        return null;
-    }
-    var publicEndpoints = ["", "/", "/login", "/signup"];
-    router.use("/", expressJwt({
-        secret: cfg.jwt.secret,
-        isRevoked: function isRevokedCallback(req, payload, done) {
-            var token = getTokenFromRequest(req);
-            jwt.verify(token, cfg.jwt.secret, function(err, decoded) {
-                if (err) {return done(err); }
-                return done(null, !decoded);
-            });
-        }}).unless({
-        path: _.map(publicEndpoints, _.curry(append)(routePrefix))
-    }));
-    router.use(function catchTokenExpirationErrors(err, req, res, next) {
-        if (err.name === "TokenExpiredError") {
-            return res.status(401).json({error: err.name});
-        }
-        next();
-    });
+    var publicEndpoints = _.map(["", "/", "/login", "/signup"],
+            _.partial(append, routePrefix));
+    require("../app/auth.js")(router, publicEndpoints);
 
     router.get("/", function(req, res) {
         log.info("GET - Get all users");
@@ -87,10 +64,8 @@ module.exports = function(routePrefix, callback) {
 
     router.get("/restricted", function(req, res) {
         log.info("GET - Restricted");
-        var token = getTokenFromRequest(req);
         res.json({
-            success: true,
-            decoded: jwt.decode(token)
+            success: true
         });
     });
 
