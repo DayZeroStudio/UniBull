@@ -39,6 +39,6 @@ autotest:
 	@nodemon ${AUTOTEST_IGNORES} --exec "make test-server"
 
 clean:
-	-@rm ./public/js/*-bundle.js *.err *.log*
+	-@rm ./tmp/**/* ./public/js/*-bundle.js ./*.err ./*.log ./*.log.lck
 
 .PHONY: start install lint test test-server test-selenium autotest clean

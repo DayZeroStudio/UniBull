@@ -60,13 +60,13 @@
     select {
         width: 200px;
     }
-    </style>  
+    </style>
 </head>
 <html>
 <center>
     <header><title>Sign up for UniBull</title></header>
     <body>
-        <h1>Thanks for choosing UniBull! 
+        <h1>Thanks for choosing UniBull!
         <br>Please fill out the form below.
         </h1>
     <div class="formBox">
@@ -107,6 +107,7 @@ $(document).ready(function() {
                 return console.log(err);
             }
             if(data.redirect){
+                document.cookie = "token="+data.token+";max-age="+(60*15);
                 window.location.replace(data.redirect);
             }
         });
