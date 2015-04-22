@@ -83,7 +83,7 @@
             </form>
         </section>
         <br>
-        <button id="submit_button"> SUBMIT </button>
+        <button id="submit"> SUBMIT </button>
         <br>
     </div>
         <br><hr><br>
@@ -96,9 +96,9 @@ $("#loginLink").button();
 $("#loginLink").click(function(){
     window.location.href="/";
 })
-$("#submit_button").button();
+$("#submit").button();
 $(document).ready(function() {
-    $("#submit_button").click(function() {
+    $("#submit").click(function() {
         var signup = require("signup");
         var onSignUp = signup.onSignUp;
         var fields = $("#myForm #username, #myForm #email, #myForm #password, #myForm #passwordconfirm");
