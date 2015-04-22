@@ -22,12 +22,20 @@ describe("'"+routePrefix+"'", function() {
         });
     });
     context("without authentication", function() {
-        it("'/' should return a list of all users", function(done) {
+        it("GET '/' should return a list of all users", function(done) {
             request(app)
                 .get(routePrefix + "/")
                 .expect(200)
                 .expect(function(res) {
                     res.body.users.should.have.length.above(0);
+                }).end(done);
+        });
+        it("POST '/login' should be unauthorized", function(done) {
+            request(app)
+                .post(routePrefix + "/login")
+                .expect(401)
+                .expect(function(res) {
+                    res.body.should.contain.keys("error");
                 }).end(done);
         });
     });
@@ -71,10 +79,10 @@ describe("'"+routePrefix+"'", function() {
                         .get(routePrefix+"/restricted")
                         .set("Authorization", body.token)
                         .expect(200)
-                        .expect("Content-Type", /json/)
+                        //.expect("Content-Type", /json/)
                         .expect(function(res) {
                             res.body.decoded.should
-                                .include.keys(["username", "email"]);
+                                .contain.keys("username", "email");
                         }).end(done);
                 }
                 loginToApp(gotToken);

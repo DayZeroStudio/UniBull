@@ -23,23 +23,25 @@ function uniBull(PORT, callback) {
 
     app.use(express.static(path.join(cwd, "public")));
 
-    app.use(require("body-parser").json());
-    app.use(require("cookie-parser")());
-
     app.get("/", function(req, res) {
         res.render("login");
     });
 
-    // WARNING: Order does matter
-    //      app/views.js adds app level authentication
-    // TODO: change to use routers?
     var async = require("async");
     async.series([
     function(done) {
-        require("./app/rest.js")(app, done);
+        require("./app/rest.js")(function(err, router) {
+            if (err) {return done(err); }
+            app.use(router);
+            return done();
+        });
     },
     function(done) {
-        require("./app/views.js")(app, done);
+        require("./app/views.js")(function(err, router) {
+            if (err) {return done(err); }
+            app.use(router);
+            return done();
+        });
     },
     function setupErrorHandlers(seriesCallback) {
         //Error Handlers
