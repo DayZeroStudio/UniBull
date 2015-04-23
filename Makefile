@@ -46,9 +46,11 @@ lint: noTodosOrFixmes
 noTodosOrFixmes:
 	-@git grep -n 'TODO\|FIXME' --\
 		`git ls-files\
-	   	| grep -v '^Makefile\|^public/\|^lib/'`\
-	   	> .todos
-	@[ ! "$$(cat .todos)" ] || [ "$${SKIPTODOS=n}" != "n" ] || (echo "$$(cat .todos)" && exit 1)
+		| grep -v '^Makefile\|^public/\|^lib/'`\
+		> .todos
+	@[ ! "$$(cat .todos)" ]\
+	   	|| [ "$${SKIPTODOS=n}" != "n" ]\
+	   	|| (echo "$$(cat .todos)" && exit 1)
 
 clean:
 	-@rm ./tmp/**/* ./public/js/*-bundle.js ./*.err ./*.log ./*.log.lck
