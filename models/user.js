@@ -5,6 +5,7 @@ module.exports = function(db, DataTypes) {
     var User = db.define("User", {
         username: {type: DataTypes.STRING},
         password_hash: {type: DataTypes.STRING},
+        //TODO: Change num of hashes to 12 & put it in cfg
         password: {
             type: DataTypes.VIRTUAL,
             set: function(password) {
@@ -12,7 +13,7 @@ module.exports = function(db, DataTypes) {
                 var hashed = bcrypt.hashSync(password, 10);
                 this.setDataValue("password_hash", hashed);
             },
-            validate: {len: [7, 64]}
+            validate: {len: [7, 64]} //TODO: change min to (!cfg.isProd ? 3 : 7)
         },
         email: {type: DataTypes.STRING}
     }, {

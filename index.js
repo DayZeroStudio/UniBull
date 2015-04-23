@@ -30,10 +30,12 @@ function uniBull(PORT, callback) {
     var async = require("async");
     async.series([
     function(done) {
-        require("./app/rest.js")(function(err, router) {
-            if (err) {return done(err); }
-            app.use(router);
-            return done();
+        require("./models")(function(models) {
+            require("./app/rest.js")(models, function(err, router) {
+                if (err) {return done(err); }
+                app.use(router);
+                return done();
+            });
         });
     },
     function(done) {

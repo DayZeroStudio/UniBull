@@ -1,12 +1,13 @@
 "use strict";
-module.exports = function setupRestEndpoints(done) {
+module.exports = function setupRestEndpoints(models, done) {
     var fs = require("fs");
     var _ = require("lodash");
     var async = require("async");
     var cfg = require("../config");
     var log = cfg.log.logger;
+
     var express = require("express");
-    var outerRouter = express.Router();
+    var appRouter = express.Router();
 
     // Automagically app.use all rest/*.js
     fs.readdir("rest", function(err, files) {
@@ -16,10 +17,10 @@ module.exports = function setupRestEndpoints(done) {
             var filePath = "../rest/" + file;
             var route = "/rest/" + file.substr(0, file.indexOf("."));
             log.info("Adding REST endpoint: (" + route + ")");
-            require(filePath)(route, function(router) {
-                outerRouter.use(route, router);
+            require(filePath)(models, route, function(router) {
+                appRouter.use(route, router);
                 eachCallback(null);
             });
-        }, _.partial(done, _, outerRouter));
+        }, _.partial(done, _, appRouter));
     });
 };

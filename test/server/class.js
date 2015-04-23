@@ -23,9 +23,11 @@ var token = "Bearer "+jwt.sign(validUser, cfg.jwt.secret);
 var route = "/rest/class";
 describe("'"+route+"'", function() {
     before(function(done) {
-        require("../../"+route)(route, function(router) {
-            app.use(route, router);
-            done();
+        require("../../models")(function(models) {
+            require("../../"+route)(models, route, function(router) {
+                app.use(route, router);
+                done();
+            });
         });
     });
     context("getting all the classes", function() {

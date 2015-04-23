@@ -1,5 +1,5 @@
 "use strict";
-module.exports = (function() {
+module.exports = function(callback) {
     var cfg = require("../config");
 
     var DB = require("sequelize");
@@ -11,11 +11,18 @@ module.exports = (function() {
     var path = require("path");
     var cwd = process.cwd();
     ["Class", "Thread", "User"].forEach(function(model) {
-        var Model = db.import(path.join(cwd, "models", model));
-        models[model] = Model;
+        models[model] = db.import(path.join(cwd, "models", model));
     });
+
+    (function(ms) {
+        ms.Class.hasMany(ms.Thread);
+    })(models);
 
     models.db = db;
 
-    return models;
-})();
+    models.Class.sync({force: !cfg.isProd}).then(function() {
+        models.Thread.sync({force: !cfg.isProd}).then(function() {
+            callback(models);
+        });
+    });
+};
