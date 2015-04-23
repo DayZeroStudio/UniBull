@@ -1,3 +1,7 @@
+/*
+sign up w/valid credentials -> home page
+submit w/o fields -> fill in fields
+*/
 /*eslint no-unused-vars:0*/
 "use strict";
 
