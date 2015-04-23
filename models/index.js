@@ -20,9 +20,14 @@ module.exports = function(callback) {
 
     models.db = db;
 
-    models.Class.sync({force: !cfg.isProd}).then(function() {
-        models.Thread.sync({force: !cfg.isProd}).then(function() {
-            callback(models);
+    var dbOpts = {
+        force: !cfg.isProd
+    };
+    models.Class.sync(dbOpts).then(function() {
+        models.Thread.sync(dbOpts).then(function() {
+            models.User.sync(dbOpts).then(function() {
+                callback(models);
+            });
         });
     });
 };

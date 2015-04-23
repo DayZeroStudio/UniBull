@@ -19,7 +19,9 @@ module.exports = function(models, routePrefix, callback) {
 
     router.get("/", function(req, res) {
         log.info("GET - Get all classes");
-        Class.findAll().then(function(classes) {
+        Class.findAll({
+            include: [Thread]
+        }).then(function(classes) {
             res.json({
                 classes: classes
             });
@@ -36,10 +38,10 @@ module.exports = function(models, routePrefix, callback) {
             Thread.create({
                 content: "some thread content"
             }).then(function(thread) {
-                //klass.addThread(thread);
-                log.warn("thread", thread.get());
-                res.json({
-                    class: klass.get()
+                klass.addThread(thread).then(function() {
+                    res.json({
+                        class: klass.get()
+                    });
                 });
             });
         }).catch(function(err) {

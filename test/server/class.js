@@ -77,6 +77,9 @@ describe("'"+route+"'", function() {
                     .expect(function(res) {
                         _.includes(res.body.classes, newClass)
                             .should.be.true;
+                        res.body.classes.forEach(function(klass) {
+                            klass.should.contain.keys("Threads");
+                        });
                     })
                 .end(done);
             });
