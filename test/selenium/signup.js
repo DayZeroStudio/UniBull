@@ -1,3 +1,7 @@
+/*
+sign up w/valid credentials -> home page
+submit w/o fields -> fill in fields
+*/
 /*eslint no-unused-vars:0*/
 "use strict";
 
@@ -30,6 +34,7 @@ describe("testing front end sign up", function() {
     context("once on the sign up page", function() {
         it("should have content", function(done) {
             client.url(baseUrl + "/signup")
+            .saveScreenshot(cfg.genScreenshotPath("signup"))
             .title(function(err, res) {
                 if (err) {done(err); }
                 res.value.should.contain("Signup");

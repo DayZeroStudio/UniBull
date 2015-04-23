@@ -6,9 +6,14 @@
     <title>UniBull Home</title>
     <link href="jqueryui/jquery-ui.css" rel="stylesheet">
     <style>
-    body{
+    html, body{
         font: 82.5% "Lucida Console", Monaco, monospace;
         margin: 50px;
+        width:		100%;
+				height:		100%;					
+				padding:	0; 
+				margin:		0; 
+				overflow:	auto; /* when page gets too small */
     }
     .demoHeaders {
         margin-top: 2em;
@@ -47,6 +52,40 @@
     select {
         width: 200px;
     }
+  	#container {
+		background:	#999;
+		height:		100%;
+		margin:		0 auto;
+		width:		100%;
+		max-width:	1024px;
+		min-width:	960px;
+		_width:		700px; /* min-width for IE6 */
+	}
+	.pane {
+		display:	none; /* will appear when layout inits */
+		
+	}
+	.alignleft {
+ 	 float: left;
+ 	 width:33.33333%;
+  	text-align:left;
+	}
+	.aligncenter {
+  	float: left;
+  	width:33.33333%;
+  	text-align:center;
+	}
+	.alignright {
+ 		float: left;
+ 		width:33.33333%;
+ 		text-align:right;
+	}​	
+	
+	.ui-layout-pane-north,
+	.ui-layout-pane-south { 
+     border: 0 !important; 
+     background: none !important; 
+	}  
 
     </style>
 </head>
@@ -54,9 +93,11 @@
 <script> // src="js/home-bundle.js"></script>
 <script src="jqueryui/external/jquery/jquery.js"></script>
 <script src="jqueryui/jquery-ui.js"></script>
+<script type="text/javascript" src="/jqueryui/jquery.layout-latest.js"></script>
 <body>
-    <h1>UniBull Home</h1>
-    <div id="tabs">
+	<div id="container">
+		<div class="pane ui-layout-center">	
+		 <div id="tabs">
         <ul>
             <li><a href="#classes">Classrooms</a></li>
             <li><a href="#clubs">Clubs</a></li>
@@ -73,14 +114,45 @@
         <div id="events">
             <p> Events are all right I guess </p>
         </div>
-    </div>
-    <br>
-    <hr>
-    <br>
-    <center><button id="logout"> LOGOUT </button></center>
+    	</div>
+		</div>
+		
+		<div class="ui-layout-north">
+			<p class="alignleft">Home Btn</p>
+			<p class="aligncenter">UniBull</p>
+			<p class="alignright">Profile Pic</p>
+		</div>
+		
+		<div class="ui-layout-south">
+		    <center><button id="logout"> LOGOUT </button></center>
+		</div>
+		<div class="pane ui-layout-east">
+			<center><h1>Notification Center</h1></center> 
+		</div>
+
+  </div>
     </body>
 </html>
 <script>
+
+	
+$('#container').layout({
+	north: {
+  	enableCursorHotkey: false,
+    closable: false,
+    resizable: false,
+    spacing_open: 0,
+    spacing_closed: 0
+  },
+  south: {
+  	enableCursorHotkey: false,
+    closable: false,
+    resizable: false,
+    spacing_open: 0,
+    spacing_closed: 0
+  }
+});
+
 $("#tabs").tabs();
 function logout(name) {
     document.cookie = name+"=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
