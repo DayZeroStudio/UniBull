@@ -22,9 +22,6 @@ install:
 	npm prune
 	npm install
 
-lint:
-	@${LINTER} ./index.js ./test/**/*.js ./views/*.js ./models/*.js ./rest/*.js
-
 test: lint test-server test-web
 
 test-server: lint
@@ -42,6 +39,16 @@ test-web-phantomjs: lint
 
 autotest:
 	@nodemon ${AUTOTEST_IGNORES} --exec "make test-server"
+
+lint: noTodosOrFixmes
+	@${LINTER} ./index.js ./config/*.js ./test/**/*.js ./views/*.js ./models/*.js ./rest/*.js
+
+noTodosOrFixmes:
+	-@git grep -n 'TODO\|FIXME' --\
+		`git ls-files\
+	   	| grep -v '^Makefile\|^public/\|^lib/'`\
+	   	> .todos
+	@[ ! "$$(cat .todos)" ] || [ "$${SKIPTODOS=n}" != "n" ] || (echo "$$(cat .todos)" && exit 1)
 
 clean:
 	-@rm ./tmp/**/* ./public/js/*-bundle.js ./*.err ./*.log ./*.log.lck
