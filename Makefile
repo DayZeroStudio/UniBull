@@ -25,15 +25,20 @@ install:
 lint:
 	@${LINTER} ./index.js ./test/**/*.js ./views/*.js ./models/*.js ./rest/*.js
 
-test: lint test-server test-selenium
+test: lint test-server test-web
 
 test-server: lint
 	@set -o pipefail\
 		&& NODE_ENV=test ${MOCHA} ${MOCHA_OPTS} ./test/server | bunyan
 
-test-selenium: lint
+test-web: lint
 	@set -o pipefail\
 		&& NODE_ENV=test ${MOCHA} ${MOCHA_OPTS} ./test/selenium | bunyan
+
+test-web-phantomjs: lint
+	@set -o pipefail\
+		&& NODE_ENV=test SEL_BROWSER=phantomjs\
+		${MOCHA} ${MOCHA_OPTS} ./test/selenium | bunyan
 
 autotest:
 	@nodemon ${AUTOTEST_IGNORES} --exec "make test-server"
