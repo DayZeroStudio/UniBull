@@ -23,7 +23,8 @@ install:
 	npm install
 
 lint:
-	@${LINTER} ./index.js ./test/**/*.js ./views/*.js ./models/*.js ./rest/*.js
+	@${LINTER} ./index.js   ./config/*    ./test/**/*.js\
+			   ./views/*.js ./models/*.js ./rest/*.js
 
 test: lint test-server test-selenium
 
