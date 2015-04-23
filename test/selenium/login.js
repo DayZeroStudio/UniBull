@@ -67,6 +67,7 @@ describe("testing front end login", function() {
                 .setValue("#username", username)
                 .setValue("#password", password)
                 .click("#loginButton")
+                .waitForExist("#loginButton", 500, true)
                 .saveScreenshot(cfg.genScreenshotPath("login_valid"))
                 .title(function(err, res) {
                     if (err) {done(err); }
