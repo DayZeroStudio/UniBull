@@ -38,7 +38,7 @@ describe("testing front end login", function() {
                     if (err) {done(err); }
                     res.value.should.contain("Login");
                 }).click("#signupButton")
-                .waitForExist("#signupButton", 100, true)
+                .waitForExist("#signupButton", 300, true)
                 .title(function(err, res) {
                     if (err) {done(err); }
                     res.value.should.contain("Signup");
