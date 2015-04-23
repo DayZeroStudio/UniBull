@@ -35,6 +35,7 @@ describe("testing front end sign up", function() {
         it("should have content", function(done) {
             client.url(baseUrl + "/signup")
             .saveScreenshot(cfg.genScreenshotPath("signup"))
+            //FIXME: #phantomjs: sometimes it fails on "can't GET /signup"
             .title(function(err, res) {
                 if (err) {done(err); }
                 res.value.should.contain("Signup");
