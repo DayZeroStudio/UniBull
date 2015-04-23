@@ -1,12 +1,13 @@
+"use strict";
 module.exports = function(routePrefix, callback) {
-    "use strict";
     var express = require("express");
     var router = express.Router();
     var bodyParser = require("body-parser");
     router.use(bodyParser.json());
 
-    var classModel = require("../models/class");
-    var Class = classModel.dbModel;
+    var models = require("../models");
+    var Class = models.Class;
+    //var Thread = models.Thread;
 
     var _ = require("lodash");
     function append(a, b) {return a+b; }
@@ -19,7 +20,9 @@ module.exports = function(routePrefix, callback) {
 
     router.get("/", function(req, res) {
         Class.findAll().then(function(classes) {
-            res.json({classes: classes});
+            res.json({
+                classes: classes
+            });
         });
     });
 
@@ -28,14 +31,16 @@ module.exports = function(routePrefix, callback) {
             info: req.body.info,
             school: req.body.school,
             title: req.body.title
-        }).then(function(c) {
-            res.json({class: c.get()});
+        }).then(function(klass) {
+            res.json({
+                class: klass.get()
+            });
         }).catch(function(err) {
             res.json({error: err.message});
         });
     });
 
-    return Class.sync({force: !cfg.isProd}).then(function() {
+    Class.sync({force: !cfg.isProd}).then(function() {
         return Class.create({
             info: "test info",
             school: "test school",

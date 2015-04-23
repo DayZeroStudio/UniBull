@@ -12,8 +12,7 @@ module.exports = function(routePrefix, callback) {
     var jwt = require("jsonwebtoken");
 
     // App
-    var UserModel = require("../models/user");
-    var User = UserModel.dbModel;
+    var User = require("../models").User;
     var cfg = require("../config");
     var log = cfg.log.logger;
 
@@ -51,7 +50,7 @@ module.exports = function(routePrefix, callback) {
                 return res.status(401)
                     .json({error: "Failed to Authenticate"});
             }
-            UserModel.isValidUser(user.password_hash, req.body.password,
+            User.isValidUser(user.password_hash, req.body.password,
                     function(err, isValid) {
                         if (err || !isValid) {
                             return res.status(401)
