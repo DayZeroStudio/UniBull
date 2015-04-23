@@ -10,7 +10,7 @@ module.exports = (function() {
     var DB = require("sequelize");
     var db = new DB(cfg.db.name, cfg.db.username, cfg.db.password, {
         dialect: "postgres",
-        logging: (cfg.isTest ? _.identity : log.debug.bind(log))
+        logging: (cfg.isTest ? _.noop : log.debug.bind(log))
     });
     UserModel.dbModel = db.define("User", {
         username: {type: DB.STRING},
@@ -28,14 +28,12 @@ module.exports = (function() {
     });
 
     UserModel.isValidUser = function(password_hash, password, callback) {
-            bcrypt.compare(password, password_hash,
-                    function(err, isValid) {
-                        if (err) {
-                            return callback(err);
-                        }
-                        return callback(null, isValid);
-                    }
-            );
+        bcrypt.compare(password, password_hash, function(err, isValid) {
+            if (err) {
+                return callback(err);
+            }
+            return callback(null, isValid);
+        });
     };
 
     return UserModel;

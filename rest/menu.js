@@ -98,4 +98,3 @@ module.exports = function(routePrefix, callback) {
             });
     });
 };
-
