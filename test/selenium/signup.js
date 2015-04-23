@@ -34,6 +34,7 @@ describe("testing front end sign up", function() {
     context("once on the sign up page", function() {
         it("should have content", function(done) {
             client.url(baseUrl + "/signup")
+            .saveScreenshot(cfg.genScreenshotPath("signup"))
             .title(function(err, res) {
                 if (err) {done(err); }
                 res.value.should.contain("Signup");
