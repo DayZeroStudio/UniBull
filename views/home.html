@@ -93,7 +93,8 @@
 <script> // src="js/home-bundle.js"></script>
 <script src="jqueryui/external/jquery/jquery.js"></script>
 <script src="jqueryui/jquery-ui.js"></script>
-<script type="text/javascript" src="/jqueryui/jquery.layout-latest.js"></script>
+<script type="text/javascript"></script>
+<script src="/jqueryui/jquery.layout-latest.js"></script>
 <body>
 	<div id="container">
 		<div class="pane ui-layout-center">	
@@ -118,8 +119,10 @@
 		</div>
 		
 		<div class="ui-layout-north">
-			<p class="alignleft">Home Btn</p>
-			<p class="aligncenter">UniBull</p>
+			<p class="alignleft"><button id="home">Home</button></p>
+			<p class="aligncenter">
+                <font size="20">UniBull</font>
+            </p>
 			<p class="alignright">Profile Pic</p>
 		</div>
 		
@@ -134,7 +137,7 @@
     </body>
 </html>
 <script>
-
+$("#home").button();
 	
 $('#container').layout({
 	north: {
