@@ -32,9 +32,9 @@ test-web: lint
 	@set -o pipefail\
 		&& NODE_ENV=test ${MOCHA} ${MOCHA_OPTS} ./test/selenium | bunyan
 
-test-web-phantomjs: lint
-	@set -o pipefail\
-		&& NODE_ENV=test SEL_BROWSER=phantomjs\
+test-web-%: lint
+	set -o pipefail\
+		&& NODE_ENV=test SEL_BROWSER=$*\
 		${MOCHA} ${MOCHA_OPTS} ./test/selenium | bunyan
 
 autotest:
