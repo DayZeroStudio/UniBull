@@ -33,13 +33,13 @@ describe("testing front end sign up", function() {
     });
     context("once on the sign up page", function() {
         it("should have content", function(done) {
-            client.url(baseUrl + "/signup")
-            .saveScreenshot(cfg.genScreenshotPath("signup"))
-            .title(function(err, res) {
-                if (err) {done(err); }
-                res.value.should.contain("Signup");
-            })
-            .call(done);
+            client.pause(500)
+                .url(baseUrl + "/signup")
+                .saveScreenshot(cfg.genScreenshotPath("signup"))
+                .title(function(err, res) {
+                    if (err) {done(err); }
+                    res.value.should.contain("Signup");
+                }).call(done);
         });
     });
     context("when the user fills out the form", function() {
@@ -53,12 +53,13 @@ describe("testing front end sign up", function() {
                 .setValue("#password", password)
                 .setValue("#confirmpassword", password)
                 .click("#submit")
+                .waitForExist("#submit", 100, true)
                 .saveScreenshot(cfg.genScreenshotPath("submit"))
                 .title(function(err, res) {
                     if (err) {done(err); }
                     res.value.should.contain("Home");
                 })
-                .call(done);
+            .call(done);
         });
     });
     after(function(done) {
