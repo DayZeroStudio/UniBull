@@ -1,3 +1,8 @@
+/*
+login w/ valid credentials gets you to home
+invalid credentials -> ?? stay on login
+straight to home invalid
+*/
 /*eslint no-unused-vars:0*/
 "use strict";
 
@@ -26,7 +31,7 @@ describe("testing front end login", function() {
             client.init(done);
         });
     });
-    context("#sanitycheck", function() {
+    context("once on the login page", function() {
         it("should have content", function(done) {
             client.url(baseUrl)
             .title(function(err, res) {
@@ -38,6 +43,36 @@ describe("testing front end login", function() {
                 res.value.should.contain("Signup");
                 return done();
             });
+        });
+    });
+    context("when the user clicks login with invalid credentials", function() {
+        it("should do nothing..", function(done) {
+            client.url(baseUrl)
+                .setValue("#username", "")
+                .setValue("#password", "")
+                .click("#loginButton")
+                .saveScreenshot(cfg.genScreenshotPath("login_empty"))
+                .title(function(err, res) {
+                    if (err) {done(err); }
+                    res.value.should.contain("Login");
+                })
+                .call(done);
+        });
+    });
+    context("when the user clicks login with valid credentials", function() {
+        it("should authenticate and go to home page", function(done) {
+            var username = "FirstUser";
+            var password = "mypasswd";
+            client.url(baseUrl)
+                .setValue("#username", username)
+                .setValue("#password", password)
+                .click("#loginButton")
+                .saveScreenshot(cfg.genScreenshotPath("login_valid"))
+                .title(function(err, res) {
+                    if (err) {done(err); }
+                    res.value.should.contain("Home");
+                })
+                .call(done);
         });
     });
     after(function(done) {
