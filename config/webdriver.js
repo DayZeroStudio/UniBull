@@ -6,6 +6,7 @@ module.exports = function(CFG) {
     wd.server = {
         port: (wd.name === "phantomjs" ? 4445 : 4444)
     };
+    wd.timeout = 1000 * 30; // 30 seconds
 
     return wd;
 };

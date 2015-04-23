@@ -21,7 +21,7 @@ var options = {
 };
 
 describe("testing front end login", function() {
-    this.timeout(1000*60*15);//== 15 minutes
+    this.timeout(cfg.webdriver.timeout);
     var client = {};
     var PORT = 9090;
     var baseUrl = "http://localhost:" + PORT;
@@ -34,15 +34,16 @@ describe("testing front end login", function() {
     context("once on the login page", function() {
         it("should have content", function(done) {
             client.url(baseUrl)
-            .title(function(err, res) {
-                if (err) {done(err); }
-                res.value.should.contain("Login");
-            }).click("#signupButton")
-            .title(function(err, res) {
-                if (err) {done(err); }
-                res.value.should.contain("Signup");
-                return done();
-            });
+                .title(function(err, res) {
+                    if (err) {done(err); }
+                    res.value.should.contain("Login");
+                }).click("#signupButton")
+                .waitForExist("#signupButton", 100, true)
+                .title(function(err, res) {
+                    if (err) {done(err); }
+                    res.value.should.contain("Signup");
+                    return done();
+                });
         });
     });
     context("when the user clicks login with invalid credentials", function() {
