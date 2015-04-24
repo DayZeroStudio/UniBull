@@ -63,7 +63,6 @@
 	}
 	.pane {
 		display:	none; /* will appear when layout inits */
-		
 	}
 	.alignleft {
  	 float: left;
@@ -93,33 +92,38 @@
 <script> // src="js/home-bundle.js"></script>
 <script src="jqueryui/external/jquery/jquery.js"></script>
 <script src="jqueryui/jquery-ui.js"></script>
-<script type="text/javascript" src="/jqueryui/jquery.layout-latest.js"></script>
+<script type="text/javascript"></script>
+<script src="/jqueryui/jquery.layout-latest.js"></script>
 <body>
 	<div id="container">
-		<div class="pane ui-layout-center">	
-		 <div id="tabs">
-        <ul>
-            <li><a href="#classes">Classrooms</a></li>
-            <li><a href="#clubs">Clubs</a></li>
-            <li><a href="#events">Events</a></li>
-        </ul>
-        <div id="classes">
-            <p> Fuck yo classes </p>
-            <p>Check out a <a href="/classroom">classroom</a></p>
-
-        </div>
-        <div id="clubs">
-            <p> Clubs are boring </p>
-        </div>
-        <div id="events">
-            <p> Events are all right I guess </p>
-        </div>
+		<div class="pane ui-layout-center">
+        <div>
+            <button id="toclass">Classrooms</button>
+        </div><hr>
+		<div id="tabs">
+            <ul>
+                <li><a href="#classes">Classrooms</a></li>
+                <li><a href="#clubs">Clubs</a></li>
+                <li><a href="#events">Events</a></li>
+            </ul>
+            <div id="classes">
+                <p> Fuck yo classes </p>
+                <p>Check out a <a href="/classroom">classroom</a></p>
+            </div>
+            <div id="clubs">
+                <p> Clubs are boring </p>
+            </div>
+            <div id="events">
+                <p> Events are all right I guess </p>
+            </div>
     	</div>
 		</div>
 		
 		<div class="ui-layout-north">
-			<p class="alignleft">Home Btn</p>
-			<p class="aligncenter">UniBull</p>
+			<p class="alignleft"><button id="home">Home</button></p>
+			<p class="aligncenter">
+                <font size="20">UniBull</font>
+            </p>
 			<p class="alignright">Profile Pic</p>
 		</div>
 		
@@ -134,8 +138,10 @@
     </body>
 </html>
 <script>
-
-	
+$("#home").button();
+$("#toclass").button().click(function(){
+    window.location.href = "/classroom"
+});
 $('#container').layout({
 	north: {
   	enableCursorHotkey: false,
@@ -158,8 +164,7 @@ function logout(name) {
     document.cookie = name+"=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
 }
 
-$("#logout").button();
-$("#logout").click(function(){
+$("#logout").button().click(function(){
     logout("token");
     window.location.href = "/login";
 });

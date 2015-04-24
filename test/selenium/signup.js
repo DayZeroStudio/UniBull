@@ -21,7 +21,7 @@ var options = {
 };
 
 describe("testing front end sign up", function() {
-    this.timeout(1000*60*15);//== 15 minutes
+    this.timeout(cfg.webdriver.timeout);
     var client = {};
     var PORT = 9091;
     var baseUrl = "http://localhost:" + PORT;

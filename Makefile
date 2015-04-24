@@ -22,22 +22,36 @@ install:
 	npm prune
 	npm install
 
-lint:
-	@${LINTER} ./index.js   ./config/*    ./test/**/*.js\
-			   ./views/*.js ./models/*.js ./rest/*.js
-
-test: lint test-server test-selenium
+test: lint test-server test-web
 
 test-server: lint
 	@set -o pipefail\
 		&& NODE_ENV=test ${MOCHA} ${MOCHA_OPTS} ./test/server | bunyan
 
-test-selenium: lint
+test-web: lint
 	@set -o pipefail\
 		&& NODE_ENV=test ${MOCHA} ${MOCHA_OPTS} ./test/selenium | bunyan
 
+test-web-%: lint
+	set -o pipefail\
+		&& NODE_ENV=test SEL_BROWSER=$*\
+		${MOCHA} ${MOCHA_OPTS} ./test/selenium | bunyan
+
 autotest:
 	@nodemon ${AUTOTEST_IGNORES} --exec "make test-server"
+
+lint: noTodosOrFixmes
+	@${LINTER} ./index.js   ./config/*.js ./test/**/*.js\
+			   ./views/*.js ./models/*.js ./rest/*.js
+
+noTodosOrFixmes:
+	-@git grep -n 'TODO\|FIXME' --\
+		`git ls-files\
+		| grep -v '^Makefile\|^public/\|^lib/'`\
+		> .todos
+	@[ ! "$$(cat .todos)" ]\
+	   	|| [ "$${SKIPTODOS=n}" != "n" ]\
+	   	|| (echo "$$(cat .todos)" && exit 1)
 
 clean:
 	-@rm ./tmp/**/* ./public/js/*-bundle.js ./*.err ./*.log ./*.log.lck

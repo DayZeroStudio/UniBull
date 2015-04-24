@@ -16,9 +16,9 @@ module.exports = (function() {
     cfg.db = require("./database.js")(frozenCFG, cfg.log.logger);
     cfg.webdriver = require("./webdriver.js")(frozenCFG);
 
-    cfg.screenshotsDir = "./tmp/screenshots/";
     cfg.genScreenshotPath = function(name) {
-        return cfg.screenshotsDir
+        var screenshotsDir = "./tmp/screenshots/";
+        return screenshotsDir
             + cfg.webdriver.name + "_"
             + name + "_"
             + _.now()
