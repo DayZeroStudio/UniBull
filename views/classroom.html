@@ -112,9 +112,12 @@
 <body>
     <div id="container">
         <div class="pane ui-layout-center"> 
-            <center><h1>Class Rooms</h1></center>
-            <hr>
-            <center><h1 id="classtitle"> CMPS 193 </h1></center>
+        	<div>
+            	<button id="toclass">Classrooms</button>
+            	<button id="toclubs">Clubs</button> 
+      		</div>
+        	<hr>
+            <center><h1>Enrolled Classes</h1></center>
             <hr>
             <div id="forum">
                 <button id="newpost"> Submit a post </button><br><br>
@@ -190,6 +193,16 @@ $("#logout").button().click(function(){
 $("#home").button().click(function(){
     window.location.href = "/home";
 });
+
+$("#toclass").button().click(function(){
+    window.location.href = "/classroom"
+});
+
+$("#toclubs").button().click(function(){
+    //window.location.href = "/classroom"
+    alert("Make a club page then link it");
+});
+
 $("#newpost").button().click(function(){
     $("#submit_wrapper").slideToggle();
 });

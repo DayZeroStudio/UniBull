@@ -98,11 +98,12 @@
 <body>
 	<div id="container">
 		<div class="pane ui-layout-center">
-        <div>
+      	<div>
             <button id="toclass">Classrooms</button>
             <button id="toclubs">Clubs</button> 
             <button id="toroosters">Roosters</buttons>
-        </div><hr>
+      	</div>
+        <hr>
         
         <h1><center>My Feed</center></h1>
         
@@ -115,7 +116,7 @@
 			<p class="alignleft"><button id="home">Home</button></p>
 			<p class="aligncenter">
                 <font size="20">UniBull</font>
-            </p>
+      </p>
 			<p class="alignright">Profile Pic</p>
 		</div>
 		
@@ -131,6 +132,7 @@
 </html>
 <script>
 $("#home").button();
+
 $("#toclass").button().click(function(){
     window.location.href = "/classroom"
 });
