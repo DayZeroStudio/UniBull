@@ -41,7 +41,8 @@ autotest:
 	@nodemon ${AUTOTEST_IGNORES} --exec "make test-server"
 
 lint: noTodosOrFixmes
-	@${LINTER} ./index.js ./config/*.js ./test/**/*.js ./views/*.js ./models/*.js ./rest/*.js
+	@${LINTER} ./index.js   ./config/*.js ./test/**/*.js\
+			   ./views/*.js ./models/*.js ./rest/*.js
 
 noTodosOrFixmes:
 	-@git grep -n 'TODO\|FIXME' --\

@@ -1,40 +1,33 @@
-module.exports = (function() {
+module.exports = function(db, DataTypes) {
     "use strict";
-    var _ = require("lodash");
-    var cfg = require("../config");
-    var log = cfg.log.logger;
     var bcrypt = require("bcrypt");
+    var cfg = require("../config");
 
-    var UserModel = {};
-
-    var DB = require("sequelize");
-    var db = new DB(cfg.db.name, cfg.db.username, cfg.db.password, {
-        dialect: "postgres",
-        logging: (cfg.isTest ? _.noop : log.debug.bind(log))
-    });
-    UserModel.dbModel = db.define("User", {
-        username: {type: DB.STRING},
-        password_hash: {type: DB.STRING},
+    var User = db.define("User", {
+        username: {type: DataTypes.STRING},
+        password_hash: {type: DataTypes.STRING},
         password: {
-            type: DB.VIRTUAL,
+            type: DataTypes.VIRTUAL,
             set: function(password) {
                 this.setDataValue("password", password);
-                var hashed = bcrypt.hashSync(password, 10);
+                var hashed = bcrypt.hashSync(password, 12);
                 this.setDataValue("password_hash", hashed);
             },
-            validate: {len: [7, 64]}
+            validate: {len: [(cfg.isProd ? 7 : 3), 64]}
         },
-        email: {type: DB.STRING}
+        email: {type: DataTypes.STRING}
+    }, {
+        classMethods: {
+            isValidUser: function(password_hash, password, callback) {
+                bcrypt.compare(password, password_hash, function(err, isValid) {
+                    if (err) {
+                        return callback(err);
+                    }
+                    return callback(null, isValid);
+                });
+            }
+        }
     });
 
-    UserModel.isValidUser = function(password_hash, password, callback) {
-        bcrypt.compare(password, password_hash, function(err, isValid) {
-            if (err) {
-                return callback(err);
-            }
-            return callback(null, isValid);
-        });
-    };
-
-    return UserModel;
-})();
+    return User;
+};

@@ -1,19 +1,14 @@
-module.exports = function(routePrefix, callback) {
+module.exports = function(models, routePrefix, callback) {
     "use strict";
-    // For routing
     var express = require("express");
     var router = express.Router();
     var bodyParser = require("body-parser");
     router.use(bodyParser.json());
 
-    // Utility, Encryption, JWT
     var _ = require("lodash");
     function append(a, b) {return a+b; }
     var jwt = require("jsonwebtoken");
 
-    // App
-    var UserModel = require("../models/user");
-    var User = UserModel.dbModel;
     var cfg = require("../config");
     var log = cfg.log.logger;
 
@@ -21,6 +16,7 @@ module.exports = function(routePrefix, callback) {
             _.partial(append, routePrefix));
     require("../app/auth.js").setupAuth(router, publicEndpoints);
 
+    var User = models.User;
     router.get("/", function(req, res) {
         log.info("GET - Get all users");
         User.findAll().then(function(dbData) {
@@ -51,7 +47,7 @@ module.exports = function(routePrefix, callback) {
                 return res.status(401)
                     .json({error: "Failed to Authenticate"});
             }
-            UserModel.isValidUser(user.password_hash, req.body.password,
+            User.isValidUser(user.password_hash, req.body.password,
                     function(err, isValid) {
                         if (err || !isValid) {
                             return res.status(401)
@@ -84,12 +80,10 @@ module.exports = function(routePrefix, callback) {
         });
     });
 
-    return User.sync({force: !cfg.isProd}).then(function() {
-        return User.create({
-            username: "FirstUser",
-            password: "mypasswd",
-            email: "first.user@email.com"
-        });
+    return User.create({
+        username: "FirstUser",
+        password: "mypasswd",
+        email: "first.user@email.com"
     }).then(function() {
         return callback(router);
     });
