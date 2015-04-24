@@ -30,17 +30,27 @@ module.exports = function(models, routePrefix, callback) {
 
     router.post("/create", function(req, res) {
         log.info("POST - Create a class");
-        Class.create({
-            info: req.body.info,
-            school: req.body.school,
-            title: req.body.title
-        }).then(function(klass) {
+        Class.findOrCreate({
+            where: {
+                title: req.body.title
+            }, defaults: {
+                info: req.body.info,
+                school: req.body.school
+            }
+        }).spread(function(klass, created) {
+            if (!created) {//ie found it
+                return res.json({
+                    error: "Class already exists",
+                    redirect: "/class/"+klass.title
+                });
+            }
             Thread.create({
                 content: "some thread content"
             }).then(function(thread) {
                 klass.addThread(thread).then(function() {
                     res.json({
-                        class: klass.get()
+                        class: klass.get(),
+                        redirect: "/class/"+klass.title
                     });
                 });
             });

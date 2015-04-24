@@ -30,25 +30,15 @@ describe("'"+route+"'", function() {
             });
         });
     });
-    context("getting all the classes", function() {
-        it("should return a list of all the classes", function(done) {
-            request(app)
-                .get(route + "/")
-                .expect(200)
-                .expect(function(res) {
-                    res.body.classes.should.be.an("array");
-                }).end(done);
-        });
-    });
-    context("making a class with valid info", function() {
-        var makeNewClass = function() {
+    describe("creating a class", function() {
+        function makeNewClass() {
             var id = _.uniqueId();
             return {
                 info: "info"+id,
                 school: "school"+id,
                 title: "title"+id
             };
-        };
+        }
         function createClass(klass, callback) {
             request(app)
                 .post(route + "/create")
@@ -60,29 +50,87 @@ describe("'"+route+"'", function() {
                     callback(null, res.body);
                 });
         }
-        it("should return the class information", function(done) {
-            var newClass = makeNewClass();
-            createClass(newClass, function(err, body) {
-                if (err) return done(err);
-                body.class.should.contain(newClass);
-                return done();
+        context("with valid info", function() {
+            context("that does not exist", function() {
+                it("should return the class information", function(done) {
+                    var newClass = makeNewClass();
+                    createClass(newClass, function(err, body) {
+                        if (err) return done(err);
+                        body.class.should.contain(newClass);
+                        return done();
+                    });
+                });
+                it("should add it to the list of all classes", function(done) {
+                    var newClass = makeNewClass();
+                    createClass(newClass, function(err) {
+                        if (err) return done(err);
+                        request(app)
+                            .get(route)
+                            .expect(function(res) {
+                                _.includes(res.body.classes, newClass)
+                                    .should.be.true;
+                                res.body.classes.forEach(function(klass) {
+                                    klass.should.contain.keys("Threads");
+                                });
+                            })
+                        .end(done);
+                    });
+                });
+                it("should redirect to the new class page", function(done) {
+                    var newClass = makeNewClass();
+                    createClass(newClass, function(err, body) {
+                        if (err) return done(err);
+                        body.should.contain.key("redirect");
+                        body.redirect.should.to.match(/\/class\/.+/);
+                        return done();
+                    });
+                });
+            });
+            context("that does exist", function() {
+                var newClass;
+                before(function() {
+                    newClass = makeNewClass();
+                    createClass(newClass, _.noop);
+                });
+                it("should return an error", function(done) {
+                    createClass(newClass, function(err, body) {
+                        if (err) return done(err);
+                        body.should.contain.keys("error");
+                        return done();
+                    });
+                });
+                it("should redirect to the existing class", function(done) {
+                    createClass(newClass, function(err, body) {
+                        if (err) return done(err);
+                        body.should.contain.keys("redirect");
+                        body.redirect.should.match(/\/class\/.+/);
+                        return done();
+                    });
+                });
             });
         });
-        it("should add it to the list of all classes", function(done) {
-            var newClass = makeNewClass();
-            createClass(newClass, function(err) {
-                if (err) return done(err);
-                request(app)
-                    .get(route)
-                    .expect(function(res) {
-                        _.includes(res.body.classes, newClass)
-                            .should.be.true;
-                        res.body.classes.forEach(function(klass) {
-                            klass.should.contain.keys("Threads");
-                        });
-                    })
-                .end(done);
+        context("with invalid info", function() {
+            it("should return an error", function(done) {
+                var invalidClassInfo = {};
+                createClass(invalidClassInfo, function(err, body) {
+                    if (err) return done(err);
+                    body.should.contain.keys("error");
+                    body.error.should.match(/^notNull Violation/);
+                    return done();
+                });
             });
         });
+    });
+    describe("getting all the classes", function() {
+        it("should return a list of all the classes", function(done) {
+            request(app)
+                .get(route + "/")
+                .expect(200)
+                .expect(function(res) {
+                    res.body.classes.should.be.an("array");
+                }).end(done);
+        });
+    });
+    describe("joining an existing class", function() {
     });
 });
