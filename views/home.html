@@ -93,30 +93,22 @@
 <script src="jqueryui/external/jquery/jquery.js"></script>
 <script src="jqueryui/jquery-ui.js"></script>
 <script type="text/javascript"></script>
-<script src="/jqueryui/jquery.layout-latest.js"></script>
+<script src="jqueryui/jquery.layout-latest.js"></script>
+<script src="jqueryui/jquery-jscroll.js"></script>
 <body>
 	<div id="container">
 		<div class="pane ui-layout-center">
         <div>
             <button id="toclass">Classrooms</button>
+            <button id="toclubs">Clubs</button> 
+            <button id="toroosters">Roosters</buttons>
         </div><hr>
-		<div id="tabs">
-            <ul>
-                <li><a href="#classes">Classrooms</a></li>
-                <li><a href="#clubs">Clubs</a></li>
-                <li><a href="#events">Events</a></li>
-            </ul>
-            <div id="classes">
-                <p> Fuck yo classes </p>
-                <p>Check out a <a href="/classroom">classroom</a></p>
-            </div>
-            <div id="clubs">
-                <p> Clubs are boring </p>
-            </div>
-            <div id="events">
-                <p> Events are all right I guess </p>
-            </div>
-    	</div>
+        
+        <h1><center>My Feed</center></h1>
+        
+        <div id="feedcontainer">
+    		</div>
+    		
 		</div>
 		
 		<div class="ui-layout-north">
@@ -142,6 +134,16 @@ $("#home").button();
 $("#toclass").button().click(function(){
     window.location.href = "/classroom"
 });
+
+$("#toclubs").button().click(function(){
+    //window.location.href = "/classroom"
+    alert("Make a club page then link it");
+});
+
+$("#toroosters").button().click(function(){
+    alert("Woaaaaaaaaaah");
+});
+
 $('#container').layout({
 	north: {
   	enableCursorHotkey: false,
@@ -159,7 +161,19 @@ $('#container').layout({
   }
 });
 
-$("#tabs").tabs();
+for (i = 0; i < 200; i++) { 
+    $( "#feedcontainer" ).append("<p>Wow guys check out my feed, here is #" + i + " <br> 'Cool Beans' <br> -Noni <hr>");
+}
+
+
+$("#feedcontainer").jscroll({
+	//autoTriggerUntil: 3
+});
+
+//$( "#feedcontainer" ).load( "/jqueryui/external/jquery/jquery.js");
+
+
+
 function logout(name) {
     document.cookie = name+"=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
 }
