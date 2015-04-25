@@ -1,6 +1,7 @@
 module.exports = function(db, DataTypes) {
     "use strict";
     var bcrypt = require("bcrypt");
+    var _ = require("lodash");
     var cfg = require("../config");
 
     var User = db.define("User", {
@@ -15,7 +16,13 @@ module.exports = function(db, DataTypes) {
             },
             validate: {len: [(cfg.isProd ? 7 : 3), 64]}
         },
-        email: {type: DataTypes.STRING}
+        email: {type: DataTypes.STRING},
+        classes: {
+            type: DataTypes.ARRAY(DataTypes.STRING),
+            defaultValue: [],
+            validate: {
+            }
+        }
     }, {
         classMethods: {
             isValidUser: function(password_hash, password, callback) {
@@ -25,6 +32,16 @@ module.exports = function(db, DataTypes) {
                     }
                     return callback(null, isValid);
                 });
+            }
+        }, instanceMethods: {
+            addClass: function(newClass) {
+                var classes = this.getDataValue("classes");
+                if (_.contains(classes, newClass)) {
+                    throw Error("User is already enrolled in class: "
+                            + newClass);
+                }
+                this.setDataValue("classes", classes.concat([newClass]));
+                return this;
             }
         }
     });

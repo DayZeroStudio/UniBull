@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "chai": "^2.2.0",
+    "chai-things": "^0.2.0",
     "mocha": "^2.2.4",
     "pre-commit": "^1.0.6",
     "sinon": "^1.14.1",

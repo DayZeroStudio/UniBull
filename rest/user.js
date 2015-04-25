@@ -80,6 +80,39 @@ module.exports = function(models, routePrefix, callback) {
         });
     });
 
+    router.get("/:userID", function(req, res) {
+        log.info("GET - Get user info");
+        User.find({
+            where: {username: req.params.userID}
+        }).then(function(user) {
+            return res.json({user: user});
+        });
+    });
+
+    router.post("/:userID/joinClass", function(req, res) {
+        log.info("POST - Join a class");
+        var userID = req.params.userID;
+        var classID = req.query.classID;
+        User.find({
+            where: {username: userID}
+        }).then(function(user) {
+            if (!user) {
+                return res.json({error: "user not found"});
+            }
+            try {
+                user.addClass(classID)
+                .save().then(function(user) {
+                    return res.json({
+                        redirect: "/class/"+classID,
+                        classes: user.get().classes
+                    });
+                });
+            } catch(err) {
+                return res.json({error: err});
+            }
+        });
+    });
+
     return User.create({
         username: "FirstUser",
         password: "mypasswd",
