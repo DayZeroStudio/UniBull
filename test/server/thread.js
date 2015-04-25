@@ -24,10 +24,10 @@ var token = "Bearer "+jwt.sign(validUser, cfg.jwt.secret);
 var route = "/rest/class";
 describe("'"+route+"/thread'", function() {
     before(function(done) {
-        require("../../models")().then(function(models) {
-            require("../../"+route)(models, route, function(router) {
+        require("../../db")().then(function(dbModels) {
+            require("../../"+route)(dbModels, route, function(router) {
                 app.use(route, router);
-                require("../../rest/user.js")(models, "/rest/user", function(router) {
+                require("../../rest/user.js")(dbModels, "/rest/user", function(router) {
                     app.use("/rest/user", router);
                     done();
                 });

@@ -27,12 +27,11 @@ var uniBull = Promise.promisify(function(PORT, callback) {
         res.render("login");
     });
 
-    //FIXME: at test/server/class.js:101:45
-    require("./models")().bind({}).then(function(models) {
-        this.models = models;
+    require("./db")().bind({}).then(function(dbModels) {
+        this.dbModels = dbModels;
         return ["rest", "views"];
     }).map(function(path) {
-        return require("./app/"+path)(this.models);
+        return require("./app/"+path)(this.dbModels);
     }).each(function(router) {
         app.use(router);
     }).then(function() {

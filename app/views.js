@@ -3,10 +3,13 @@ var Promise = require("sequelize").Promise;
 
 module.exports = Promise.promisify(function setupHtmlPages(models, done) {
     var path = require("path");
+    var fs = require("fs");
+    var cwd = process.cwd();
+
     var _ = require("lodash");
     var cfg = require("../config");
     var log = cfg.log.logger;
-    var cwd = process.cwd();
+
     var express = require("express");
     var router = express.Router();
 
@@ -14,7 +17,6 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
     require("../app/auth.js").setupAuth(router, publicEndpoints);
 
     // Automagically render all views/*.html
-    var fs = require("fs");
     fs.readdirSync("views").forEach(function(view) {
         var type = view.substr(view.indexOf(".")+1, view.length);
         if (type !== "html") {

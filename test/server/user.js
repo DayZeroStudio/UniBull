@@ -16,8 +16,8 @@ var log = cfg.log.logger;
 var routePrefix = "/rest/user";
 describe("'"+routePrefix+"'", function() {
     before(function(done) {
-        require("../../models")().then(function(models) {
-            require("../../"+routePrefix)(models, routePrefix, function(router) {
+        require("../../db")().then(function(dbModels) {
+            require("../../"+routePrefix)(dbModels, routePrefix, function(router) {
                 app.use(routePrefix, router);
                 done();
             });
