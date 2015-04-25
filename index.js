@@ -28,16 +28,18 @@ var uniBull = Promise.promisify(function(PORT, callback) {
     });
 
     require("./models")().then(function(models) {
+        // Add rest endpoints
         return [models, require("./app/rest.js")(models)];
     }).spread(function(models, router) {
         app.use(router);
         return models;
     }).then(function(models) {
+        // Add html pages
         return require("./app/views.js")(models);
     }).then(function(router) {
         app.use(router);
     }).then(function() {
-        //Error Handlers
+        // Error Handlers
         app.use(function(req, res) {
             res.status(404).send("UniBull cannot find that page");
         });
@@ -45,7 +47,7 @@ var uniBull = Promise.promisify(function(PORT, callback) {
             log.error(err.stack);
             res.status(500).send("You've made UniBull cry, you monster!");
         });
-        //Start the server
+        // Start the server
         var server = app.listen(PORT, function() {
             var host = server.address().address;
             log.info("UniBull is now listening at http://%s:%s", host, PORT);
