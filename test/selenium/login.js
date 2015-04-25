@@ -1,8 +1,3 @@
-/*
-login w/ valid credentials gets you to home
-invalid credentials -> ?? stay on login
-straight to home invalid
-*/
 /*eslint no-unused-vars:0*/
 "use strict";
 
@@ -26,7 +21,7 @@ describe("testing front end login", function() {
     var PORT = 9090;
     var baseUrl = "http://localhost:" + PORT;
     before(function(done) {
-        require("../../index.js")(PORT, function() {
+        require("../../index.js")(PORT).then(function() {
             client = driver.remote(options);
             client.init(done);
         });

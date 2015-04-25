@@ -1,5 +1,7 @@
 "use strict";
-module.exports = function(callback) {
+var Promise = require("sequelize").Promise;
+
+module.exports = Promise.promisify(function(callback) {
     var cfg = require("../config");
 
     var DB = require("sequelize");
@@ -26,8 +28,8 @@ module.exports = function(callback) {
     models.Class.sync(dbOpts).then(function() {
         models.Thread.sync(dbOpts).then(function() {
             models.User.sync(dbOpts).then(function() {
-                callback(models);
+                callback(null, models);
             });
         });
     });
-};
+});

@@ -1,5 +1,7 @@
 "use strict";
-module.exports = function setupHtmlPages(done) {
+var Promise = require("sequelize").Promise;
+
+module.exports = Promise.promisify(function setupHtmlPages(models, done) {
     var path = require("path");
     var _ = require("lodash");
     var cfg = require("../config");
@@ -62,4 +64,4 @@ module.exports = function setupHtmlPages(done) {
     });
 
     return done(null, router);
-};
+});

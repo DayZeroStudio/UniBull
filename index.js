@@ -1,7 +1,7 @@
 "use strict";
-var _ = require("lodash");
+var Promise = require("sequelize").Promise;
 
-function uniBull(PORT, callback) {
+var uniBull = Promise.promisify(function(PORT, callback) {
     var express = require("express");
     var app = express();
     var ejs = require("ejs");
@@ -27,25 +27,16 @@ function uniBull(PORT, callback) {
         res.render("login");
     });
 
-    var async = require("async");
-    async.series([
-    function(done) {
-        require("./models")(function(models) {
-            require("./app/rest.js")(models, function(err, router) {
-                if (err) {return done(err); }
-                app.use(router);
-                return done();
-            });
-        });
-    },
-    function(done) {
-        require("./app/views.js")(function(err, router) {
-            if (err) {return done(err); }
-            app.use(router);
-            return done();
-        });
-    },
-    function setupErrorHandlers(seriesCallback) {
+    require("./models")().then(function(models) {
+        return [models, require("./app/rest.js")(models)];
+    }).spread(function(models, router) {
+        app.use(router);
+        return models;
+    }).then(function(models) {
+        return require("./app/views.js")(models);
+    }).then(function(router) {
+        app.use(router);
+    }).then(function() {
         //Error Handlers
         app.use(function(req, res) {
             res.status(404).send("UniBull cannot find that page");
@@ -54,19 +45,17 @@ function uniBull(PORT, callback) {
             log.error(err.stack);
             res.status(500).send("You've made UniBull cry, you monster!");
         });
-        seriesCallback(null);
-    }]);
-
-    //Start the server
-    var server = app.listen(PORT, function() {
-        var host = server.address().address;
-        log.info("UniBull is now listening at http://%s:%s", host, PORT);
+        //Start the server
+        var server = app.listen(PORT, function() {
+            var host = server.address().address;
+            log.info("UniBull is now listening at http://%s:%s", host, PORT);
+        });
+        return callback(null, app, server);
     });
-    callback(app, server);
-}
+});
 
 if (require.main === module) {
-    uniBull(process.env.PORT || 8080, _.noop);
+    uniBull(process.env.PORT || 8080);
 } else {
     module.exports = uniBull;
 }
