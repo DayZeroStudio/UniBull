@@ -38,7 +38,7 @@ module.exports = (function() {
             if (err.name === "TokenExpiredError") {
                 return res.status(401).json({error: err.name});
             } else if (err.name === "UnauthorizedError") {
-                return res.status(401).json({errar: err.name});
+                return res.status(401).json({error: err.name});
             }
             next();
         });

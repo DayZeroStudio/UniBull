@@ -47,14 +47,13 @@ module.exports = function(models, routePrefix, callback) {
                 return res.status(401)
                     .json({error: "Failed to Authenticate"});
             }
-            User.isValidUser(user.password_hash, req.body.password,
-                    function(err, isValid) {
-                        if (err || !isValid) {
-                            return res.status(401)
-                                .json({error: "Failed to Authenticate"});
-                        }
-                        onValidUser(user, res);
-                    });
+            User.isValidUser(user.password_hash, req.body.password)
+                .then(function() {
+                    return onValidUser(user, res);
+                }).catch(function() {
+                    return res.status(401)
+                        .json({error: "Failed to Authenticate"});
+                });
         });
     });
 
@@ -74,9 +73,41 @@ module.exports = function(models, routePrefix, callback) {
             email: req.body.email
         }).then(_.partialRight(onValidUser, res))
         .catch(function(err) {
-            if (err) {
-                res.json({error: err.message});
+            res.json({error: err.message});
+        });
+    });
+
+    router.get("/:userID", function(req, res) {
+        log.info("GET - Get user info");
+        User.find({
+            where: {username: req.params.userID}
+        }).then(function(user) {
+            return res.json({user: user});
+        });
+    });
+
+    router.post("/:userID/joinClass", function(req, res) {
+        log.info("POST - Join a class");
+        var userID = req.params.userID;
+        var classID = req.query.classID;
+        User.find({
+            where: {username: userID}
+        }).then(function(user) {
+            if (!user) {
+                return res.json({error: "user not found"});
             }
+            return user.addClass(classID);
+        }).then(function(user) {
+            return user.save();
+        }).then(function(user) {
+            return res.json({
+                redirect: "/class/"+classID,
+                classes: user.get().classes
+            });
+        }).catch(function(err) {
+            return res.json({
+                error: err
+            });
         });
     });
 

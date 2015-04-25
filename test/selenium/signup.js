@@ -1,7 +1,3 @@
-/*
-sign up w/valid credentials -> home page
-submit w/o fields -> fill in fields
-*/
 /*eslint no-unused-vars:0*/
 "use strict";
 
@@ -26,7 +22,7 @@ describe("testing front end sign up", function() {
     var PORT = 9091;
     var baseUrl = "http://localhost:" + PORT;
     before(function(done) {
-        require("../../index.js")(PORT, function() {
+        require("../../index.js")(PORT).then(function() {
             client = driver.remote(options);
             client.init(done);
         });

@@ -1,5 +1,7 @@
 "use strict";
-module.exports = function setupRestEndpoints(models, done) {
+var Promise = require("sequelize").Promise;
+
+module.exports = Promise.promisify(function setupRestEndpoints(models, done) {
     var fs = require("fs");
     var _ = require("lodash");
     var async = require("async");
@@ -23,4 +25,4 @@ module.exports = function setupRestEndpoints(models, done) {
             });
         }, _.partial(done, _, appRouter));
     });
-};
+});

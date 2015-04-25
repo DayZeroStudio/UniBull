@@ -23,33 +23,36 @@ var token = "Bearer "+jwt.sign(validUser, cfg.jwt.secret);
 var route = "/rest/class";
 describe("'"+route+"'", function() {
     before(function(done) {
-        require("../../models")(function(models) {
-            require("../../"+route)(models, route, function(router) {
+        require("../../db")().then(function(dbModels) {
+            require("../../"+route)(dbModels, route, function(router) {
                 app.use(route, router);
-                done();
+                require("../../rest/user.js")(dbModels, "/rest/user", function(router) {
+                    app.use("/rest/user", router);
+                    done();
+                });
             });
         });
     });
+    function makeNewClass() {
+        var id = _.uniqueId();
+        return {
+            info: "info"+id,
+            school: "school"+id,
+            title: "title"+id
+        };
+    }
+    function createClass(klass, callback) {
+        request(app)
+            .post(route + "/create")
+            .set("Authorization", token)
+            .send(klass)
+            .expect(200)
+            .end(function(err, res) {
+                if (err) return callback(err);
+                callback(null, res.body);
+            });
+    }
     describe("creating a class", function() {
-        function makeNewClass() {
-            var id = _.uniqueId();
-            return {
-                info: "info"+id,
-                school: "school"+id,
-                title: "title"+id
-            };
-        }
-        function createClass(klass, callback) {
-            request(app)
-                .post(route + "/create")
-                .set("Authorization", token)
-                .send(klass)
-                .expect(200)
-                .end(function(err, res) {
-                    if (err) return callback(err);
-                    callback(null, res.body);
-                });
-        }
         context("with valid info", function() {
             context("that does not exist", function() {
                 it("should return the class information", function(done) {
@@ -88,7 +91,7 @@ describe("'"+route+"'", function() {
             });
             context("that does exist", function() {
                 var newClass;
-                before(function() {
+                beforeEach(function() {
                     newClass = makeNewClass();
                     createClass(newClass, _.noop);
                 });
@@ -132,5 +135,72 @@ describe("'"+route+"'", function() {
         });
     });
     describe("joining an existing class", function() {
+        var classID;
+        var userID = "FirstUser";
+        beforeEach(function(done) {
+            var newClass = makeNewClass();
+            createClass(newClass, function(err, body) {
+                if (err) return done(err);
+                classID = body.class.title;
+                return done();
+            });
+        });
+        function joinClass(klass, done) {
+            request(app)
+                .post("/rest/user/login")
+                .send({
+                    username: userID,
+                    password: "mypasswd"
+                })
+            .end(function(err, res) {
+                if (err) return done(err);
+                var token = res.body.token;
+                request(app)
+                    .post("/rest/user/"+userID+"/joinClass")
+                    .query({classID: classID})
+                    .set("Authorization", token)
+                    .expect(200)
+                    .end(function(err, res) {
+                        if (err) return done(err);
+                        return done(null, res.body, token);
+                    });
+            });
+        }
+        context("that you are NOT enrolled in", function() {
+            it("should redirect to the class page", function(done) {
+                joinClass(classID, function(err, body) {
+                    if (err) return done(err);
+                    body.should.contain.keys("redirect");
+                    body.redirect.should.match(/\/class\/.+/);
+                    return done();
+                });
+            });
+            it("should add it to the users classes", function(done) {
+                joinClass(classID, function(err, body, token) {
+                    if (err) return done(err);
+                    request(app)
+                        .get("/rest/user/"+userID)
+                        .set("Authorization", token)
+                        .expect(200)
+                        .expect(function(res) {
+                            res.body.should.have.key("user");
+                            res.body.user.classes
+                                .should.have.length.above(0);
+                        }).end(done);
+                });
+            });
+        });
+        context("that you ARE enrolled in", function() {
+            it("should return an error", function(done) {
+                joinClass(classID, function(err, body, token) {
+                    if (err) return done(err);
+                    joinClass(classID, function(err, body, token) {
+                        if (err) return done(err);
+                        body.should.have.keys("error");
+                        return done();
+                    });
+                });
+            });
+        });
     });
 });

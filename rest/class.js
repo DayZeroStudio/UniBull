@@ -44,18 +44,34 @@ module.exports = function(models, routePrefix, callback) {
                     redirect: "/class/"+klass.title
                 });
             }
-            Thread.create({
-                content: "some thread content"
-            }).then(function(thread) {
-                klass.addThread(thread).then(function() {
-                    res.json({
-                        class: klass.get(),
-                        redirect: "/class/"+klass.title
-                    });
-                });
+            return res.json({
+                class: klass.get(),
+                redirect: "/class/"+klass.title
             });
         }).catch(function(err) {
             res.json({error: err.message});
+        });
+    });
+
+    router.post("/:classID/submit", function(req, res) {
+        var title = req.body.title;
+        var content = req.body.content;
+        var classID = req.params.classID;
+        Class.find({
+            where: {title: classID}
+        }).then(function(klass) {
+            return [klass, Thread.create({
+                title: title,
+                content: content
+            })];
+        }).spread(function(klass, thread) {
+            return [klass, klass.addThread(thread)];
+        }).spread(function(klass) {
+            return klass.getThreads({}, {raw: true});
+        }).then(function(threads) {
+            return res.json({
+                threads: threads
+            });
         });
     });
 
