@@ -2,6 +2,7 @@ module.exports = function(db, DataTypes) {
     "use strict";
     var bcrypt = require("bcrypt");
     var _ = require("lodash");
+    var Promise = require("sequelize").Promise;
     var cfg = require("../config");
 
     var User = db.define("User", {
@@ -34,7 +35,7 @@ module.exports = function(db, DataTypes) {
                 });
             }
         }, instanceMethods: {
-            addClass: function(newClass) {
+            addClass: Promise.method(function(newClass) {
                 var classes = this.getDataValue("classes");
                 if (_.contains(classes, newClass)) {
                     throw Error("User is already enrolled in class: "
@@ -42,7 +43,7 @@ module.exports = function(db, DataTypes) {
                 }
                 this.setDataValue("classes", classes.concat([newClass]));
                 return this;
-            }
+            })
         }
     });
 

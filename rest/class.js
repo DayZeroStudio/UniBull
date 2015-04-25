@@ -65,14 +65,12 @@ module.exports = function(models, routePrefix, callback) {
                 content: content
             }).then(function(thread) {
                 klass.addThread(thread).then(function() {
-                    Class.find({
-                        where: {title: classID},
-                        include: [Thread]
-                    }).then(function(klass) {
-                        res.json({
-                            threads: klass.Threads
+                    klass.getThreads({}, {raw: true})
+                        .then(function(threads) {
+                            return res.json({
+                                threads: threads
+                            });
                         });
-                    });
                 });
             });
         });

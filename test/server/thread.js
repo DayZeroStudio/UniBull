@@ -102,7 +102,8 @@ describe("'"+route+"/thread'", function() {
                                 res.body.threads.should
                                     .have.length(1);
                                 res.body.threads
-                                    .should.all.include.keys("title", "content");
+                                    .should.all.include
+                                    .keys("title", "content");
                             }).end(done);
                     });
                 });

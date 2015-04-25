@@ -74,9 +74,7 @@ module.exports = function(models, routePrefix, callback) {
             email: req.body.email
         }).then(_.partialRight(onValidUser, res))
         .catch(function(err) {
-            if (err) {
-                res.json({error: err.message});
-            }
+            res.json({error: err.message});
         });
     });
 
@@ -99,17 +97,19 @@ module.exports = function(models, routePrefix, callback) {
             if (!user) {
                 return res.json({error: "user not found"});
             }
-            try {
-                user.addClass(classID)
-                .save().then(function(user) {
+            user.addClass(classID)
+                .then(function(user) {
+                    user.save().then(function(user) {
+                        return res.json({
+                            redirect: "/class/"+classID,
+                            classes: user.get().classes
+                        });
+                    });
+                }).catch(function(err) {
                     return res.json({
-                        redirect: "/class/"+classID,
-                        classes: user.get().classes
+                        error: err
                     });
                 });
-            } catch(err) {
-                return res.json({error: err});
-            }
         });
     });
 
