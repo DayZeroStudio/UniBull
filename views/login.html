@@ -88,7 +88,10 @@
 <script src="jqueryui/external/jquery/jquery.js"></script>
 <script src="jqueryui/jquery-ui.js"></script>
 <script>
+
+
 function logout(name) {
+		$.cookie('usernameCookie', null);
     document.cookie = name+"=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
 }
 
@@ -103,6 +106,7 @@ $( "#loginButton" ).click(function() {
             }
             if (data.redirect) {
                 document.cookie = "token="+data.token+";max-age="+(60*15);
+                $.cookie('usernameCookie', $("#username").val());
                 window.location.href = data.redirect;
             }
         });
@@ -116,6 +120,9 @@ $("#logoutButton").click(function() {
     logout('token');
     window.location.href = "/login";
 });
+
+
+
 
 </script>
 </html>

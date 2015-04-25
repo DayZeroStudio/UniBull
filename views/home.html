@@ -105,7 +105,7 @@
       	</div>
         <hr>
         
-        <h1><center>My Feed</center></h1>
+        <div id="feedtitle"></div>
         
         <div id="feedcontainer">
     		</div>
@@ -131,6 +131,15 @@
     </body>
 </html>
 <script>
+
+
+//get username cookie and set as title
+var username;
+username = $.cookie('usernameCookie');	
+$("#feedtitle").append("<h1><center>" + username + "'s Feed</center></h1>");
+
+
+
 $("#home").button();
 
 $("#toclass").button().click(function(){
@@ -177,6 +186,7 @@ $("#feedcontainer").jscroll({
 
 
 function logout(name) {
+		$.cookie('usernameCookie', null);
     document.cookie = name+"=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
 }
 
