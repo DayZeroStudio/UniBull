@@ -91,7 +91,7 @@ describe("'"+route+"'", function() {
             });
             context("that does exist", function() {
                 var newClass;
-                before(function() {
+                beforeEach(function() {
                     newClass = makeNewClass();
                     createClass(newClass, _.noop);
                 });

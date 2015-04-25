@@ -1,8 +1,10 @@
 module.exports = function(db, DataTypes) {
     "use strict";
-    var bcrypt = require("bcrypt");
-    var _ = require("lodash");
     var Promise = require("sequelize").Promise;
+    var bcrypt = require("bcrypt");
+    var verifyPasswords = Promise.promisify(bcrypt.compare);
+
+    var _ = require("lodash");
     var cfg = require("../config");
 
     var User = db.define("User", {
@@ -26,14 +28,15 @@ module.exports = function(db, DataTypes) {
         }
     }, {
         classMethods: {
-            isValidUser: function(password_hash, password, callback) {
-                bcrypt.compare(password, password_hash, function(err, isValid) {
-                    if (err) {
-                        return callback(err);
-                    }
-                    return callback(null, isValid);
-                });
-            }
+            isValidUser: Promise.method(function(password_hash, password) {
+                return verifyPasswords(password, password_hash)
+                    .then(function(isValid) {
+                        if (!isValid) {
+                            throw Error("Invalid password");
+                        }
+                        return true;
+                    });
+            })
         }, instanceMethods: {
             addClass: Promise.method(function(newClass) {
                 var classes = this.getDataValue("classes");

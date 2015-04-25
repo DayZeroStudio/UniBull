@@ -60,18 +60,17 @@ module.exports = function(models, routePrefix, callback) {
         Class.find({
             where: {title: classID}
         }).then(function(klass) {
-            Thread.create({
+            return [klass, Thread.create({
                 title: title,
                 content: content
-            }).then(function(thread) {
-                klass.addThread(thread).then(function() {
-                    klass.getThreads({}, {raw: true})
-                        .then(function(threads) {
-                            return res.json({
-                                threads: threads
-                            });
-                        });
-                });
+            })];
+        }).spread(function(klass, thread) {
+            return [klass, klass.addThread(thread)];
+        }).spread(function(klass) {
+            return klass.getThreads({}, {raw: true});
+        }).then(function(threads) {
+            return res.json({
+                threads: threads
             });
         });
     });

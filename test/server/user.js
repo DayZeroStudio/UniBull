@@ -32,31 +32,58 @@ describe("'"+routePrefix+"'", function() {
                     res.body.users.should.have.length.above(0);
                 }).end(done);
         });
-        it("POST '/login' should be unauthorized", function(done) {
+        it("POST '/restricted' should be unauthorized", function(done) {
             request(app)
-                .post(routePrefix + "/login")
+                .post(routePrefix + "/restricted")
                 .expect(401)
                 .expect(function(res) {
                     res.body.should.contain.keys("error");
                 }).end(done);
         });
     });
-    describe("after logging in", function() {
+    describe("logging in", function() {
+        function loginToApp(user, callback) {
+            request(app)
+                .post(routePrefix + "/login")
+                .send(user)
+                .end(function(err, res) {
+                    if (err) return callback(err);
+                    callback(null, res.body);
+                });
+        }
+        context("with invalid credentials", function() {
+            it("(none) should return an error", function(done) {
+                loginToApp({}, function(err, body) {
+                    if (err) return done(err);
+                    body.should.have.key("error");
+                    return done();
+                });
+            });
+            it("(only username) should return an error", function(done) {
+                loginToApp({
+                    username: "FirstUser"
+                }, function(err, body) {
+                    if (err) return done(err);
+                    body.should.have.key("error");
+                    return done();
+                });
+            });
+            it("(both) should return an error", function(done) {
+                loginToApp({
+                    username: "FirstUser",
+                    password: "imNotTheCorrectPassword"
+                }, function(err, body) {
+                    if (err) return done(err);
+                    body.should.have.key("error");
+                    return done();
+                });
+            });
+        });
         context("with valid credentials", function() {
             var validUser = {
                 username: "FirstUser",
                 password: "mypasswd"
             };
-            function loginToApp(callback) {
-                request(app)
-                    .post(routePrefix + "/login")
-                    .send(validUser)
-                    .expect(200)
-                    .end(function(err, res) {
-                        if (err) return callback(err);
-                        callback(null, res.body);
-                    });
-            }
             it("we are auth'd and redirected to '/home'", function(done) {
                 request(app)
                     .post(routePrefix + "/login")
@@ -87,7 +114,7 @@ describe("'"+routePrefix+"'", function() {
                                 .contain.keys("username", "email");
                         }).end(done);
                 }
-                loginToApp(gotToken);
+                loginToApp(validUser, gotToken);
             });
             context("for a long enough time", function() {
                 it("we are denied access", function(done) {
@@ -101,7 +128,7 @@ describe("'"+routePrefix+"'", function() {
                             .expect(401, done);
                         clock.restore();
                     }
-                    loginToApp(gotToken);
+                    loginToApp(validUser, gotToken);
                 });
             });
         });

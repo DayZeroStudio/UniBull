@@ -47,14 +47,13 @@ module.exports = function(models, routePrefix, callback) {
                 return res.status(401)
                     .json({error: "Failed to Authenticate"});
             }
-            User.isValidUser(user.password_hash, req.body.password,
-                    function(err, isValid) {
-                        if (err || !isValid) {
-                            return res.status(401)
-                                .json({error: "Failed to Authenticate"});
-                        }
-                        onValidUser(user, res);
-                    });
+            User.isValidUser(user.password_hash, req.body.password)
+                .then(function() {
+                    return onValidUser(user, res);
+                }).catch(function() {
+                    return res.status(401)
+                        .json({error: "Failed to Authenticate"});
+                });
         });
     });
 
@@ -97,19 +96,18 @@ module.exports = function(models, routePrefix, callback) {
             if (!user) {
                 return res.json({error: "user not found"});
             }
-            user.addClass(classID)
-                .then(function(user) {
-                    user.save().then(function(user) {
-                        return res.json({
-                            redirect: "/class/"+classID,
-                            classes: user.get().classes
-                        });
-                    });
-                }).catch(function(err) {
-                    return res.json({
-                        error: err
-                    });
-                });
+            return user.addClass(classID);
+        }).then(function(user) {
+            return user.save();
+        }).then(function(user) {
+            return res.json({
+                redirect: "/class/"+classID,
+                classes: user.get().classes
+            });
+        }).catch(function(err) {
+            return res.json({
+                error: err
+            });
         });
     });
 

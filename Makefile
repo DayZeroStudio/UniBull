@@ -2,7 +2,7 @@
 BIN			     	:= ./node_modules/.bin
 MOCHA		     	:= ${BIN}/mocha
 LINTER		     	:= eslint
-MOCHA_OPTS	     	:= --recursive --bail
+MOCHA_OPTS	     	:= --recursive
 AUTOTEST_IGNORES 	:= --ignore ./public/ --ignore '*.log' --ignore '.[!.]*'
 
 start:
