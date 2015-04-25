@@ -27,16 +27,13 @@ var uniBull = Promise.promisify(function(PORT, callback) {
         res.render("login");
     });
 
-    require("./models")().then(function(models) {
-        // Add rest endpoints
-        return [models, require("./app/rest.js")(models)];
-    }).spread(function(models, router) {
-        app.use(router);
-        return models;
-    }).then(function(models) {
-        // Add html pages
-        return require("./app/views.js")(models);
-    }).then(function(router) {
+    //FIXME: at test/server/class.js:101:45
+    require("./models")().bind({}).then(function(models) {
+        this.models = models;
+        return ["rest", "views"];
+    }).map(function(path) {
+        return require("./app/"+path)(this.models);
+    }).each(function(router) {
         app.use(router);
     }).then(function() {
         // Error Handlers

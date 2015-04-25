@@ -33,9 +33,12 @@ test-web: lint
 		&& NODE_ENV=test ${MOCHA} ${MOCHA_OPTS} ./test/selenium | bunyan
 
 test-web-%: lint
-	set -o pipefail\
+	@set -o pipefail\
 		&& NODE_ENV=test SEL_BROWSER=$*\
 		${MOCHA} ${MOCHA_OPTS} ./test/selenium | bunyan
+
+test-%: lint test-server
+	make test-web-$*
 
 autotest:
 	@nodemon ${AUTOTEST_IGNORES} --exec "make test-server"
