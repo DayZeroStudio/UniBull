@@ -3,12 +3,11 @@ var Promise = require("sequelize").Promise;
 
 module.exports = Promise.promisify(function setupHtmlPages(models, done) {
     var path = require("path");
-    var fs = require("fs");
     var cwd = process.cwd();
 
-    var _ = require("lodash");
-    var cfg = require("../config");
-    var log = cfg.log.logger;
+    var fs = require("fs");
+  //var cfg = require("../config");
+  //var log = cfg.log.logger;
 
     var express = require("express");
     var router = express.Router();
@@ -16,54 +15,53 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
     var publicEndpoints = ["/login", "/signup"];
     require("../app/auth.js").setupAuth(router, publicEndpoints);
 
-    // Automagically render all views/*.html
-    fs.readdirSync("views").forEach(function(view) {
-        var type = view.substr(view.indexOf(".")+1, view.length);
-        if (type !== "html") {
-            log.debug("ignoring '/views/"+view+"'");
-            return;
-        }// Only html $file from here on out
-        var file = view.substr(0, view.indexOf("."));
-        var route = "/" + file;
+    var browserify = require("browserify");
+    function makeBundle() {
+        return browserify({
+            basedir: path.join(cwd, "views")
+        });
+    }
 
-        // Try to make a bundle from 'views/${file}.js'
-        // to 'public/js/${file}-bundle.js'
-        var jsFile = path.join(cwd, "views", file+".js");
-        fs.open(jsFile, "r", function(err, fd) {
-            if (err) {
-                return log.debug("err:", err.message);
-            }
-            var browserify = require("browserify");
-            var readStream = fs.createReadStream(null, {fd: fd});
-            var bundle = browserify({
-                basedir: path.join(cwd, "views")
+    function addJustRoute(baseFile) {
+        router.get("/"+baseFile, function(req, res) {
+            res.render(baseFile);
+        });
+    }
+    function addBundleRoute(baseFile, opts) {
+        var toBundle = opts || {};
+
+        var bundle = makeBundle();
+        bundle.require(path.join(cwd, "views", baseFile+".js"), {
+            expose: baseFile
+        });
+
+        var toAdd = toBundle.adds || [];
+        toAdd.forEach(function(toAdd) {
+            bundle.add(path.join(cwd, toAdd.path || "lib", toAdd.name), {
+                expose: toAdd.expose || toAdd.name
             });
-            bundle.require(readStream, {
-                expose: file
-            });
-            bundle.bundle(function(err, src) {
-                if (err) {
-                    return log.debug("{file: '%s', err: '%s'}", file, err.message);
-                }
-                var bundleFile = path.join(cwd, "public", "js", file+"-bundle.js");
-                fs.writeFile(bundleFile, src);
+        });
+        var toRequire = toBundle.requires || [];
+        toRequire.forEach(function(toReq) {
+            bundle.require(path.join(cwd, toReq.path || "lib", toReq.name), {
+                expose: toReq.expose || toReq.name
             });
         });
 
-        // Try to add 'models/${file}.js' to the html's local variables
-        log.info("Adding route: '" + route + "'");
-        router.get(route, function(req, res) {
-            try {
-                var model = require(path.join(cwd, "models", file + ".js"));
-                model.locals(req.query, function(locals) {
-                    _.merge(res.locals, locals);
-                    res.render(file);
-                });
-            } catch(err) {
-                res.render(file);
-            }
+        bundle.bundle(function(err, src) {
+            if (err) {throw err; }
+            fs.writeFile(path.join(cwd, "public", "js",
+                        baseFile+"-bundle.js"), src);
         });
-    });
+        addJustRoute(baseFile);
+    }
+
+    addBundleRoute("login");
+    addBundleRoute("signup");
+
+    addJustRoute("home");
+    addJustRoute("classroom");
+    addJustRoute("cs999");
 
     return done(null, router);
 });
