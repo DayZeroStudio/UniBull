@@ -1,5 +1,7 @@
-module.exports = function(models, routePrefix, callback) {
-    "use strict";
+"use strict";
+var Promise = require("sequelize").Promise;
+
+module.exports = Promise.promisify(function(models, routePrefix, callback) {
     var express = require("express");
     var router = express.Router();
     var bodyParser = require("body-parser");
@@ -116,6 +118,6 @@ module.exports = function(models, routePrefix, callback) {
         password: "mypasswd",
         email: "first.user@email.com"
     }).then(function() {
-        return callback(router);
+        return callback(null, router);
     });
-};
+});

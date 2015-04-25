@@ -19,7 +19,7 @@ module.exports = Promise.promisify(function setupRestEndpoints(models, done) {
             var filePath = "../rest/" + file;
             var route = "/rest/" + file.substr(0, file.indexOf("."));
             log.info("Adding REST endpoint: (" + route + ")");
-            require(filePath)(models, route, function(router) {
+            require(filePath)(models, route).then(function(router) {
                 appRouter.use(route, router);
                 eachCallback(null);
             });

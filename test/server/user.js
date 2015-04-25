@@ -17,10 +17,10 @@ var routePrefix = "/rest/user";
 describe("'"+routePrefix+"'", function() {
     before(function(done) {
         require("../../db")().then(function(dbModels) {
-            require("../../"+routePrefix)(dbModels, routePrefix, function(router) {
-                app.use(routePrefix, router);
-                done();
-            });
+            return require("../../"+routePrefix)(dbModels, routePrefix);
+        }).then(function(router) {
+            app.use(routePrefix, router);
+            done();
         });
     });
     context("without authentication", function() {

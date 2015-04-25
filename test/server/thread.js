@@ -24,14 +24,15 @@ var token = "Bearer "+jwt.sign(validUser, cfg.jwt.secret);
 var route = "/rest/class";
 describe("'"+route+"/thread'", function() {
     before(function(done) {
-        require("../../db")().then(function(dbModels) {
-            require("../../"+route)(dbModels, route, function(router) {
-                app.use(route, router);
-                require("../../rest/user.js")(dbModels, "/rest/user", function(router) {
-                    app.use("/rest/user", router);
-                    done();
-                });
-            });
+        require("../../db")().bind({}).then(function(dbModels) {
+            this.dbModels = dbModels;
+            return require("../../"+route)(dbModels, route);
+        }).then(function(router) {
+            app.use(route, router);
+            return require("../../rest/user.js")(this.dbModels, "/rest/user");
+        }).then(function(router) {
+            app.use("/rest/user", router);
+            return done();
         });
     });
     function makeNewClass() {
@@ -97,14 +98,14 @@ describe("'"+route+"/thread'", function() {
                                 title: "title",
                                 content: "content"
                             }).expect(200)
-                            .expect(function(res) {
-                                res.body.threads.should.be.an("array");
-                                res.body.threads.should
-                                    .have.length(1);
-                                res.body.threads
-                                    .should.all.include
-                                    .keys("title", "content");
-                            }).end(done);
+                        .expect(function(res) {
+                            res.body.threads.should.be.an("array");
+                            res.body.threads.should
+                                .have.length(1);
+                            res.body.threads
+                                .should.all.include
+                                .keys("title", "content");
+                        }).end(done);
                     });
                 });
             });
