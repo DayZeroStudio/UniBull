@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<%- watchScript %>
+<html lang="us">
+	<link href="jqueryui/jquery-ui.css" rel="stylesheet">
+	<style>
+	html, body{
+        font: 82.5% "Lucida Console", Monaco, monospace;
+        margin: 50px;
+        width:      100%;
+                height:     100%;                   
+                padding:    0; 
+                margin:     0; 
+                overflow:   auto; /* when page gets too small */
+    }
+	.demoHeaders {
+		margin-top: 2em;
+	}
+	#dialog-link {
+		padding: .4em 1em .4em 20px;
+		text-decoration: none;
+		position: relative;
+	}
+	#dialog-link span.ui-icon {
+		margin: 0 5px 0 0;
+		position: absolute;
+		left: .2em;
+		top: 50%;
+		margin-top: -8px;
+	}
+	#icons {
+		margin: 0;
+		padding: 0;
+	}
+	#icons li {
+		margin: 2px;
+		position: relative;
+		padding: 4px 0;
+		cursor: pointer;
+		float: left;
+		list-style: none;
+	}
+	#icons span.ui-icon {
+		float: left;
+		margin: 0 4px;
+	}
+	.fakewindowcontain .ui-widget-overlay {
+		position: absolute;
+	}
+	select {
+		width: 200px;
+	}
+    label {
+        text-align:left;
+    }
+    #title{
+        width: 100px;
+    }
+    #content{
+        width: 200px;
+    }
+    #forum{
+        width: 600px;
+    }
+    .submit_wrapper{
+        display: none;
+        text-align: left;
+        border: thin solid;
+        padding: 10px 10px;
+    }
+    #container {
+        background: #999;
+        height:     100%;
+        margin:     0 auto;
+        width:      100%;
+        max-width:  1024px;
+        min-width:  960px;
+        _width:     700px; /* min-width for IE6 */
+    }
+    .pane {
+        display:    none; /* will appear when layout inits */
+        
+    }
+    .alignleft {
+        float: left;
+        width:33.33333%;
+        text-align:left;
+    }
+    .aligncenter {
+    float: left;
+    width:33.33333%;
+    text-align:center;
+    }
+    .alignright {
+        float: left;
+        width:33.33333%;
+        text-align:right;
+    }​
+    .ui-layout-pane-north { 
+        border: 0 !important; 
+        background: none !important; 
+    }
+    .ui-layout-pane-south { 
+        border: 0 !important; 
+        background: none !important; 
+    }
+	</style> 
+<head>
+  <title>UniBull Class</title>
+</head>
+
+<body>
+    <div id="container">
+        <div class="pane ui-layout-center"> 
+        	<div>
+            	<button id="toclass">Classrooms</button>
+            	<button id="toclubs">Clubs</button> 
+      		</div>
+        	<hr>
+            <center><h1>CS999: Introduction to Cyber Bullying<h1></center>
+            <hr>
+            <div id="forum">
+                <button id="newpost"> Submit a post </button>
+                <button id="backtoclasses"> Back to classes </button>
+                <br><br>
+                
+                <div class="submit_wrapper" id="submit_wrapper">
+                    <form id="submitform" name="submitform" accept-charset="utf-8">
+                        <label for="title">Title</label><br>
+                        <input id="title" type="text" name="title"><br>
+                        <label for="content">Content</label><br>
+                        <input class ="submissioncontent" id="content" type="text" name="content">
+                    </form> 
+                    <br>
+                    <button id="submit_post"> Submit</button>
+                    <button id="cancel"> Cancel</button>
+                </div>
+                <div id="accordion" class="accordion">
+                    <h3>First Post</h3>
+                    <div>Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.</div>
+                    <h3>Second Post</h3>
+                    <div>Phasellus mattis tincidunt nibh.</div>
+                    <h3>Third Post</h3>
+                    <div>Nam dui erat, auctor a, dignissim quis.</div>
+                </div>
+            </div>
+        </div>
+        <div class="ui-layout-north">
+            <p class="alignleft">
+                <button id="home">Home</button>
+            </p>
+            <p class="aligncenter">
+                <font size="12">UniBull</font>
+            </p>
+            <p class="alignright">Profile Pic</p>
+        </div>
+        <div class="ui-layout-south">
+            <center><button id="logout"> LOGOUT </button></center>
+        </div>
+        <div class="pane ui-layout-east">
+            <center><h1>Notification Center</h1></center> 
+        </div>
+    </div>
+</body>
+
+<script src="js/login-bundle.js"></script>
+<script src="jqueryui/external/jquery/jquery.js"></script>
+<script src="jqueryui/jquery-ui.js"></script>
+<script src="/jqueryui/jquery.layout-latest.js"></script>
+<script>
+
+$("#container").layout({
+    north: {
+    enableCursorHotkey: false,
+    closable: false,
+    resizable: false,
+    spacing_open: 0,
+    spacing_closed: 0
+  },
+  south: {
+    enableCursorHotkey: false,
+    closable: false,
+    resizable: false,
+    spacing_open: 0,
+    spacing_closed: 0
+  }
+});
+
+function logout(name) {
+		$.cookie('usernameCookie', null);
+    document.cookie = name+"=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+}
+$("#logout").button().click(function(){
+    logout("token");
+    window.location.href = "/login";
+});
+$("#home").button().click(function(){
+    window.location.href = "/home";
+});
+$("#backtoclasses").button().click(function(){
+    window.location.href = "/classroom";
+});
+$("#toclass").button().click(function(){
+    window.location.href = "/classroom"
+});
+
+$("#toclubs").button().click(function(){
+    //window.location.href = "/classroom"
+    alert("Make a club page then link it");
+});
+
+$("#newpost").button().click(function(){
+    $("#submit_wrapper").slideToggle();
+});
+function end_submission(){
+    $("#submit_wrapper").slideUp();//"slow", function(){
+        $("#title").val("");
+        $("#content").val("");
+    //}
+}
+$("#cancel").button().click(function(){
+    $("#submit_wrapper").slideUp();
+    $("#title").val("");
+    $("#content").val("");
+});
+$("#submit_post").button().click(function(){
+    var title = $("#title").val();
+    var content = $("#content").val();
+    $("#accordion").prepend("<h3>" + title + "</h3><div>" + content + "</div>")
+        .accordion("destroy").accordion();
+    collapsible();
+    $("#submit_wrapper").slideUp();
+    $("#title").val("");
+    $("#content").val("");
+});
+function collapsible(){
+    $("#accordion").accordion({
+        active: false,
+        collapsible: true,
+        heightStyle: "content",
+        beforeActivate: function(event, ui) {
+             // The accordion believes a panel is being opened
+            if (ui.newHeader[0]) {
+                var currHeader  = ui.newHeader;
+                var currContent = currHeader.next('.ui-accordion-content');
+             // The accordion believes a panel is being closed
+            } else {
+                var currHeader  = ui.oldHeader;
+                var currContent = currHeader.next('.ui-accordion-content');
+            }
+             // Since we've changed the default behavior, this detects the actual status
+            var isPanelSelected = currHeader.attr('aria-selected') == 'true';
+             // Toggle the panel's header
+            currHeader.toggleClass('ui-corner-all',isPanelSelected).toggleClass('accordion-header-active ui-state-active ui-corner-top',!isPanelSelected).attr('aria-selected',((!isPanelSelected).toString()));
+            // Toggle the panel's icon
+            currHeader.children('.ui-icon').toggleClass('ui-icon-triangle-1-e',isPanelSelected).toggleClass('ui-icon-triangle-1-s',!isPanelSelected);
+             // Toggle the panel's content
+            currContent.toggleClass('accordion-content-active',!isPanelSelected)    
+            if (isPanelSelected) { currContent.slideUp(); }  else { currContent.slideDown(); }
+            return false; // Cancels the default action
+        }
+    });
+}
+collapsible();
+
+</script>
+
+</html>
