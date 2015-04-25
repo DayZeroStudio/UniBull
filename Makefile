@@ -51,7 +51,9 @@ noTodosOrFixmes:
 		> .todos
 	@[ ! "$$(cat .todos)" ]\
 	   	|| [ "$${SKIPTODOS=n}" != "n" ]\
-	   	|| (echo "$$(cat .todos)" && exit 1)
+	   	|| (echo "$$(cat .todos)"\
+			&& echo "Use 'SKIPTODOS= make ...' to skip this check"\
+			&& exit 1)
 
 clean:
 	-@rm ./tmp/**/* ./public/js/*-bundle.js ./*.err ./*.log ./*.log.lck
