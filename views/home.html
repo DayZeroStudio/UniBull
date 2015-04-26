@@ -101,7 +101,7 @@
       	<div>
             <button id="toclass">Classrooms</button>
             <button id="toclubs">Clubs</button> 
-            <button id="toroosters">Roosters</buttons>
+            <button id="toevents">Events</buttons>
       	</div>
         <hr>
         
@@ -148,11 +148,11 @@ $("#toclass").button().click(function(){
 
 $("#toclubs").button().click(function(){
     //window.location.href = "/classroom"
-    alert("Make a club page then link it");
+    alert("under construction");
 });
 
-$("#toroosters").button().click(function(){
-    alert("Woaaaaaaaaaah");
+$("#toevents").button().click(function(){
+    alert("under construction");
 });
 
 $('#container').layout({
@@ -173,7 +173,7 @@ $('#container').layout({
 });
 
 for (i = 0; i < 200; i++) { 
-    $( "#feedcontainer" ).append("<p>Wow guys check out my feed, here is #" + i + " <br> 'Cool Beans' <br> -Noni <hr>");
+    $( "#feedcontainer" ).append("<p><b>Title</b>: (Feed #" + i + ") <br><b><i>Content</i></b><br>Author: <br> <i>#Tags</i><hr>");
 }
 
 
