@@ -108,6 +108,51 @@ describe("'"+route+"/thread'", function() {
                         }).end(done);
                     });
                 });
+                it("should return {action: 'refresh'}", function(done) {
+                    joinClass(classID, function(err, body, token) {
+                        if (err) return done(err);
+                        request(app)
+                            .post(route+"/"+classID+"/submit")
+                            .set("Authorization", token)
+                            .send({
+                                title: "title",
+                                content: "content"
+                            }).expect(200)
+                        .expect(function(res) {
+                            res.body.should.contain.key("action");
+                            res.body.action.should.equal("refresh");
+                        }).end(done);
+                    });
+                });
+            });
+            context("without required info", function() {
+                it("should return an error", function(done) {
+                    joinClass(classID, function(err, body, token) {
+                        if (err) return done(err);
+                        request(app)
+                            .post(route+"/"+classID+"/submit")
+                            .set("Authorization", token)
+                            .send({}).expect(200)
+                            .expect(function(res) {
+                                res.body.should.contain.key("error");
+                            }).end(done);
+                    });
+                });
+            });
+        });
+        context("that you are NOT enrolled in", function() {
+            it("should return an error", function(done) {
+                request(app)
+                    .post(route+"/"+classID+"/submit")
+                    .set("Authorization", token)
+                    .send({
+                        title: "title",
+                        content: "content"
+                    }).expect(200)
+                .expect(function(res) {
+                    res.body.should.contain.key("error");
+                    log.warn("body", res.body);
+                }).end(done);
             });
         });
     });

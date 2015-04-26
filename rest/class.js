@@ -12,12 +12,14 @@ module.exports = Promise.promisify(function(models, routePrefix, callback) {
     var cfg = require("../config");
     var log = cfg.log.logger;
 
+    var auth = require("../app/auth.js");
     var publicEndpoints = _.map(["", "/"],
             _.partial(append, routePrefix));
-    require("../app/auth.js").setupAuth(router, publicEndpoints);
+    auth.setupAuth(router, publicEndpoints);
 
     var Class = models.Class;
     var Thread = models.Thread;
+    var User = models.User;
 
     router.get("/", function(req, res) {
         log.info("GET - Get all classes");
@@ -56,11 +58,34 @@ module.exports = Promise.promisify(function(models, routePrefix, callback) {
     });
 
     router.post("/:classID/submit", function(req, res) {
+        log.info("POST - Submit a post to :classID");
         var title = req.body.title;
         var content = req.body.content;
         var classID = req.params.classID;
         Class.find({
             where: {title: classID}
+        }).then(function(klass) {
+            if (!content || !title) {
+                throw Error("did not submit all required information");
+            }
+            return klass;
+        }).then(function(klass) {
+            // Get the user
+            var decoded = auth.decodeRequest(req);
+            var username = decoded.username;
+            log.warn("decoded", decoded);
+            // check user is enrolled in :classID
+            return [klass, User.find({where:
+                {username: username}
+            }, {raw: true})];
+        }).spread(function(klass, user) {
+            if (!user) {
+                throw Error("user was not found");
+            }
+            if (!_.contains(user.classes, classID)) {
+                throw Error("user is not enrolled that class");
+            }
+            return klass;
         }).then(function(klass) {
             return [klass, Thread.create({
                 title: title,
@@ -72,7 +97,12 @@ module.exports = Promise.promisify(function(models, routePrefix, callback) {
             return klass.getThreads({}, {raw: true});
         }).then(function(threads) {
             return res.json({
-                threads: threads
+                threads: threads,
+                action: "refresh"
+            });
+        }).catch(function(err) {
+            return res.json({
+                error: err.message
             });
         });
     });
