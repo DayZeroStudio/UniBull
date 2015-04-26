@@ -151,7 +151,6 @@ describe("'"+route+"/thread'", function() {
                     }).expect(200)
                 .expect(function(res) {
                     res.body.should.contain.key("error");
-                    log.warn("body", res.body);
                 }).end(done);
             });
         });

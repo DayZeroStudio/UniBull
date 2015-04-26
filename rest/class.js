@@ -73,7 +73,6 @@ module.exports = Promise.promisify(function(models, routePrefix, callback) {
             // Get the user
             var decoded = auth.decodeRequest(req);
             var username = decoded.username;
-            log.warn("decoded", decoded);
             // check user is enrolled in :classID
             return [klass, User.find({where:
                 {username: username}
