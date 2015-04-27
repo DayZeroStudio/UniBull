@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <%- watchScript %>
 <html lang="us">
-	<link href="jqueryui/jquery-ui.css" rel="stylesheet">
-	<style>
+<link href="jqueryui/jquery-ui.css" rel="stylesheet">
+<style>
 	html, body{
         font: 82.5% "Lucida Console", Monaco, monospace;
         margin: 50px;
@@ -104,9 +104,9 @@
         border: 0 !important; 
         background: none !important; 
     }
-	</style> 
+</style> 
 <head>
-  <title>UniBull Class</title>
+    <title>UniBull Class</title>
 </head>
 
 <body>
@@ -119,32 +119,22 @@
       		</div>
         	<hr>
             <center><h1>Enrolled Classes</h1></center>
-            <hr>
-            <a href="/cs999">CS999</a>
-            <!--
-            <div id="forum">
-                <button id="newpost"> Submit a post </button><br><br>
-                <div class="submit_wrapper" id="submit_wrapper">
+            <button id="addclass">Add a Class (+)</button> 
+            <div class="submit_wrapper" id="submit_wrapper">
                     <form id="submitform" name="submitform" accept-charset="utf-8">
-                        <label for="title">Title</label><br>
+                        <label for="title">Class Title</label><br>
                         <input id="title" type="text" name="title"><br>
-                        <label for="content">Content</label><br>
-                        <input class ="submissioncontent" id="content" type="text" name="content">
+                        <label for="info">Class Description</label><br>
+                        <input id="info" type="text" name="info"><br>
+                        <label for="school">University</label><br>
+                        <input id="school" type="text" name="school"><br>
                     </form> 
                     <br>
-                    <button id="submit_post"> Submit</button>
+                    <button id="submit_class"> Submit</button>
                     <button id="cancel"> Cancel</button>
                 </div>
-                <div id="accordion" class="accordion">
-                    <h3>First</h3>
-                    <div>Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.</div>
-                    <h3>Second</h3>
-                    <div>Phasellus mattis tincidunt nibh.</div>
-                    <h3>Third</h3>
-                    <div>Nam dui erat, auctor a, dignissim quis.</div>
-                </div>
-            </div>
-            -->
+            <hr>
+            <a href="/cs999">CS999</a>
         </div>
         <div class="ui-layout-north">
             <p class="alignleft">
@@ -163,8 +153,8 @@
         </div>
     </div>
 </body>
-
-<script src="js/login-bundle.js"></script>
+</html>
+<script src="js/class-bundle.js"></script>
 <script src="jqueryui/external/jquery/jquery.js"></script>
 <script src="jqueryui/jquery-ui.js"></script>
 <script src="/jqueryui/jquery.layout-latest.js"></script>
@@ -199,74 +189,58 @@ $("#home").button().click(function(){
     window.location.href = "/home";
 });
 
-$("#toclass").button().click(function(){
-    window.location.href = "/classroom"
+
+$("#toclass").button().click(function() {
+    window.location.href = "/class";
 });
 
-$("#toclubs").button().click(function(){
-    //window.location.href = "/classroom"
-    alert("Make a club page then link it");
+$("#toclubs").button().click(function() {
+    alert("Under Construction");
 });
 
-$("#toevents").button().click(function(){
-    alert("under construction");
+$("#toevents").button().click(function() {
+    alert("Under Construction");
 });
 
-/*
-$("#newpost").button().click(function(){
+$("#addclass").button().click(function(){
     $("#submit_wrapper").slideToggle();
 });
+
 function end_submission(){
-    $("#submit_wrapper").slideUp();//"slow", function(){
-        $("#title").val("");
-        $("#content").val("");
-    //}
+    $("#submit_wrapper").slideUp();
+    $("#title").val("");
+    $("#content").val("");
 }
+
 $("#cancel").button().click(function(){
     $("#submit_wrapper").slideUp();
     $("#title").val("");
     $("#content").val("");
 });
-$("#submit_post").button().click(function(){
+
+
+$("#submit_class").button().click(function(){
     var title = $("#title").val();
     var content = $("#content").val();
-    $("#accordion").prepend("<h3>" + title + "</h3><div>" + content + "</div>")
-        .accordion("destroy").accordion();
-    collapsible();
     $("#submit_wrapper").slideUp();
     $("#title").val("");
     $("#content").val("");
+ 		var classroom = require("class");
+    var onCreate = classroom.onCreate;
+    var fields = $("#submitform #info, #submitform #school, #submitform #title");
+   	return onCreate($, fields, function(err, data){
+     	if(err){
+      	return console.log(err);
+   		 }
+    	if (data.redirect) {
+       // document.cookie = "token="+data.token+";max-age="+(60*15);
+       // $.cookie('usernameCookie', $("#username").val());
+       // window.location.href = data.redirect;  
+        console.log("We smart");
+      }
+	});
 });
-function collapsible(){
-    $("#accordion").accordion({
-        active: false,
-        collapsible: true,
-        heightStyle: "content",
-        beforeActivate: function(event, ui) {
-             // The accordion believes a panel is being opened
-            if (ui.newHeader[0]) {
-                var currHeader  = ui.newHeader;
-                var currContent = currHeader.next('.ui-accordion-content');
-             // The accordion believes a panel is being closed
-            } else {
-                var currHeader  = ui.oldHeader;
-                var currContent = currHeader.next('.ui-accordion-content');
-            }
-             // Since we've changed the default behavior, this detects the actual status
-            var isPanelSelected = currHeader.attr('aria-selected') == 'true';
-             // Toggle the panel's header
-            currHeader.toggleClass('ui-corner-all',isPanelSelected).toggleClass('accordion-header-active ui-state-active ui-corner-top',!isPanelSelected).attr('aria-selected',((!isPanelSelected).toString()));
-            // Toggle the panel's icon
-            currHeader.children('.ui-icon').toggleClass('ui-icon-triangle-1-e',isPanelSelected).toggleClass('ui-icon-triangle-1-s',!isPanelSelected);
-             // Toggle the panel's content
-            currContent.toggleClass('accordion-content-active',!isPanelSelected)    
-            if (isPanelSelected) { currContent.slideUp(); }  else { currContent.slideDown(); }
-            return false; // Cancels the default action
-        }
-    });
-}
-collapsible();
-*/
+
 </script>
 
-</html>
+
