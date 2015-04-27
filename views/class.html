@@ -134,7 +134,9 @@
                     <button id="cancel"> Cancel</button>
                 </div>
             <hr>
+            <div id="classlist">
             <a href="/cs999">CS999</a>
+            </div>
         </div>
         <div class="ui-layout-north">
             <p class="alignleft">
@@ -218,13 +220,9 @@ $("#cancel").button().click(function(){
     $("#content").val("");
 });
 
-
 $("#submit_class").button().click(function(){
     var title = $("#title").val();
     var content = $("#content").val();
-    $("#submit_wrapper").slideUp();
-    $("#title").val("");
-    $("#content").val("");
  		var classroom = require("class");
     var onCreate = classroom.onCreate;
     var fields = $("#submitform #info, #submitform #school, #submitform #title");
@@ -233,10 +231,15 @@ $("#submit_class").button().click(function(){
       	return console.log(err);
    		 }
     	if (data.redirect) {
+    	 var classTitle = $("#title").val();
+    	 alert("classTitle = " + classTitle); 
        // document.cookie = "token="+data.token+";max-age="+(60*15);
        // $.cookie('usernameCookie', $("#username").val());
        // window.location.href = data.redirect;  
-        console.log("We smart");
+       $( "#classlist" ).append("<br><a>" + classTitle + "</a>");
+        console.log("We smart  " + classTitle);
+        console.log(classTitle);
+        end_submission();
       }
 	});
 });
