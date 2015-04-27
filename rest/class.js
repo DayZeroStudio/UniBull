@@ -79,36 +79,35 @@ module.exports = Promise.promisify(function(models, routePrefix, callback) {
         var classID = req.params.classID;
         Class.find({
             where: {title: classID}
-        }).then(function(klass) {
+        }).bind({}).then(function(klass) {
             if (!content || !title) {
                 throw Error("did not submit all required information");
             }
-            return klass;
-        }).then(function(klass) {
+            this.class = klass;
+        }).then(function() {
             // Get the user
             var decoded = auth.decodeRequest(req);
             var username = decoded.username;
             // check user is enrolled in :classID
-            return [klass, User.find({where:
+            return User.find({where:
                 {username: username}
-            }, {raw: true})];
-        }).spread(function(klass, user) {
+            }, {raw: true});
+        }).then(function(user) {
             if (!user) {
                 throw Error("user was not found");
             }
             if (!_.contains(user.classes, classID)) {
                 throw Error("user is not enrolled that class");
             }
-            return klass;
-        }).then(function(klass) {
-            return [klass, Thread.create({
+        }).then(function() {
+            return Thread.create({
                 title: title,
                 content: content
-            })];
-        }).spread(function(klass, thread) {
-            return [klass, klass.addThread(thread)];
-        }).spread(function(klass) {
-            return klass.getThreads({}, {raw: true});
+            });
+        }).then(function(thread) {
+            return this.class.addThread(thread);
+        }).then(function() {
+            return this.class.getThreads({}, {raw: true});
         }).then(function(threads) {
             return res.json({
                 threads: threads,
