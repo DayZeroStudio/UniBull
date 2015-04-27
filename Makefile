@@ -35,12 +35,12 @@ test-server: lint
 
 test-web: lint
 	@set -o pipefail\
-		&& NODE_ENV=test ${MOCHA} ${MOCHA_OPTS} ./test/selenium | ${BUNYAN}
+		&& NODE_ENV=test ${MOCHA} ${MOCHA_OPTS} ./test/web | ${BUNYAN}
 
 test-web-%: lint
 	@set -o pipefail\
 		&& NODE_ENV=test SEL_BROWSER=$*\
-		${MOCHA} ${MOCHA_OPTS} ./test/selenium | ${BUNYAN}
+		${MOCHA} ${MOCHA_OPTS} ./test/web | ${BUNYAN}
 
 test-%: lint test-server
 	make test-web-$*
@@ -54,7 +54,7 @@ autotest:
 
 lint: noTodosOrFixmes
 	@${LINTER} ./index.js ./config/*.js\
-		./test/server/*.js ./test/selenium/*.js\
+		./test/server/*.js ./test/web/*.js\
 		./models/*.js ./rest/*.js ./db/*.js\
 		./lib/adds/*.js ./lib/requires/*.js
 
