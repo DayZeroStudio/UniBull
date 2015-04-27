@@ -13,7 +13,7 @@ module.exports = Promise.promisify(function(callback) {
 
     var path = require("path");
     ["Class", "Thread", "User"].forEach(function(model) {
-        models[model] = db.import(path.join(__dirname, model));
+        models[model] = db.import(path.join(__dirname, model.toLowerCase()));
     });
 
     (function(ms) {
