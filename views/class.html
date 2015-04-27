@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <%- watchScript %>
 <html lang="us">
-    <link href="jqueryui/jquery-ui.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="/css/class.css">
-    <style>
-    </style>
     <head>
+        <link href="jqueryui/jquery-ui.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/css/class.css">
         <title>UniBull Class</title>
     </head>
 
@@ -15,7 +13,7 @@
                 <div>
                     <button id="toclass">Classrooms</button>
                     <button id="toclubs">Clubs</button>
-                    <button id="toevents">Events</buttons>
+                    <button id="toevents">Events</button>
                 </div>
                 <hr>
                 <center><h1>Enrolled Classes</h1></center>
@@ -35,7 +33,7 @@
                 </div>
                 <hr>
                 <div id="classlist">
-                    <a href="/cs999">CS999</a>
+                    <a href="class/cs999">CS999</a>
                 </div>
             </div>
             <div class="ui-layout-north">
@@ -54,92 +52,9 @@
                 <center><h1>Notification Center</h1></center>
             </div>
         </div>
+        <script src="jqueryui/external/jquery/jquery.js"></script>
+        <script src="jqueryui/jquery-ui.js"></script>
+        <script src="jqueryui/jquery.layout-latest.js"></script>
+        <script src="js/class-bundle.js"></script>
     </body>
 </html>
-<script src="jqueryui/external/jquery/jquery.js"></script>
-<script src="jqueryui/jquery-ui.js"></script>
-<script src="/jqueryui/jquery.layout-latest.js"></script>
-<script>
-
-$("#container").layout({
-    north: {
-        enableCursorHotkey: false,
-        closable: false,
-        resizable: false,
-        spacing_open: 0,
-        spacing_closed: 0
-    },
-    south: {
-        enableCursorHotkey: false,
-        closable: false,
-        resizable: false,
-        spacing_open: 0,
-        spacing_closed: 0
-    }
-});
-
-function logout(name) {
-    $.cookie('usernameCookie', null);
-    document.cookie = name+"=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-}
-$("#logout").button().click(function(){
-    logout("token");
-    window.location.href = "/login";
-});
-$("#home").button().click(function(){
-    window.location.href = "/home";
-});
-
-
-$("#toclass").button().click(function() {
-    window.location.href = "/class";
-});
-
-$("#toclubs").button().click(function() {
-    alert("Under Construction");
-});
-
-$("#toevents").button().click(function() {
-    alert("Under Construction");
-});
-
-$("#addclass").button().click(function(){
-    $("#submit_wrapper").slideToggle();
-});
-
-function end_submission(){
-    $("#submit_wrapper").slideUp();
-    $("#title").val("");
-    $("#content").val("");
-}
-
-$("#cancel").button().click(function(){
-    $("#submit_wrapper").slideUp();
-    $("#title").val("");
-    $("#content").val("");
-});
-
-$("#submit_class").button().click(function(){
-    var title = $("#title").val();
-    var content = $("#content").val();
-    var classroom = require("class");
-    var onCreate = classroom.onCreate;
-    var fields = $("#submitform #info, #submitform #school, #submitform #title");
-    return onCreate($, fields, function(err, data){
-        if(err){
-            return console.log(err);
-        }
-        if (data.redirect) {
-            var classTitle = $("#title").val();
-            alert("classTitle = " + classTitle);
-            // document.cookie = "token="+data.token+";max-age="+(60*15);
-            // $.cookie('usernameCookie', $("#username").val());
-            // window.location.href = data.redirect;
-            $( "#classlist" ).append("<br><a href='/class/" + classTitle + "'>" + classTitle + "</a>");
-            end_submission();
-        }
-    });
-});
-
-</script>
-<script src="js/class-bundle.js"></script>

@@ -11,7 +11,7 @@ var uniBull = Promise.promisify(function(PORT, callback) {
     var log = cfg.log.logger;
 
     // For automagical HTML page reloading
-    var reloadify = require("./lib/reloadify");
+    var reloadify = require("./lib/utils/reloadify");
     reloadify(app, path.join(cwd, "views"));
 
     // Render html files with ejs

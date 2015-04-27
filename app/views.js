@@ -35,11 +35,13 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
 
         var toAdds = toBundle.adds || [];
         toAdds.forEach(function(toAdd) {
-            bundle.add(path.join(cwd, toAdd.path || "lib", toAdd.name));
+            var dirPath = toAdd.path || path.join("lib", "adds");
+            bundle.add(path.join(cwd, dirPath, toAdd.name));
         });
         var toRequires = toBundle.requires || [];
         toRequires.forEach(function(toReq) {
-            bundle.require(path.join(cwd, toReq.path || "lib", toReq.name), {
+            var dirPath = toReq.path || path.join("lib", "requires");
+            bundle.require(path.join(cwd, dirPath, toReq.name), {
                 expose: toReq.expose || toReq.name
             });
         });
@@ -68,22 +70,21 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
 
     (function(router) {
         router.get("/:classID", function(req, res) {
-            log.warn("classID:", req.params.classID);
             var classID = req.params.classID;
-            res.locals = {
-                classID: classID
-            }
+            log.warn("classID:", classID);
+
+            res.locals.classID = classID;
             res.render("tmpl/classroom");
         });
         addBundleRoute("classroom", null, {
             addRoute: false,
             adds: [{name: "classroom.js"}]
-        })
+        });
         addBundleRoute("class", router, {
-        		requires: [{name: "class.js", expose: "class"}]
+            requires: [{name: "class.js", expose: "class"}],
+            adds: [{name: "class.js"}]
         });
     })(express.Router());
-    addJustRoute("cs999");
 
     return done(null, router);
 });

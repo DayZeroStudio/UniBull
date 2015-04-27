@@ -40,12 +40,18 @@ test-web-%: lint
 test-%: lint test-server
 	make test-web-$*
 
+_test-server: lint
+	-@set -o pipefail\
+		&& NODE_ENV=test ${MOCHA} ${MOCHA_OPTS} ./test/server | bunyan
+
 autotest:
-	@nodemon ${AUTOTEST_IGNORES} --exec "make test-server"
+	@nodemon ${AUTOTEST_IGNORES} --exec "make _test-server"
 
 lint: noTodosOrFixmes
-	@${LINTER} ./index.js    ./config/*.js ./test/**/*.js\
-			   ./models/*.js ./rest/*.js ./lib/*.js
+	@${LINTER} ./index.js ./config/*.js\
+		./test/server/*.js ./test/selenium/*.js\
+		./models/*.js ./rest/*.js ./db/*.js\
+		./lib/adds/*.js ./lib/requires/*.js
 
 noTodosOrFixmes:
 	-@git grep -n 'TODO\|FIXME' --\
@@ -59,6 +65,7 @@ noTodosOrFixmes:
 			&& exit 1)
 
 clean:
-	-@rm ./tmp/**/* ./public/js/*-bundle.js ./*.err ./*.log ./*.log.lck
+	-rm ./tmp/**/* ./public/js/*-bundle.js\
+		./*.err ./*.log ./*.log.lck 2> /dev/null
 
 .PHONY: start install lint test test-server test-selenium autotest clean

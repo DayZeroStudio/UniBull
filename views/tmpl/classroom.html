@@ -1,65 +1,66 @@
 <!DOCTYPE html>
 <%- watchScript %>
 <html lang="us">
-<link href="/jqueryui/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" type="text/css" href="/css/classroom.css">
-<head>
-  <title>UniBull Class</title>
-</head>
+    <head>
+        <title>UniBull Class</title>
+        <link href="/jqueryui/jquery-ui.css" rel="stylesheet">
+        <link href="/css/classroom.css" rel="stylesheet" type="text/css">
+        <script src="/jqueryui/external/jquery/jquery.js"></script>
+        <script src="/jqueryui/jquery-ui.js"></script>
+        <script src="/jqueryui/jquery.layout-latest.js"></script>
+    </head>
 
-<body>
-    <div id="container">
-        <div class="pane ui-layout-center"> 
-            <div>
-                <button id="toclass">Classrooms</button>
-                <button id="toclubs">Clubs</button> 
-                 <button id="toevents">Events</buttons>
-            </div>
-            <hr>
-            <center><h1 id="classID"><%= classID %> </h1></center>
-            <button id="newpost"> Submit a post </button><br>
-            <div class="submit_wrapper" id="submit_wrapper">
-                <form id="submitform" name="submitform" accept-charset="utf-8">
-                    <label for="title">Title</label><br>
-                    <input id="title" type="text" name="title"><br>
-                    <label for="content">Content</label><br>
-                    <input class ="submissioncontent" id="content" type="text" name="content">
-                </form> 
-                <br>
-                <button id="submit_post"> Submit</button>
-                <button id="cancel"> Cancel</button>
-            </div>
-            <hr>
-            <div id="forum">
-                <div id="accordion" class="accordion">
-                    <h3>First Post</h3>
-                    <div>Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.</div>
-                    <h3>Second Post</h3>
-                    <div>Phasellus mattis tincidunt nibh.</div>
-                    <h3>Third Post</h3>
-                    <div>Nam dui erat, auctor a, dignissim quis.</div>
+    <body>
+        <div id="container">
+            <div class="pane ui-layout-center">
+                <div>
+                    <button id="toclass">Classrooms</button>
+                    <button id="toclubs">Clubs</button>
+                    <button id="toevents">Events</button>
+                </div>
+                <hr>
+                <center><h1 id="classID"><%= classID %> </h1></center>
+                <button id="newpost"> Submit a post </button><br>
+                <div class="submit_wrapper" id="submit_wrapper">
+                    <form id="submitform" name="submitform" accept-charset="utf-8">
+                        <label for="title">Title</label><br>
+                        <input id="title" type="text" name="title"><br>
+                        <label for="content">Content</label><br>
+                        <input class="submissioncontent" id="content" type="text" name="content">
+                    </form>
+                    <br>
+                    <button id="submit_post"> Submit</button>
+                    <button id="cancel"> Cancel</button>
+                </div>
+                <hr>
+                <div id="forum">
+                    <div id="accordion" class="accordion">
+                        <h3>First Post</h3>
+                        <div>Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.</div>
+                        <h3>Second Post</h3>
+                        <div>Phasellus mattis tincidunt nibh.</div>
+                        <h3>Third Post</h3>
+                        <div>Nam dui erat, auctor a, dignissim quis.</div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="ui-layout-north">
-            <p class="alignleft">
+            <div class="ui-layout-north">
+                <p class="alignleft">
                 <button id="home">Home</button>
-            </p>
-            <p class="aligncenter">
+                </p>
+                <p class="aligncenter">
                 <font size="12">UniBull</font>
-            </p>
-            <p class="alignright">Profile Pic</p>
+                </p>
+                <p class="alignright">Profile Pic</p>
+            </div>
+            <div class="ui-layout-south">
+                <center><button id="logout"> LOGOUT </button></center>
+            </div>
+            <div class="pane ui-layout-east">
+                <center><h1>Notification Center</h1></center>
+            </div>
         </div>
-        <div class="ui-layout-south">
-            <center><button id="logout"> LOGOUT </button></center>
-        </div>
-        <div class="pane ui-layout-east">
-            <center><h1>Notification Center</h1></center> 
-        </div>
-    </div>
-</body>
+
+        <script src="/js/classroom-bundle.js"></script>
+    </body>
 </html>
-<script src="/jqueryui/external/jquery/jquery.js"></script>
-<script src="/jqueryui/jquery-ui.js"></script>
-<script src="/jqueryui/jquery.layout-latest.js"></script>
-<script src="/js/classroom-bundle.js"></script>
