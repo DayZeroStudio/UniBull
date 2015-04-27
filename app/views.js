@@ -49,7 +49,11 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
             fs.writeFile(path.join(cwd, "public", "js",
                         baseFile+"-bundle.js"), src);
         });
-        addJustRoute(baseFile, middleware);
+
+        var shouldAddRoute = opts.addRoute || true;
+        if (shouldAddRoute) {
+            addJustRoute(baseFile, middleware);
+        }
     }
 
     addBundleRoute("login", null, {
@@ -65,8 +69,16 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
     (function(router) {
         router.get("/:classID", function(req, res) {
             log.warn("classID:", req.params.classID);
-            res.json({classID: req.params.classID});
+            var classID = req.params.classID;
+            res.locals = {
+                classID: classID
+            }
+            res.render("tmpl/classroom");
         });
+        addBundleRoute("classroom", null, {
+            addRoute: false,
+            adds: [{name: "classroom.js"}]
+        })
         addBundleRoute("class", router, {
         		requires: [{name: "class.js", expose: "class"}]
         });
