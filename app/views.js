@@ -26,20 +26,22 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
         router.get("/"+baseFile, function(req, res) {
             res.render(baseFile);
         });
-        router.use("/"+baseFile, middleware || function() {});
+        if (middleware) {
+            router.use("/"+baseFile, middleware);
+        }
     }
     // Refactor middlware into opts
-    function addBundleRoute(baseFile, middleware, opts) {
-        var toBundle = opts || {};
+    function addBundleRoute(baseFile, options) {
+        var opts = options || {};
 
         var bundle = makeBundle();
 
-        var toAdds = toBundle.adds || [];
+        var toAdds = opts.adds || [];
         toAdds.forEach(function(toAdd) {
             var dirPath = toAdd.path || path.join("lib", "adds");
             bundle.add(path.join(cwd, dirPath, toAdd.name));
         });
-        var toRequires = toBundle.requires || [];
+        var toRequires = opts.requires || [];
         toRequires.forEach(function(toReq) {
             var dirPath = toReq.path || path.join("lib", "requires");
             bundle.require(path.join(cwd, dirPath, toReq.name), {
@@ -55,19 +57,20 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
 
         var shouldAddRoute = opts.addRoute || true;
         if (shouldAddRoute) {
-            addJustRoute(baseFile, middleware);
+            var router = opts.route || undefined;
+            addJustRoute(baseFile, router);
         }
     }
 
-    addBundleRoute("login", null, {
+    addBundleRoute("login", {
         adds: [{name: "login.js"}],
         requires: [{name: "login.js", expose: "login"}]
     });
-    addBundleRoute("signup", null, {
+    addBundleRoute("signup", {
         adds: [{name: "signup.js"}],
         requires: [{name: "signup.js", expose: "signup"}]
     });
-    addBundleRoute("home", null, {
+    addBundleRoute("home", {
         adds: [{name: "home.js"}]
     });
 
@@ -79,11 +82,12 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
             res.locals.classID = classID;
             res.render("tmpl/classroom");
         });
-        addBundleRoute("classroom", null, {
+        addBundleRoute("classroom", {
             addRoute: false,
             adds: [{name: "classroom.js"}]
         });
-        addBundleRoute("class", router, {
+        addBundleRoute("class", {
+            router: router,
             requires: [{name: "class.js", expose: "class"}],
             adds: [{name: "class.js"}]
         });
