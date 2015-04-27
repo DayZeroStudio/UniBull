@@ -235,7 +235,7 @@ $("#submit_class").button().click(function(){
        // document.cookie = "token="+data.token+";max-age="+(60*15);
        // $.cookie('usernameCookie', $("#username").val());
        // window.location.href = data.redirect;  
-       $( "#classlist" ).append("<br><a>" + classTitle + "</a>");
+       $( "#classlist" ).append("<br><a href='/class/" + classTitle + "'>" + classTitle + "</a>");
         end_submission();
       }
 	});
