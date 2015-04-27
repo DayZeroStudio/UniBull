@@ -92,9 +92,9 @@ describe("'"+route+"'", function() {
             });
             context("that does exist", function() {
                 var newClass;
-                beforeEach(function() {
+                beforeEach(function(done) {
                     newClass = makeNewClass();
-                    createClass(newClass, _.noop);
+                    createClass(newClass, done);
                 });
                 it("should return an error", function(done) {
                     createClass(newClass, function(err, body) {

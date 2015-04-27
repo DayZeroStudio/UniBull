@@ -28,6 +28,7 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
         });
         router.use("/"+baseFile, middleware || function() {});
     }
+    // Refactor middlware into opts
     function addBundleRoute(baseFile, middleware, opts) {
         var toBundle = opts || {};
 
@@ -59,20 +60,22 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
     }
 
     addBundleRoute("login", null, {
+        adds: [{name: "login.js"}],
         requires: [{name: "login.js", expose: "login"}]
     });
     addBundleRoute("signup", null, {
+        adds: [{name: "signup.js"}],
         requires: [{name: "signup.js", expose: "signup"}]
     });
     addBundleRoute("home", null, {
         adds: [{name: "home.js"}]
     });
 
+    // Setup for "/class"
     (function(router) {
         router.get("/:classID", function(req, res) {
             var classID = req.params.classID;
             log.warn("classID:", classID);
-
             res.locals.classID = classID;
             res.render("tmpl/classroom");
         });

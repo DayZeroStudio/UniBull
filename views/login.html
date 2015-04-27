@@ -5,67 +5,18 @@
     <meta charset="utf-8">
     <title>UniBull Login Page</title>
     <link href="jqueryui/jquery-ui.css" rel="stylesheet">
-    <style>
-    body{
-        font: 82.5% "Lucida Console", Monaco, monospace;
-        margin: 50px;
-    }
-    .demoHeaders {
-        margin-top: 2em;
-    }
-    #dialog-link {
-        padding: .4em 1em .4em 20px;
-        text-decoration: none;
-        position: relative;
-    }
-    #dialog-link span.ui-icon {
-        margin: 0 5px 0 0;
-        position: absolute;
-        left: .2em;
-        top: 50%;
-        margin-top: -8px;
-    }
-    #icons {
-        margin: 0;
-        padding: 0;
-    }
-    #icons li {
-        margin: 2px;
-        position: relative;
-        padding: 4px 0;
-        cursor: pointer;
-        float: left;
-        list-style: none;
-    }
-    #icons span.ui-icon {
-        float: left;
-        margin: 0 4px;
-    }
-    .fakewindowcontain .ui-widget-overlay {
-        position: absolute;
-    }
-    label {
-        display:inline-block;
-        text-align:right;
-        width: 140px;
-    }
-    select {
-        width: 200px;
-    }
-    .formbox {
-        padding: 15px 10px 15px;
-        width: 400px;
-        border: thick solid #000000;
-    }
-    </style>
+    <link href="css/login.css" rel="stylesheet">
+    <script src="js/login-bundle.js"></script>
+    <script src="jqueryui/external/jquery/jquery.js"></script>
+    <script src="jqueryui/jquery-ui.js"></script>
 </head>
-    <body>
-        <center>
+<body>
+    <center>
         <h1>
             Welcome to Unibull
         </h1>
         <div class="formbox">
-        <section class="loginform">
+            <section class="loginform">
                 <form id="myForm" name="login" accept-charset="utf-8">
                     <label for="username">Username</label>
                     <input id="username" type="text" name="username" placeholder="Username">
@@ -74,55 +25,15 @@
                     <br><br><button id="loginButton">Login</button>
                 </form>
             </section>
-            </div>
-            <br><hr><br>
-            New to UniBull?
-            <br><br>
-            <button id="signupButton">Create an account!</button>
-            <br><br><hr><br>
-            <button id="logoutButton">LOGOUT</button>
-        </center>
-    </body>
+        </div>
+        <br><hr><br>
+        New to UniBull?
+        <br><br>
+        <button id="signupButton">Create an account!</button>
+        <br><br><hr><br>
+        <button id="logoutButton">LOGOUT</button>
+    </center>
 
-<script src="js/login-bundle.js"></script>
-<script src="jqueryui/external/jquery/jquery.js"></script>
-<script src="jqueryui/jquery-ui.js"></script>
-<script>
-
-
-function logout(name) {
-	$.cookie('usernameCookie', null);
-    document.cookie = name+"=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-}
-
-$( "#loginButton" ).button();
-$( "#loginButton" ).click(function() {
-        var login = require("login");
-        var onLogin = login.onLogin;
-        var fields = $("#myForm #username, #myForm #password");
-        return onLogin($, fields, function(err, data){
-            if(err){
-                return console.log(err);
-            }
-            if (data.redirect) {
-                document.cookie = "token="+data.token+";max-age="+(60*15);
-                $.cookie('usernameCookie', $("#username").val());
-                window.location.href = data.redirect;
-            }
-        });
-  });
-$( "#signupButton" ).button();
-$( "#signupButton" ).click(function() {
-    window.location.href = "/signup";
-});
-$("#logoutButton").button();
-$("#logoutButton").click(function() {
-    logout('token');
-    window.location.href = "/login";
-});
-
-
-
-
-</script>
+    <script src="js/login-bundle.js"></script>
+</body>
 </html>
