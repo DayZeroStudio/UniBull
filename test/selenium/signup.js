@@ -1,4 +1,4 @@
-/*eslint no-unused-vars:0*/
+/*eslint curly:0, no-unused-vars:0*/
 "use strict";
 
 var chai = require("chai");
@@ -38,24 +38,57 @@ describe("testing front end sign up", function() {
                 }).call(done);
         });
     });
+    function makeNewUser() {
+        var id = _.uniqueId();
+        return {
+            username: "user_"+id,
+            email: "email_"+id,
+            password: "password_"+id
+        };
+    }
+    function signupWithUser(user, callback) {
+        client.url(baseUrl + "/signup")
+            .setValue("#username", user.username)
+            .setValue("#email", user.email)
+            .setValue("#password", user.password)
+            .setValue("#confirmpassword", user.password)
+            .click("#submit")
+            .waitForExist("#submit", 100, true)
+            .title(function(err, res) {
+                if (err) return callback(err);
+                return callback(null, client, res.body);
+            });
+    }
     context("when the user fills out the form", function() {
-        it("should create a new user with given credentials", function(done) {
-            var username = "TestUser";
-            var email = "testemail@gmail.com";
-            var password = "mypasswd";
-            client.url(baseUrl + "/signup")
-                .setValue("#username", username)
-                .setValue("#email", email)
-                .setValue("#password", password)
-                .setValue("#confirmpassword", password)
-                .click("#submit")
-                .waitForExist("#submit", 100, true)
-                .saveScreenshot(cfg.genScreenshotPath("submit"))
-                .title(function(err, res) {
-                    if (err) {done(err); }
+        it("should redirect you to home", function(done) {
+            var user = makeNewUser();
+            signupWithUser(user, function(err, client, body) {
+                if (err) return done(err);
+                client.saveScreenshot(cfg.genScreenshotPath("submit"))
+                    .title(function(err, res) {
+                    if (err) return done(err);
                     res.value.should.contain("Home");
-                })
-            .call(done);
+                }).call(done);
+            });
+        });
+        it("should allow you to re-login as the new user", function(done) {
+            var user = makeNewUser();
+            signupWithUser(user, function(err, client, body) {
+                if (err) return done(err);
+                client.click("#logout")
+                    .waitForExist("#logout", 100, true)
+                    .title(function(err, res) {
+                        if (err) return done(err);
+                        res.value.should.contain("Login");
+                    }).setValue("#username", user.username)
+                    .setValue("#password", user.password)
+                    .click("#loginButton")
+                    .waitForExist("#loginButton", 100, true)
+                    .title(function(err, res) {
+                        if (err) return done(err);
+                        res.value.should.contain("Home");
+                    }).call(done);
+            });
         });
     });
     after(function(done) {

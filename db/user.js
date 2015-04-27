@@ -8,7 +8,10 @@ module.exports = function(db, DataTypes) {
     var cfg = require("../config");
 
     var User = db.define("User", {
-        username: {type: DataTypes.STRING},
+        username: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         password_hash: {type: DataTypes.STRING},
         password: {
             type: DataTypes.VIRTUAL,
@@ -19,12 +22,13 @@ module.exports = function(db, DataTypes) {
             },
             validate: {len: [(cfg.isProd ? 7 : 3), 64]}
         },
-        email: {type: DataTypes.STRING},
+        email: {
+            type: DataTypes.STRING
+        },
         classes: {
             type: DataTypes.ARRAY(DataTypes.STRING),
             defaultValue: [],
-            validate: {
-            }
+            validate: {}
         }
     }, {
         classMethods: {
