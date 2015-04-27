@@ -3,6 +3,7 @@
 
 var chai = require("chai");
 chai.should();
+chai.use(require("chai-things"));
 var request = require("supertest");
 var sinon = require("sinon");
 var async = require("async");
@@ -71,8 +72,9 @@ describe("'"+route+"'", function() {
                         request(app)
                             .get(route)
                             .expect(function(res) {
-                                _.includes(res.body.classes, newClass)
-                                    .should.be.true;
+                                log.warn("classes", res.body.classes);
+                                log.warn("newClass", newClass);
+                                res.body.classes.should.include.something(newClass);
                                 res.body.classes.forEach(function(klass) {
                                     klass.should.contain.keys("Threads");
                                 });
