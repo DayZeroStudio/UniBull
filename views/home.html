@@ -10,9 +10,9 @@
         font: 82.5% "Lucida Console", Monaco, monospace;
         margin: 50px;
         width:		100%;
-				height:		100%;					
-				padding:	0; 
-				margin:		0; 
+				height:		100%;
+				padding:	0;
+				margin:		0;
 				overflow:	auto; /* when page gets too small */
     }
     .demoHeaders {
@@ -78,13 +78,13 @@
  		float: left;
  		width:33.33333%;
  		text-align:right;
-	}​	
-	
+	}​
+
 	.ui-layout-pane-north,
-	.ui-layout-pane-south { 
-     border: 0 !important; 
-     background: none !important; 
-	}  
+	.ui-layout-pane-south {
+     border: 0 !important;
+     background: none !important;
+	}
 
     </style>
 </head>
@@ -100,18 +100,18 @@
 		<div class="pane ui-layout-center">
       	<div>
             <button id="toclass">Classrooms</button>
-            <button id="toclubs">Clubs</button> 
+            <button id="toclubs">Clubs</button>
             <button id="toroosters">Roosters</buttons>
       	</div>
         <hr>
-        
+
         <div id="feedtitle"></div>
-        
+
         <div id="feedcontainer">
     		</div>
-    		
+
 		</div>
-		
+
 		<div class="ui-layout-north">
 			<p class="alignleft"><button id="home">Home</button></p>
 			<p class="aligncenter">
@@ -119,79 +119,15 @@
       </p>
 			<p class="alignright">Profile Pic</p>
 		</div>
-		
+
 		<div class="ui-layout-south">
 		    <center><button id="logout"> LOGOUT </button></center>
 		</div>
 		<div class="pane ui-layout-east">
-			<center><h1>Notification Center</h1></center> 
+			<center><h1>Notification Center</h1></center>
 		</div>
 
   </div>
     </body>
 </html>
-<script>
-
-
-//get username cookie and set as title
-var username;
-username = $.cookie('usernameCookie');	
-$("#feedtitle").append("<h1><center>" + username + "'s Feed</center></h1>");
-
-
-
-$("#home").button();
-
-$("#toclass").button().click(function(){
-    window.location.href = "/classroom"
-});
-
-$("#toclubs").button().click(function(){
-    //window.location.href = "/classroom"
-    alert("Make a club page then link it");
-});
-
-$("#toroosters").button().click(function(){
-    alert("Woaaaaaaaaaah");
-});
-
-$('#container').layout({
-	north: {
-  	enableCursorHotkey: false,
-    closable: false,
-    resizable: false,
-    spacing_open: 0,
-    spacing_closed: 0
-  },
-  south: {
-  	enableCursorHotkey: false,
-    closable: false,
-    resizable: false,
-    spacing_open: 0,
-    spacing_closed: 0
-  }
-});
-
-for (i = 0; i < 200; i++) { 
-    $( "#feedcontainer" ).append("<p>Wow guys check out my feed, here is #" + i + " <br> 'Cool Beans' <br> -Noni <hr>");
-}
-
-
-$("#feedcontainer").jscroll({
-	//autoTriggerUntil: 3
-});
-
-//$( "#feedcontainer" ).load( "/jqueryui/external/jquery/jquery.js");
-
-
-
-function logout(name) {
-		$.cookie('usernameCookie', null);
-    document.cookie = name+"=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-}
-
-$("#logout").button().click(function(){
-    logout("token");
-    window.location.href = "/login";
-});
-</script>
+<script src="js/home-bundle.js"></script>

@@ -9,9 +9,9 @@ var _ = require("lodash");
 var cfg = require("../../config");
 var log = cfg.log.logger;
 
-var login = require("../../views/login.js").onLogin;
+var login = require("../../lib/login.js").onLogin;
 
-describe("views/login.js", function() {
+describe("lib/login.js", function() {
     context("when the user submits a login form", function() {
         // Wrapping the test function with sinon.test is important,
         // use it, and call this.[spy|stub|mock]()

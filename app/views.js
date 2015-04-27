@@ -6,8 +6,8 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
     var cwd = process.cwd();
 
     var fs = require("fs");
-  //var cfg = require("../config");
-  //var log = cfg.log.logger;
+    var cfg = require("../config");
+    var log = cfg.log.logger;
 
     var express = require("express");
     var router = express.Router();
@@ -22,27 +22,23 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
         });
     }
 
-    function addJustRoute(baseFile) {
+    function addJustRoute(baseFile, middleware) {
         router.get("/"+baseFile, function(req, res) {
             res.render(baseFile);
         });
+        router.use("/"+baseFile, middleware || function() {});
     }
     function addBundleRoute(baseFile, opts) {
         var toBundle = opts || {};
 
         var bundle = makeBundle();
-        bundle.require(path.join(cwd, "views", baseFile+".js"), {
-            expose: baseFile
-        });
 
-        var toAdd = toBundle.adds || [];
-        toAdd.forEach(function(toAdd) {
-            bundle.add(path.join(cwd, toAdd.path || "lib", toAdd.name), {
-                expose: toAdd.expose || toAdd.name
-            });
+        var toAdds = toBundle.adds || [];
+        toAdds.forEach(function(toAdd) {
+            bundle.add(path.join(cwd, toAdd.path || "lib", toAdd.name));
         });
-        var toRequire = toBundle.requires || [];
-        toRequire.forEach(function(toReq) {
+        var toRequires = toBundle.requires || [];
+        toRequires.forEach(function(toReq) {
             bundle.require(path.join(cwd, toReq.path || "lib", toReq.name), {
                 expose: toReq.expose || toReq.name
             });
@@ -56,11 +52,23 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
         addJustRoute(baseFile);
     }
 
-    addBundleRoute("login");
-    addBundleRoute("signup");
+    addBundleRoute("login", {
+        requires: [{name: "login.js", expose: "login"}]
+    });
+    addBundleRoute("signup", {
+        requires: [{name: "signup.js", expose: "signup"}]
+    });
+    addBundleRoute("home", {
+        adds: [{name: "home.js"}]
+    });
 
-    addJustRoute("home");
-    addJustRoute("classroom");
+    (function(router) {
+        router.get("/:classID", function(req, res) {
+            log.warn("classID:", req.params.classID);
+            res.json({classID: req.params.classID});
+        });
+        addJustRoute("class", router);
+    })(express.Router());
     addJustRoute("cs999");
 
     return done(null, router);
