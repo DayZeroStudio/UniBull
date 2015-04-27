@@ -14,7 +14,8 @@ module.exports = Promise.promisify(function(models, routePrefix, callback) {
 
     var auth = require("../app/auth.js");
     var publicEndpoints = _.map(["", "/"],
-            _.partial(append, routePrefix));
+            _.partial(append, routePrefix))
+        .concat([/all$/]);
     auth.setupAuth(router, publicEndpoints);
 
     var Class = models.Class;
@@ -54,6 +55,20 @@ module.exports = Promise.promisify(function(models, routePrefix, callback) {
             });
         }).catch(function(err) {
             res.json({error: err.message});
+        });
+    });
+
+    router.get("/:classID/all", function(req, res) {
+        log.info("GET - Get all threads");
+        var classID = req.params.classID;
+        Class.find({
+            where: {title: classID}
+        }).then(function(klass) {
+            return klass.getThreads();
+        }).then(function(threads) {
+            return res.json({
+                threads: threads
+            });
         });
     });
 

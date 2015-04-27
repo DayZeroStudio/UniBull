@@ -155,4 +155,16 @@ describe("'"+route+"/thread'", function() {
             });
         });
     });
+    describe("viewing all threads in a class", function() {
+        it("should return a list of all the threads in the class", function(done) {
+            request(app)
+                .get(route+"/"+classID+"/all")
+                .expect(200)
+                .expect(function(res) {
+                    res.body.should.contain.key("threads");
+                    res.body.threads.should
+                        .all.contain.keys("title", "content");
+                }).end(done);
+        });
+    });
 });
