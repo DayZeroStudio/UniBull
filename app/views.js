@@ -3,7 +3,6 @@ var Promise = require("sequelize").Promise;
 
 module.exports = Promise.promisify(function setupHtmlPages(models, done) {
     var path = require("path");
-    var cwd = process.cwd();
 
     var fs = require("fs");
     var cfg = require("../config");
@@ -18,7 +17,7 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
     var browserify = require("browserify");
     function makeBundle() {
         return browserify({
-            basedir: path.join(cwd, "views")
+            basedir: path.join(__dirname, "../views")
         });
     }
 
@@ -39,19 +38,19 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
         var toAdds = opts.adds || [];
         toAdds.forEach(function(toAdd) {
             var dirPath = toAdd.path || path.join("lib", "adds");
-            bundle.add(path.join(cwd, dirPath, toAdd.name));
+            bundle.add(path.join(__dirname, "..", dirPath, toAdd.name));
         });
         var toRequires = opts.requires || [];
         toRequires.forEach(function(toReq) {
             var dirPath = toReq.path || path.join("lib", "requires");
-            bundle.require(path.join(cwd, dirPath, toReq.name), {
+            bundle.require(path.join(__dirname, "..", dirPath, toReq.name), {
                 expose: toReq.expose || toReq.name
             });
         });
 
         bundle.bundle(function(err, src) {
             if (err) {throw err; }
-            fs.writeFile(path.join(cwd, "public", "js",
+            fs.writeFile(path.join(__dirname, "../public", "js",
                         baseFile+"-bundle.js"), src);
         });
 
