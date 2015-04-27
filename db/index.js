@@ -26,6 +26,12 @@ module.exports = Promise.promisify(function(callback) {
         force: !cfg.isProd
     };
     models.Class.sync(dbOpts).then(function() {
+        return models.Class.create({
+            title: "WebDev101",
+            info: "WEB DEV WILL RUIN YOUR LIFE",
+            school: "UC SHITTY CRUZ"
+        });
+    }).then(function() {
         models.Thread.sync(dbOpts).then(function() {
             models.User.sync(dbOpts).then(function() {
                 callback(null, models);
