@@ -56,7 +56,7 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
 
         var shouldAddRoute = opts.addRoute || true;
         if (shouldAddRoute) {
-            var router = opts.route || undefined;
+            var router = opts.router || undefined;
             addJustRoute(baseFile, router);
         }
     }
