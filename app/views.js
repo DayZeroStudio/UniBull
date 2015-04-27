@@ -21,10 +21,14 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
         });
     }
 
-    function addJustRoute(baseFile, middleware) {
+    function addJustRoute(baseFile, options) {
+        var opts = options || {};
         router.get("/"+baseFile, function(req, res) {
+            res.locals = opts.locals;
+            log.warn("locals", opts.locals);
             res.render(baseFile);
         });
+        var middleware = opts.middleware;
         if (middleware) {
             router.use("/"+baseFile, middleware);
         }
@@ -57,7 +61,9 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
         var shouldAddRoute = opts.addRoute || true;
         if (shouldAddRoute) {
             var router = opts.router || undefined;
-            addJustRoute(baseFile, router);
+            var locals = opts.locals || {};
+            log.warn("locals", locals);
+            addJustRoute(baseFile, {middleware:router, locals:locals});
         }
     }
 
@@ -83,13 +89,18 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
         });
         addBundleRoute("classroom", {
             addRoute: false,
+            requires: [{name: "classroom.js", expose: "classroom"}],
             adds: [{name: "classroom.js"}]
         });
-        addBundleRoute("class", {
-            router: router,
-            requires: [{name: "class.js", expose: "class"}],
-            adds: [{name: "class.js"}]
-        });
+        models.Class.findAll({}, {raw: true}).then(function(classes) {
+            log.warn("classes", classes);
+            addBundleRoute("class", {
+                locals: {classes: classes},
+                router: router,
+                requires: [{name: "class.js", expose: "class"}],
+                adds: [{name: "class.js"}]
+            });
+        })
     })(express.Router());
 
     return done(null, router);
