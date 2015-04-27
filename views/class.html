@@ -1,126 +1,26 @@
 <!DOCTYPE html>
 <%- watchScript %>
 <html lang="us">
-<link href="jqueryui/jquery-ui.css" rel="stylesheet">
-<style>
-	html, body{
-        font: 82.5% "Lucida Console", Monaco, monospace;
-        margin: 50px;
-        width:      100%;
-                height:     100%;                   
-                padding:    0; 
-                margin:     0; 
-                overflow:   auto; /* when page gets too small */
-    }
-	.demoHeaders {
-		margin-top: 2em;
-	}
-	#dialog-link {
-		padding: .4em 1em .4em 20px;
-		text-decoration: none;
-		position: relative;
-	}
-	#dialog-link span.ui-icon {
-		margin: 0 5px 0 0;
-		position: absolute;
-		left: .2em;
-		top: 50%;
-		margin-top: -8px;
-	}
-	#icons {
-		margin: 0;
-		padding: 0;
-	}
-	#icons li {
-		margin: 2px;
-		position: relative;
-		padding: 4px 0;
-		cursor: pointer;
-		float: left;
-		list-style: none;
-	}
-	#icons span.ui-icon {
-		float: left;
-		margin: 0 4px;
-	}
-	.fakewindowcontain .ui-widget-overlay {
-		position: absolute;
-	}
-	select {
-		width: 200px;
-	}
-    label {
-        text-align:left;
-    }
-    #title{
-        width: 100px;
-    }
-    #content{
-        width: 200px;
-    }
-    #forum{
-        width: 600px;
-    }
-    .submit_wrapper{
-        display: none;
-        text-align: left;
-        border: thin solid;
-        padding: 10px 10px;
-    }
-    #container {
-        background: #999;
-        height:     100%;
-        margin:     0 auto;
-        width:      100%;
-        max-width:  1024px;
-        min-width:  960px;
-        _width:     700px; /* min-width for IE6 */
-    }
-    .pane {
-        display:    none; /* will appear when layout inits */
-        
-    }
-    .alignleft {
-        float: left;
-        width:33.33333%;
-        text-align:left;
-    }
-    .aligncenter {
-    float: left;
-    width:33.33333%;
-    text-align:center;
-    }
-    .alignright {
-        float: left;
-        width:33.33333%;
-        text-align:right;
-    }​
+    <link href="jqueryui/jquery-ui.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/css/class.css">
+    <style>
+    </style>
+    <head>
+        <title>UniBull Class</title>
+    </head>
 
-    .ui-layout-pane-north { 
-        border: 0 !important; 
-        background: none !important; 
-    }
-    .ui-layout-pane-south { 
-        border: 0 !important; 
-        background: none !important; 
-    }
-</style> 
-<head>
-    <title>UniBull Class</title>
-</head>
-
-<body>
-    <div id="container">
-        <div class="pane ui-layout-center"> 
-        	<div>
-            	<button id="toclass">Classrooms</button>
-            	<button id="toclubs">Clubs</button> 
-            	<button id="toevents">Events</buttons>
-      		</div>
-        	<hr>
-            <center><h1>Enrolled Classes</h1></center>
-            <button id="addclass">Add a Class (+)</button><br><br>
-            <div class="submit_wrapper" id="submit_wrapper">
+    <body>
+        <div id="container">
+            <div class="pane ui-layout-center">
+                <div>
+                    <button id="toclass">Classrooms</button>
+                    <button id="toclubs">Clubs</button>
+                    <button id="toevents">Events</buttons>
+                </div>
+                <hr>
+                <center><h1>Enrolled Classes</h1></center>
+                <button id="addclass">Add a Class (+)</button><br><br>
+                <div class="submit_wrapper" id="submit_wrapper">
                     <form id="submitform" name="submitform" accept-charset="utf-8">
                         <label for="title">Class Title</label><br>
                         <input id="title" type="text" name="title"><br>
@@ -128,33 +28,33 @@
                         <input id="info" type="text" name="info"><br>
                         <label for="school">University</label><br>
                         <input id="school" type="text" name="school"><br>
-                    </form> 
+                    </form>
                     <br>
                     <button id="submit_class"> Submit</button>
                     <button id="cancel"> Cancel</button>
+                </div>
+                <hr>
+                <div id="classlist">
+                    <a href="/cs999">CS999</a>
+                </div>
             </div>
-            <hr>
-            <div id="classlist">
-            <a href="/cs999">CS999</a>
-            </div>
-        </div>
-        <div class="ui-layout-north">
-            <p class="alignleft">
+            <div class="ui-layout-north">
+                <p class="alignleft">
                 <button id="home">Home</button>
-            </p>
-            <p class="aligncenter">
+                </p>
+                <p class="aligncenter">
                 <font size="12">UniBull</font>
-            </p>
-            <p class="alignright">Profile Pic</p>
+                </p>
+                <p class="alignright">Profile Pic</p>
+            </div>
+            <div class="ui-layout-south">
+                <center><button id="logout"> LOGOUT </button></center>
+            </div>
+            <div class="pane ui-layout-east">
+                <center><h1>Notification Center</h1></center>
+            </div>
         </div>
-        <div class="ui-layout-south">
-            <center><button id="logout"> LOGOUT </button></center>
-        </div>
-        <div class="pane ui-layout-east">
-            <center><h1>Notification Center</h1></center> 
-        </div>
-    </div>
-</body>
+    </body>
 </html>
 <script src="jqueryui/external/jquery/jquery.js"></script>
 <script src="jqueryui/jquery-ui.js"></script>
@@ -163,23 +63,23 @@
 
 $("#container").layout({
     north: {
-    enableCursorHotkey: false,
-    closable: false,
-    resizable: false,
-    spacing_open: 0,
-    spacing_closed: 0
-  },
-  south: {
-    enableCursorHotkey: false,
-    closable: false,
-    resizable: false,
-    spacing_open: 0,
-    spacing_closed: 0
-  }
+        enableCursorHotkey: false,
+        closable: false,
+        resizable: false,
+        spacing_open: 0,
+        spacing_closed: 0
+    },
+    south: {
+        enableCursorHotkey: false,
+        closable: false,
+        resizable: false,
+        spacing_open: 0,
+        spacing_closed: 0
+    }
 });
 
 function logout(name) {
-		$.cookie('usernameCookie', null);
+    $.cookie('usernameCookie', null);
     document.cookie = name+"=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
 }
 $("#logout").button().click(function(){
@@ -222,23 +122,23 @@ $("#cancel").button().click(function(){
 $("#submit_class").button().click(function(){
     var title = $("#title").val();
     var content = $("#content").val();
- 		var classroom = require("class");
+    var classroom = require("class");
     var onCreate = classroom.onCreate;
     var fields = $("#submitform #info, #submitform #school, #submitform #title");
-   	return onCreate($, fields, function(err, data){
-     	if(err){
-      	return console.log(err);
-   		 }
-    	if (data.redirect) {
-    	 var classTitle = $("#title").val();
-    	 alert("classTitle = " + classTitle); 
-       // document.cookie = "token="+data.token+";max-age="+(60*15);
-       // $.cookie('usernameCookie', $("#username").val());
-       // window.location.href = data.redirect;  
-       $( "#classlist" ).append("<br><a href='/class/" + classTitle + "'>" + classTitle + "</a>");
-        end_submission();
-      }
-	});
+    return onCreate($, fields, function(err, data){
+        if(err){
+            return console.log(err);
+        }
+        if (data.redirect) {
+            var classTitle = $("#title").val();
+            alert("classTitle = " + classTitle);
+            // document.cookie = "token="+data.token+";max-age="+(60*15);
+            // $.cookie('usernameCookie', $("#username").val());
+            // window.location.href = data.redirect;
+            $( "#classlist" ).append("<br><a href='/class/" + classTitle + "'>" + classTitle + "</a>");
+            end_submission();
+        }
+    });
 });
 
 </script>
