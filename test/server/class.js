@@ -72,8 +72,6 @@ describe("'"+route+"'", function() {
                         request(app)
                             .get(route)
                             .expect(function(res) {
-                                log.warn("classes", res.body.classes);
-                                log.warn("newClass", newClass);
                                 res.body.classes.should.include.something(newClass);
                                 res.body.classes.forEach(function(klass) {
                                     klass.should.contain.keys("Threads");

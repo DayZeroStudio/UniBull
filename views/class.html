@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <%- watchScript %>
 <html lang="us">
-	<link href="jqueryui/jquery-ui.css" rel="stylesheet">
-	<style>
+<link href="jqueryui/jquery-ui.css" rel="stylesheet">
+<style>
 	html, body{
         font: 82.5% "Lucida Console", Monaco, monospace;
         margin: 50px;
@@ -104,9 +104,9 @@
         border: 0 !important; 
         background: none !important; 
     }
-	</style> 
+</style> 
 <head>
-  <title>UniBull Class</title>
+    <title>UniBull Class</title>
 </head>
 
 <body>
@@ -153,8 +153,8 @@
         </div>
     </div>
 </body>
-
-<!--<script src="js/class-bundle.js"></script> -->
+</html>
+<script src="js/class-bundle.js"></script>
 <script src="jqueryui/external/jquery/jquery.js"></script>
 <script src="jqueryui/jquery-ui.js"></script>
 <script src="/jqueryui/jquery.layout-latest.js"></script>
@@ -202,19 +202,14 @@ $("#toevents").button().click(function() {
     alert("Under Construction");
 });
 
-
-
-$("#newpost").button().click(function(){
-
 $("#addclass").button().click(function(){
     $("#submit_wrapper").slideToggle();
 });
 
 function end_submission(){
-    $("#submit_wrapper").slideUp();//"slow", function(){
-        $("#title").val("");
-        $("#content").val("");
-    
+    $("#submit_wrapper").slideUp();
+    $("#title").val("");
+    $("#content").val("");
 }
 
 $("#cancel").button().click(function(){
@@ -279,4 +274,4 @@ collapsible();
 
 </script>
 
-</html>
+

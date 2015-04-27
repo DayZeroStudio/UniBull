@@ -2,7 +2,7 @@ module.exports = (function() {
     "use strict";
     var exports = {};
     var ajax = require("../lib/ajax.js");
-    exports.onCreate = function($, fields, callback) {
+    exports.onLogin = function($, fields, callback) {
         var formData = {};
         fields.each(function(i, v) {
             console.log(v);
@@ -11,7 +11,7 @@ module.exports = (function() {
             formData[name] = $(v).val();
         });
         console.log(formData);
-        ajax.postJSON($, "rest/class/create", formData, callback);
+        ajax.postJSON($, "rest/user/login", formData, callback);
         return false;
     };
 
