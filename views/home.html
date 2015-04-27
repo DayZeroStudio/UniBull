@@ -89,12 +89,6 @@
     </style>
 </head>
 <html>
-<script> // src="js/home-bundle.js"></script>
-<script src="jqueryui/external/jquery/jquery.js"></script>
-<script src="jqueryui/jquery-ui.js"></script>
-<script type="text/javascript"></script>
-<script src="jqueryui/jquery.layout-latest.js"></script>
-<script src="jqueryui/jquery-jscroll.js"></script>
 <body>
 	<div id="container">
 		<div class="pane ui-layout-center">
@@ -130,66 +124,9 @@
   </div>
     </body>
 </html>
-<script>
-
-
-//get username cookie and set as title
-var username = $.cookie('usernameCookie');	
-$("#feedtitle").append("<h1><center>" + username + "'s Feed</center></h1>");
-
-
-
-$("#home").button();
-
-$("#toclass").button().click(function(){
-    window.location.href = "/class"
-});
-
-$("#toclubs").button().click(function(){
-    alert("Make a club page then link it");
-});
-
-$("#toroosters").button().click(function(){
-    alert("Woaaaaaaaaaah");
-});
-
-$('#container').layout({
-	north: {
-  	enableCursorHotkey: false,
-    closable: false,
-    resizable: false,
-    spacing_open: 0,
-    spacing_closed: 0
-  },
-  south: {
-  	enableCursorHotkey: false,
-    closable: false,
-    resizable: false,
-    spacing_open: 0,
-    spacing_closed: 0
-  }
-});
-
-for (i = 0; i < 200; i++) { 
-    $( "#feedcontainer" ).append("<p>Wow guys check out my feed, here is #" + i + " <br> 'Cool Beans' <br> -Noni <hr>");
-}
-
-
-$("#feedcontainer").jscroll({
-	//autoTriggerUntil: 3
-});
-
-//$( "#feedcontainer" ).load( "/jqueryui/external/jquery/jquery.js");
-
-
-
-function logout(name) {
-	$.cookie('usernameCookie', null);
-    document.cookie = name+"=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-}
-
-$("#logout").button().click(function(){
-    logout("token");
-    window.location.href = "/login";
-});
-</script>
+<script src="jqueryui/external/jquery/jquery.js"></script>
+<script src="jqueryui/jquery-ui.js"></script>
+<script type="text/javascript"></script>
+<script src="jqueryui/jquery.layout-latest.js"></script>
+<script src="jqueryui/jquery-jscroll.js"></script>
+<script src="js/home-bundle.js"></script>
