@@ -5,6 +5,8 @@ var chai = require("chai");
 chai.should();
 var driver = require("webdriverio");
 
+var Promise = require("sequelize").Promise;
+
 var _ = require("lodash");
 var cfg = require("../../config");
 var log = cfg.log.logger;
@@ -24,6 +26,7 @@ describe("testing front end sign up", function() {
     before(function(done) {
         require("../../index.js")(PORT).then(function() {
             client = driver.remote(options);
+            Promise.promisifyAll(client, {suffix: "_P"});
             client.init(done);
         });
     });
@@ -32,10 +35,9 @@ describe("testing front end sign up", function() {
             client.pause(500)
                 .url(baseUrl + "/signup")
                 .saveScreenshot(cfg.genScreenshotPath("signup"))
-                .title(function(err, res) {
-                    if (err) {done(err); }
+                .title_P().then(function(res) {
                     res.value.should.contain("Signup");
-                }).call(done);
+                }).then(done);
         });
     });
     function makeNewUser() {
@@ -46,49 +48,43 @@ describe("testing front end sign up", function() {
             password: "password_"+id
         };
     }
-    function signupWithUser(user, callback) {
-        client.url(baseUrl + "/signup")
+    var signupWithUser = function(user) {
+        return client.url(baseUrl + "/signup")
             .setValue("#username", user.username)
             .setValue("#email", user.email)
             .setValue("#password", user.password)
             .setValue("#confirmpassword", user.password)
             .click("#submit")
             .waitForExist("#submit", 100, true)
-            .title(function(err, res) {
-                if (err) return callback(err);
-                return callback(null, client, res.body);
+            .title_P().then(function(res) {
+                return res.value;
             });
-    }
+    };
     context("when the user fills out the form", function() {
         it("should redirect you to home", function(done) {
             var user = makeNewUser();
-            signupWithUser(user, function(err, client, body) {
-                if (err) return done(err);
-                client.saveScreenshot(cfg.genScreenshotPath("submit"))
-                    .title(function(err, res) {
-                    if (err) return done(err);
-                    res.value.should.contain("Home");
-                }).call(done);
-            });
+            signupWithUser(user).then(function(title) {
+                client.saveScreenshot(cfg.genScreenshotPath("submit"));
+                title.should.contain("Home");
+            }).then(done).catch(done);
         });
         it("should allow you to re-login as the new user", function(done) {
             var user = makeNewUser();
-            signupWithUser(user, function(err, client, body) {
-                if (err) return done(err);
-                client.click("#logout")
+            signupWithUser(user).then(function() {
+                return client.click("#logout")
                     .waitForExist("#logout", 100, true)
-                    .title(function(err, res) {
-                        if (err) return done(err);
+                    .title_P().then(function(res) {
                         res.value.should.contain("Login");
-                    }).setValue("#username", user.username)
+                    });
+            }).then(function() {
+                client.setValue("#username", user.username)
                     .setValue("#password", user.password)
                     .click("#loginButton")
                     .waitForExist("#loginButton", 100, true)
-                    .title(function(err, res) {
-                        if (err) return done(err);
+                    .title_P().then(function(res) {
                         res.value.should.contain("Home");
-                    }).call(done);
-            });
+                    });
+            }).then(done).catch(done);
         });
     });
     after(function(done) {
