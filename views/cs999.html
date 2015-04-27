@@ -117,11 +117,10 @@
             	 <button id="toevents">Events</buttons>
       		</div>
         	<hr>
-            <center><h1>CS999: Unibull</h1></center>
+            <center><h1 id="classID">CS999: Unibull</h1></center>
             <hr>
             <div id="forum">
                 <button id="newpost"> Submit a post </button>
-                <button id="backtoclasses"> Back to classes </button>
                 <br><br>
                 
                 <div class="submit_wrapper" id="submit_wrapper">
@@ -162,7 +161,6 @@
         </div>
     </div>
 </body>
-
 <script src="js/login-bundle.js"></script>
 <script src="jqueryui/external/jquery/jquery.js"></script>
 <script src="jqueryui/jquery-ui.js"></script>
@@ -197,9 +195,7 @@ $("#logout").button().click(function(){
 $("#home").button().click(function(){
     window.location.href = "/home";
 });
-$("#backtoclasses").button().click(function(){
-    window.location.href = "/class";
-});
+
 $("#toclass").button().click(function(){
     window.location.href = "/class"
 });
