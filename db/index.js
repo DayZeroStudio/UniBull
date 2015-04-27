@@ -12,9 +12,8 @@ module.exports = Promise.promisify(function(callback) {
     var models = {};
 
     var path = require("path");
-    var cwd = process.cwd();
     ["Class", "Thread", "User"].forEach(function(model) {
-        models[model] = db.import(path.join(cwd, "db", model));
+        models[model] = db.import(path.join(__dirname, model));
     });
 
     (function(ms) {

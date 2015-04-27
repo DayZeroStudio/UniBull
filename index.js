@@ -6,13 +6,12 @@ var uniBull = Promise.promisify(function(PORT, callback) {
     var app = express();
     var path = require("path");
 
-    var cwd = process.cwd();
     var cfg = require("./config");
     var log = cfg.log.logger;
 
     // For automagical HTML page reloading
     var reloadify = require("./lib/utils/reloadify");
-    reloadify(app, path.join(cwd, "views"));
+    reloadify(app, path.join(__dirname, "views"));
 
     // Render html files with ejs
     var ejs = require("ejs");
@@ -20,10 +19,10 @@ var uniBull = Promise.promisify(function(PORT, callback) {
 
     // From now on, when using res.render("str"),
     // it will lookup views/str.html
-    app.set("views", path.join(cwd, "views"));
+    app.set("views", path.join(__dirname, "views"));
     app.set("view engine", "html");
 
-    app.use(express.static(path.join(cwd, "public")));
+    app.use(express.static(path.join(__dirname, "public")));
 
     app.get("/", function(req, res) {
         res.render("login");
