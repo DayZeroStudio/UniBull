@@ -4,7 +4,6 @@ var Promise = require("sequelize").Promise;
 var uniBull = Promise.promisify(function(PORT, callback) {
     var express = require("express");
     var app = express();
-    var ejs = require("ejs");
     var path = require("path");
 
     var cwd = process.cwd();
@@ -14,6 +13,9 @@ var uniBull = Promise.promisify(function(PORT, callback) {
     // For automagical HTML page reloading
     var reloadify = require("./lib/reloadify");
     reloadify(app, path.join(cwd, "views"));
+
+    // Render html files with ejs
+    var ejs = require("ejs");
     app.engine("html", ejs.renderFile);
 
     // From now on, when using res.render("str"),
