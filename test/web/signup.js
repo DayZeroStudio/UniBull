@@ -26,7 +26,7 @@ describe("testing front end sign up", function() {
     before(function(done) {
         require("../../index.js")(PORT).then(function() {
             client = driver.remote(options);
-            Promise.promisifyAll(client, {suffix: "_P"});
+            Promise.promisifyAll(client, {suffix: "_async"});
             client.init(done);
         });
     });
@@ -35,7 +35,7 @@ describe("testing front end sign up", function() {
             client.pause(500)
                 .url(baseUrl + "/signup")
                 .saveScreenshot(cfg.genScreenshotPath("signup"))
-                .title_P().then(function(res) {
+                .title_async().then(function(res) {
                     res.value.should.contain("Signup");
                 }).then(done);
         });
@@ -56,7 +56,7 @@ describe("testing front end sign up", function() {
             .setValue("#confirmpassword", user.password)
             .click("#submit")
             .waitForExist("#submit", 100, true)
-            .title_P().then(function(res) {
+            .title_async().then(function(res) {
                 return res.value;
             });
     };
@@ -73,7 +73,7 @@ describe("testing front end sign up", function() {
             signupWithUser(user).then(function() {
                 return client.click("#logout")
                     .waitForExist("#logout", 100, true)
-                    .title_P().then(function(res) {
+                    .title_async().then(function(res) {
                         res.value.should.contain("Login");
                     });
             }).then(function() {
@@ -81,7 +81,7 @@ describe("testing front end sign up", function() {
                     .setValue("#password", user.password)
                     .click("#loginButton")
                     .waitForExist("#loginButton", 100, true)
-                    .title_P().then(function(res) {
+                    .title_async().then(function(res) {
                         res.value.should.contain("Home");
                     });
             }).then(done).catch(done);
