@@ -123,11 +123,11 @@
             <div class="submit_wrapper" id="submit_wrapper">
                     <form id="submitform" name="submitform" accept-charset="utf-8">
                         <label for="title">Class Title</label><br>
-                        <input id="title" type="text"><br>
+                        <input id="title" type="text" name="title"><br>
                         <label for="info">Class Description</label><br>
-                        <input class ="submissioncontent" id="content" type="text"><br>
+                        <input class ="submissioncontent" id="content" type="text" name="info"><br>
                         <label for="school">University</label><br>
-                        <input id="school" type="text" ><br>
+                        <input id="school" type="text" name="school"><br>
                     </form> 
                     <br>
                     <button id="submit_class"> Submit</button>
@@ -203,18 +203,20 @@ $("#toevents").button().click(function() {
 });
 
 
-/*
+
 $("#newpost").button().click(function(){
 
 $("#addclass").button().click(function(){
     $("#submit_wrapper").slideToggle();
 });
+
 function end_submission(){
     $("#submit_wrapper").slideUp();//"slow", function(){
         $("#title").val("");
         $("#content").val("");
-    }
+    
 }
+
 $("#cancel").button().click(function(){
     $("#submit_wrapper").slideUp();
     $("#title").val("");
@@ -228,22 +230,23 @@ $("#submit_class").button().click(function(){
     $("#submit_wrapper").slideUp();
     $("#title").val("");
     $("#content").val("");
-    // var classroom = require("class");
-    // var createclass = classroom.onCreate;
-    // var fields = $("#submitform #info, #submitform #school, #submitform #title");
-    // return onCreate($, fields, function(err, data){
-    //     if(err){
-    //         return console.log(err);
-    //     }
-    //     if (data.redirect) {
-    //         document.cookie = "token="+data.token+";max-age="+(60*15);
-    //         $.cookie('usernameCookie', $("#username").val());
-    //         window.location.href = data.redirect;
-    //         
-    //         console.log("We smart");
-    //     }
-    // });
+ var classroom = require("class");
+     var createclass = classroom.onCreate;
+     var fields = $("#submitform #info, #submitform #school, #submitform #title");
+   return onCreate($, fields, function(err, data){
+      if(err){
+           return console.log(err);
+   		 }
+    if (data.redirect) {
+       // document.cookie = "token="+data.token+";max-age="+(60*15);
+       // $.cookie('usernameCookie', $("#username").val());
+       // window.location.href = data.redirect;
+        
+        console.log("We smart");
+      }
+	});
 });
+/*
 function collapsible(){
     $("#accordion").accordion({
         active: false,
@@ -271,9 +274,9 @@ function collapsible(){
             return false; // Cancels the default action
         }
     });
-}
+} */
 collapsible();
-*/
+
 </script>
 
 </html>

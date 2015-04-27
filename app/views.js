@@ -28,7 +28,7 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
         });
         router.use("/"+baseFile, middleware || function() {});
     }
-    function addBundleRoute(baseFile, opts) {
+    function addBundleRoute(baseFile, middleware, opts) {
         var toBundle = opts || {};
 
         var bundle = makeBundle();
@@ -49,16 +49,16 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
             fs.writeFile(path.join(cwd, "public", "js",
                         baseFile+"-bundle.js"), src);
         });
-        addJustRoute(baseFile);
+        addJustRoute(baseFile, middleware);
     }
 
-    addBundleRoute("login", {
+    addBundleRoute("login", null, {
         requires: [{name: "login.js", expose: "login"}]
     });
-    addBundleRoute("signup", {
+    addBundleRoute("signup", null, {
         requires: [{name: "signup.js", expose: "signup"}]
     });
-    addBundleRoute("home", {
+    addBundleRoute("home", null, {
         adds: [{name: "home.js"}]
     });
 
@@ -67,7 +67,9 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
             log.warn("classID:", req.params.classID);
             res.json({classID: req.params.classID});
         });
-        addJustRoute("class", router);
+        addBundleRoute("class", router, {
+        		requires: [{name: "class.js", expose: "class"}]
+        });
     })(express.Router());
     addJustRoute("cs999");
 
