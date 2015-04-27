@@ -1,12 +1,13 @@
 #!/bin/bash
 BIN			     	:= ./node_modules/.bin
 MOCHA		     	:= ${BIN}/mocha
+BUNYAN				:= ${BIN}/bunyan
 LINTER		     	:= eslint
 MOCHA_OPTS	     	:= --recursive
 AUTOTEST_IGNORES 	:= --ignore ./public/ --ignore '*.log' --ignore '.[!.]*'
 
 start:
-	nodemon --ignore public/ | bunyan
+	nodemon --ignore public/ | ${BUNYAN}
 
 start-selenium:
 	java -jar ./selenium-server-standalone-2.45.0.jar\
@@ -22,27 +23,31 @@ install:
 	npm prune
 	npm install
 
+run-heroku:
+	@echo "WARNING: don't use this manually, use make start instead"
+	NODE_ENV=production node ./index.js | ${BUNYAN}
+
 test: lint test-server test-web
 
 test-server: lint
 	@set -o pipefail\
-		&& NODE_ENV=test ${MOCHA} ${MOCHA_OPTS} ./test/server | bunyan
+		&& NODE_ENV=test ${MOCHA} ${MOCHA_OPTS} ./test/server | ${BUNYAN}
 
 test-web: lint
 	@set -o pipefail\
-		&& NODE_ENV=test ${MOCHA} ${MOCHA_OPTS} ./test/selenium | bunyan
+		&& NODE_ENV=test ${MOCHA} ${MOCHA_OPTS} ./test/selenium | ${BUNYAN}
 
 test-web-%: lint
 	@set -o pipefail\
 		&& NODE_ENV=test SEL_BROWSER=$*\
-		${MOCHA} ${MOCHA_OPTS} ./test/selenium | bunyan
+		${MOCHA} ${MOCHA_OPTS} ./test/selenium | ${BUNYAN}
 
 test-%: lint test-server
 	make test-web-$*
 
 _test-server: lint
 	-@set -o pipefail\
-		&& NODE_ENV=test ${MOCHA} ${MOCHA_OPTS} ./test/server | bunyan
+		&& NODE_ENV=test ${MOCHA} ${MOCHA_OPTS} ./test/server | ${BUNYAN}
 
 autotest:
 	@nodemon ${AUTOTEST_IGNORES} --exec "make _test-server"

@@ -5,8 +5,9 @@ module.exports = Promise.promisify(function(callback) {
     var cfg = require("../config");
 
     var DB = require("sequelize");
-    var db = new DB(cfg.db.name, cfg.db.username,
-            cfg.db.password, cfg.db.options);
+    var db = (cfg.db.url ? new DB(cfg.db.url, cfg.db.options)
+            : new DB(cfg.db.name, cfg.db.username,
+                cfg.db.password, cfg.db.options));
 
     var models = {};
 
