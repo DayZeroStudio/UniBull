@@ -33,7 +33,9 @@
                 </div>
                 <hr>
                 <div id="classlist">
-                    <a href="class/cs999">CS999</a>
+                    <% classes.forEach(function(klass){ %>
+                        <a href="class/<%=klass.title%>"><%=klass.title%></a>
+                    <% }); %>
                 </div>
             </div>
             <div class="ui-layout-north">
