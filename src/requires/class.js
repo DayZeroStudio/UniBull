@@ -14,6 +14,10 @@ module.exports = (function() {
         ajax.postJSON($, "rest/class/create", formData, callback);
         return false;
     };
-
+    exports.joinClass = function($, userID, classID, callback) {
+        var data = { userID: userID, classID: classID };
+        var enrollUrl = "rest/user/" + userID + "/joinClass";
+        ajax.postJSON($, enrollUrl, data, callback);
+    };
     return exports;
 })();

@@ -60,10 +60,9 @@ $("#cancel").button().click(function() {
 });
 
 $("#submit_class").button().click(function() {
-    //var title = $("#title").val();
-    //var content = $("#content").val();
     var classroom = require("class");
     var onCreate = classroom.onCreate;
+    var joinClass = classroom.joinClass;
     var fields = $("#submitform #info, #submitform #school, #submitform #title");
     return onCreate($, fields, function(err, data) {
         if (err) {
@@ -71,8 +70,15 @@ $("#submit_class").button().click(function() {
         }
         if (data.redirect) {
             var classTitle = $("#title").val();
+            var userID = $.cookie("usernameCookie");
             $( "#classlist" ).append("<br><a href='/class/" + classTitle + "'>" + classTitle + "</a>");
             end_submission();
+            return joinClass($, userID, classTitle, function(err, data) {
+                if (err) { return console.log(err); }
+                if (data.action) {
+                    console.log("joined class");
+                }
+            });
         }
     });
 });

@@ -1,8 +1,6 @@
 /*eslint-env jquery, browser*/
 /*eslint no-alert:0*/
-/*globals classTitle*/
 "use strict";
-
 $("#container").layout({
     north: {
     enableCursorHotkey: false,
@@ -52,7 +50,6 @@ $("#cancel").button().click(function() {
     $("#title").val("");
     $("#content").val("");
 });
-
 function addToAccordion(title, content) {
     $("#accordion").prepend("<h3>" + title + "</h3><div>" + content + "</div>")
     .accordion("destroy").accordion();
@@ -65,8 +62,8 @@ $("#submit_post").button().click(function() {
     var onSubmitPost = classroom.onSubmitPost;
     var fields = $("#submitform #content, #submitform #title");
     return onSubmitPost($, classTitle, fields, function(err, data) {
-        if (err) {return console.log(err); }
-        if (data.redirect) {
+        if (err) { return console.log(err); }
+        if (data.action) {
             addToAccordion(title, content);
             $("#submit_wrapper").slideUp();
             $("#title").val("");
