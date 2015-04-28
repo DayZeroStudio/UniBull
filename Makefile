@@ -22,6 +22,7 @@ start-phantomjs:
 install:
 	npm prune
 	npm install
+	npm upgrade
 
 run-heroku:
 	@ echo "WARNING: don't use this manually, use make start instead"
