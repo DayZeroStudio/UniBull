@@ -2,10 +2,10 @@ html, body{
     font: 82.5% "Lucida Console", Monaco, monospace;
     margin: 50px;
     width:      100%;
-            height:     100%;                   
-            padding:    0; 
-            margin:     0; 
-            overflow:   auto; /* when page gets too small */
+    height:     100%;
+    padding:    0;
+    margin:     0;
+    overflow:   auto; /* when page gets too small */
 }
 .demoHeaders {
     margin-top: 2em;
@@ -73,7 +73,6 @@ label {
 }
 .pane {
     display:    none; /* will appear when layout inits */
-    
 }
 .alignleft {
     float: left;
@@ -81,20 +80,23 @@ label {
     text-align:left;
 }
 .aligncenter {
-float: left;
-width:33.33333%;
-text-align:center;
+    float: left;
+    width:33.33333%;
+    text-align:center;
 }
 .alignright {
     float: left;
     width:33.33333%;
     text-align:right;
-}​
-.ui-layout-pane-north { 
-    border: 0 !important; 
-    background: none !important; 
 }
-.ui-layout-pane-south { 
-    border: 0 !important; 
-    background: none !important; 
+.ui-layout-pane-north {
+    border: 0 !important;
+    background: none !important;
+}
+.ui-layout-pane-south {
+    border: 0 !important;
+    background: none !important;
+}
+.center {
+    text-align: center
 }

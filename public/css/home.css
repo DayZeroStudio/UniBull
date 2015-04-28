@@ -70,10 +70,12 @@ select {
     float: left;
     width:33.33333%;
     text-align:right;
-}​
-
+}
 .ui-layout-pane-north,
 .ui-layout-pane-south {
     border: 0 !important;
     background: none !important;
+}
+.center {
+    text-align: center;
 }
