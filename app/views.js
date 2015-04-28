@@ -22,13 +22,13 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
     }
 
     function addJustRoute(baseFile, options) {
-        var opts = options || {};
         router.get("/"+baseFile, function(req, res) {
-            res.locals = opts.locals;
-            log.warn("locals", opts.locals);
-            res.render(baseFile);
+            options.getLocals().then(function(locals) {
+                res.locals = locals;
+                res.render(baseFile);
+            });
         });
-        var middleware = opts.middleware;
+        var middleware = options.middleware;
         if (middleware) {
             router.use("/"+baseFile, middleware);
         }
@@ -61,9 +61,11 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
         var shouldAddRoute = opts.addRoute || true;
         if (shouldAddRoute) {
             var router = opts.router || undefined;
-            var locals = opts.locals || {};
-            log.warn("locals", locals);
-            addJustRoute(baseFile, {middleware:router, locals:locals});
+            var getLocals = opts.getLocals || function() {return Promise.resolve({}); };
+            addJustRoute(baseFile, {
+                middleware: router,
+                getLocals: getLocals
+            });
         }
     }
 
@@ -79,7 +81,7 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
         adds: [{name: "home.js"}]
     });
 
-    // Setup for "/class"
+    // Setup for "/class/*"
     (function(router) {
         router.get("/:classID", function(req, res) {
             var classID = req.params.classID;
@@ -92,15 +94,18 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
             requires: [{name: "classroom.js", expose: "classroom"}],
             adds: [{name: "classroom.js"}]
         });
-        models.Class.findAll({}, {raw: true}).then(function(classes) {
-            log.warn("classes", classes);
-            addBundleRoute("class", {
-                locals: {classes: classes},
-                router: router,
-                requires: [{name: "class.js", expose: "class"}],
-                adds: [{name: "class.js"}]
-            });
-        })
+        addBundleRoute("class", {
+            getLocals: function() {
+                return models.Class.findAll({}, {
+                    raw: true
+                }).then(function(classes) {
+                    return {classes: classes};
+                });
+            },
+            router: router,
+            requires: [{name: "class.js", expose: "class"}],
+            adds: [{name: "class.js"}]
+        });
     })(express.Router());
 
     return done(null, router);

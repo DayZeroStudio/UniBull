@@ -1,4 +1,4 @@
-body{
+body {
     font: 82.5% "Lucida Console", Monaco, monospace;
     margin: 50px;
 }
@@ -48,4 +48,11 @@ label {
 }
 select {
     width: 200px;
+}
+.center {
+    text-align: center
+}
+.center-fixed {
+    margin: 0px auto;
+    width: 430px;
 }

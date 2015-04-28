@@ -1,9 +1,5 @@
 <!DOCTYPE html>
 <%- watchScript %>
-<script> 
-var classTitle = "<%= classID %>";
-console.log(classTitle);
-</script>
 <html lang="us">
     <head>
         <title>UniBull Class</title>
@@ -61,6 +57,10 @@ console.log(classTitle);
             </div>
         </div>
 
+        <script>
+var classTitle = "<%= classID %>";
+console.log(classTitle);
+        </script>
         <script src="/js/classroom-bundle.js"></script>
     </body>
 </html>
