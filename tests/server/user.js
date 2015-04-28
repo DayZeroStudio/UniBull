@@ -13,8 +13,7 @@ var app = require("express")();
 var cfg = require("../../config");
 var log = cfg.log.logger;
 
-var routePrefix = "/rest/user";
-describe("'"+routePrefix+"'", function() {
+describe("testing user endpoints", function() {
     before(function(done) {
         require("../../db")().then(function(dbModels) {
             return require("../../app/rest")(dbModels);
@@ -25,7 +24,7 @@ describe("'"+routePrefix+"'", function() {
     context("without authentication", function() {
         it("GET '/' should return a list of all users", function(done) {
             request(app)
-                .get(routePrefix + "/")
+                .get("/rest/user/")
                 .expect(200)
                 .expect(function(res) {
                     res.body.users.should.have.length.above(0);
@@ -33,7 +32,7 @@ describe("'"+routePrefix+"'", function() {
         });
         it("POST '/restricted' should be unauthorized", function(done) {
             request(app)
-                .post(routePrefix + "/restricted")
+                .post("/rest/user/restricted")
                 .expect(401)
                 .expect(function(res) {
                     res.body.should.contain.keys("error");
@@ -43,7 +42,7 @@ describe("'"+routePrefix+"'", function() {
     describe("logging in", function() {
         function loginToApp(user, callback) {
             request(app)
-                .post(routePrefix + "/login")
+                .post("/rest/user/login")
                 .send(user)
                 .end(function(err, res) {
                     if (err) return callback(err);
@@ -85,7 +84,7 @@ describe("'"+routePrefix+"'", function() {
             };
             it("we are auth'd and redirected to '/home'", function(done) {
                 request(app)
-                    .post(routePrefix + "/login")
+                    .post("/rest/user/login")
                     .send(validUser)
                     .expect(200)
                     .expect("Content-Type", /json/)
@@ -104,7 +103,7 @@ describe("'"+routePrefix+"'", function() {
                     if (err)
                         return done(err);
                     request(app)
-                        .get(routePrefix+"/restricted")
+                        .get("/rest/user/restricted")
                         .set("Authorization", body.token)
                         .expect(200)
                         //.expect("Content-Type", /json/)
@@ -122,7 +121,7 @@ describe("'"+routePrefix+"'", function() {
                         if (err) return done(err);
                         clock.tick(cfg.jwt.timeoutInSeconds * 1000);
                         request(app)
-                            .get(routePrefix+"/restricted")
+                            .get("/rest/user/restricted")
                             .set("Authorization", body.token)
                             .expect(401, done);
                         clock.restore();
@@ -136,7 +135,7 @@ describe("'"+routePrefix+"'", function() {
         context("with valid user info", function() {
             function signupNewUser(username, callback) {
                 request(app)
-                    .post(routePrefix + "/signup")
+                    .post("/rest/user/signup")
                     .send({
                         username: username,
                         password: "password",
@@ -155,7 +154,7 @@ describe("'"+routePrefix+"'", function() {
                 signupNewUser(_.uniqueId("newuser_"), function(err, body) {
                     if (err) return done(err);
                     request(app)
-                        .get(routePrefix + "/restricted")
+                        .get("/rest/user/restricted")
                         .set("Authorization", body.token)
                         .expect(200)
                         .end(function(err, res) {

@@ -21,8 +21,7 @@ var validUser = {
 };
 var token = "Bearer "+jwt.sign(validUser, cfg.jwt.secret);
 
-var route = "/rest/class";
-describe("'"+route+"/thread'", function() {
+describe("testing thread endpoints", function() {
     before(function(done) {
         require("../../db")().then(function(dbModels) {
             return require("../../app/rest")(dbModels);
@@ -40,7 +39,7 @@ describe("'"+route+"/thread'", function() {
     }
     function createClass(klass, callback) {
         request(app)
-            .post(route + "/create")
+            .post("/rest/class/create")
             .set("Authorization", token)
             .send(klass)
             .expect(200)
@@ -87,7 +86,7 @@ describe("'"+route+"/thread'", function() {
                     joinClass(classID, function(err, body, token) {
                         if (err) return done(err);
                         request(app)
-                            .post(route+"/"+classID+"/submit")
+                            .post("/rest/class/"+classID+"/submit")
                             .set("Authorization", token)
                             .send({
                                 title: "title",
@@ -107,7 +106,7 @@ describe("'"+route+"/thread'", function() {
                     joinClass(classID, function(err, body, token) {
                         if (err) return done(err);
                         request(app)
-                            .post(route+"/"+classID+"/submit")
+                            .post("/rest/class/"+classID+"/submit")
                             .set("Authorization", token)
                             .send({
                                 title: "title",
@@ -125,7 +124,7 @@ describe("'"+route+"/thread'", function() {
                     joinClass(classID, function(err, body, token) {
                         if (err) return done(err);
                         request(app)
-                            .post(route+"/"+classID+"/submit")
+                            .post("/rest/class/"+classID+"/submit")
                             .set("Authorization", token)
                             .send({}).expect(200)
                             .expect(function(res) {
@@ -138,7 +137,7 @@ describe("'"+route+"/thread'", function() {
         context("that you are NOT enrolled in", function() {
             it("should return an error", function(done) {
                 request(app)
-                    .post(route+"/"+classID+"/submit")
+                    .post("/rest/class/"+classID+"/submit")
                     .set("Authorization", token)
                     .send({
                         title: "title",
@@ -153,7 +152,7 @@ describe("'"+route+"/thread'", function() {
     describe("viewing all threads in a class", function() {
         it("should return a list of all the threads in the class", function(done) {
             request(app)
-                .get(route+"/"+classID+"/all")
+                .get("/rest/class/"+classID+"/all")
                 .expect(200)
                 .expect(function(res) {
                     res.body.should.contain.key("threads");

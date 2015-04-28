@@ -21,8 +21,7 @@ var validUser = {
 };
 var token = "Bearer "+jwt.sign(validUser, cfg.jwt.secret);
 
-var route = "/rest/class";
-describe("'"+route+"'", function() {
+describe("testing class endpoints", function() {
     before(function(done) {
         require("../../db")().then(function(dbModels) {
             return require("../../app/rest")(dbModels);
@@ -40,7 +39,7 @@ describe("'"+route+"'", function() {
     }
     function createClass(klass, callback) {
         request(app)
-            .post(route + "/create")
+            .post("/rest/class/create")
             .set("Authorization", token)
             .send(klass)
             .expect(200)
@@ -65,7 +64,7 @@ describe("'"+route+"'", function() {
                     createClass(newClass, function(err) {
                         if (err) return done(err);
                         request(app)
-                            .get(route)
+                            .get("/rest/class")
                             .expect(function(res) {
                                 res.body.classes.should.include.something(newClass);
                                 res.body.classes.forEach(function(klass) {
@@ -123,7 +122,7 @@ describe("'"+route+"'", function() {
     describe("getting all the classes", function() {
         it("should return a list of all the classes", function(done) {
             request(app)
-                .get(route + "/")
+                .get("/rest/class/")
                 .expect(200)
                 .expect(function(res) {
                     res.body.classes.should.be.an("array");
