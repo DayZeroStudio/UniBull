@@ -36,7 +36,7 @@ module.exports = function(db, DataTypes) {
                 return verifyPasswords(password, password_hash)
                     .then(function(isValid) {
                         if (!isValid) {
-                            throw Error("Invalid password");
+                            throw Error(cfg.errmsgs.invalidUserInfo);
                         }
                         return true;
                     });
@@ -45,8 +45,7 @@ module.exports = function(db, DataTypes) {
             addClass: Promise.method(function(newClass) {
                 var classes = this.getDataValue("classes");
                 if (_.contains(classes, newClass)) {
-                    throw Error("User is already enrolled in class: "
-                            + newClass);
+                    throw Error(cfg.errmsgs.userAlreadyEnrolled(newClass));
                 }
                 this.setDataValue("classes", classes.concat([newClass]));
                 return this;

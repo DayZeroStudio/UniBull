@@ -36,9 +36,9 @@ module.exports = (function() {
 
         router.use(function catchTokenExpirationErrors(err, req, res, next) {
             if (err.name === "TokenExpiredError") {
-                return res.status(401).json({error: err.name});
+                return res.status(401).json({error: cfg.errmsgs.tokenExpired});
             } else if (err.name === "UnauthorizedError") {
-                return res.status(401).json({error: err.name});
+                return res.status(401).json({error: cfg.errmsgs.unauthorized});
             }
             next();
         });

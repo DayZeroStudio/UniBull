@@ -81,7 +81,7 @@ module.exports = Promise.promisify(function(dbModels, routePrefix, callback) {
             where: {title: classID}
         }).bind({}).then(function(klass) {
             if (!content || !title) {
-                throw Error("did not submit all required information");
+                throw Error(cfg.errmsgs.missingReqInfo);
             }
             this.class = klass;
         }).then(function() {
@@ -94,10 +94,10 @@ module.exports = Promise.promisify(function(dbModels, routePrefix, callback) {
             }, {raw: true});
         }).then(function(user) {
             if (!user) {
-                throw Error("user was not found");
+                throw Error(cfg.errmsgs.invalidUserInfo);
             }
             if (!_.contains(user.classes, classID)) {
-                throw Error("user is not enrolled that class");
+                throw Error(cfg.errmsgs.userNotEnrolled);
             }
         }).then(function() {
             return Thread.create({

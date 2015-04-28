@@ -9,13 +9,14 @@ module.exports = (function() {
     cfg.isTest = cfg.env.NODE_ENV === "test";
     cfg.isDev = (cfg.env.NODE_ENV || "development") === "development";
     cfg.isProd = !(cfg.isTest || cfg.isDev);
+    cfg.errmsgs = require("./errormessages.js");
 
     var frozenCFG = Object.freeze(_.cloneDeep(cfg));
     cfg.log = require("./logger.js")(frozenCFG);
     cfg.jwt = require("./jsonwebtoken.js")(frozenCFG);
     cfg.db = require("./database.js")(frozenCFG, cfg.log.logger);
-    cfg.webdriver = require("./webdriver.js")(frozenCFG);
 
+    cfg.webdriver = require("./webdriver.js")(frozenCFG);
     cfg.screenshot = {};
     cfg.screenshot.at = function(name) {
         try {
