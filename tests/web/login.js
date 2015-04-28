@@ -11,7 +11,7 @@ var log = cfg.log.logger;
 
 var login = require("../../src/requires/login.js").onLogin;
 
-describe("lib/login.js", function() {
+describe("testing front end login module", function() {
     context("when the user submits a login form", function() {
         // Wrapping the test function with sinon.test is important,
         // use it, and call this.[spy|stub|mock]()
