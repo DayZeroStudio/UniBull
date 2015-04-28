@@ -72,4 +72,7 @@ clean:
 	-rm ./tmp/**/* ./logs/*\
 		./public/js/*-bundle.js 2> /dev/null
 
+help:
+	make -rpn | sed -n -e '/^$$/ { n ; /^[^ ]*:/p; }' | egrep --color '^[^ ]*:'
+
 .PHONY: start install lint test test-server test-web autotest clean
