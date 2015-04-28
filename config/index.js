@@ -21,11 +21,9 @@ module.exports = (function() {
         try {
             throw new Error();
         } catch(e) {
-            var log = cfg.log.logger;
-            var prevCaller = e.stack.split("\n")[2];
-            var prefix = prevCaller.substring(prevCaller.lastIndexOf("/")+1)
-                .replace(")", "");
-            log.warn("PREFIX: ", prefix);
+            var prev = e.stack.split("\n")[2];
+            var prefix = prev.substring(prev.lastIndexOf("/")+1)
+                .replace(")", "").match(/(.*):[0-9]+$/)[1];
         }
         var screenshotsDir = "./tmp/screenshots/";
         return screenshotsDir
