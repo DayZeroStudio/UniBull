@@ -1,5 +1,6 @@
 /*eslint-env jquery, browser*/
 /*eslint no-alert:0*/
+/*globals classTitle*/
 "use strict";
 $("#container").layout({
     north: {
