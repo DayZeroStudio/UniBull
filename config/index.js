@@ -16,10 +16,21 @@ module.exports = (function() {
     cfg.db = require("./database.js")(frozenCFG, cfg.log.logger);
     cfg.webdriver = require("./webdriver.js")(frozenCFG);
 
-    cfg.genScreenshotPath = function(name) {
+    cfg.screenshot = {};
+    cfg.screenshot.at = function(name) {
+        try {
+            throw new Error();
+        } catch(e) {
+            var log = cfg.log.logger;
+            var prevCaller = e.stack.split("\n")[2];
+            var prefix = prevCaller.substring(prevCaller.lastIndexOf("/")+1)
+                .replace(")", "");
+            log.warn("PREFIX: ", prefix);
+        }
         var screenshotsDir = "./tmp/screenshots/";
         return screenshotsDir
             + cfg.webdriver.name + "_"
+            + prefix + "_"
             + name + "_"
             + _.now()
             + ".png";

@@ -34,7 +34,7 @@ describe("testing front end sign up", function() {
         it("should have content", function(done) {
             client.pause(500)
                 .url(baseUrl + "/signup")
-                .saveScreenshot(cfg.genScreenshotPath("signup"))
+                .saveScreenshot(cfg.screenshot.at("signup"))
                 .title_async().then(function(res) {
                     res.value.should.contain("Signup");
                 }).then(done);
@@ -64,7 +64,7 @@ describe("testing front end sign up", function() {
         it("should redirect you to home", function(done) {
             var user = makeNewUser();
             signupWithUser(user).then(function(title) {
-                client.saveScreenshot(cfg.genScreenshotPath("submit"));
+                client.saveScreenshot(cfg.screenshot.at("submit"));
                 title.should.contain("Home");
             }).then(done).catch(done);
         });

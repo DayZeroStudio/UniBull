@@ -47,7 +47,7 @@ describe("testing front end login", function() {
                 .setValue("#username", "")
                 .setValue("#password", "")
                 .click("#loginButton")
-                .saveScreenshot(cfg.genScreenshotPath("login_empty"))
+                .saveScreenshot(cfg.screenshot.at("empty"))
                 .title(function(err, res) {
                     if (err) {done(err); }
                     res.value.should.contain("Login");
@@ -64,7 +64,7 @@ describe("testing front end login", function() {
                 .setValue("#password", password)
                 .click("#loginButton")
                 .waitForExist("#loginButton", 500, true)
-                .saveScreenshot(cfg.genScreenshotPath("login_valid"))
+                .saveScreenshot(cfg.screenshot.at("valid"))
                 .title(function(err, res) {
                     if (err) {done(err); }
                     res.value.should.contain("Home");
