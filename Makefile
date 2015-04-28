@@ -54,7 +54,7 @@ _test-server: lint
 lint: noTodosOrFixmes
 	@ ${LINTER} ./index.js ./config/*.js\
 		./tests/server/*.js ./tests/web*/*.js\
-		./models/*.js ./app/*.js ./app/**/*.js ./db/*.js\
+		./app/*.js ./app/**/*.js ./db/*.js\
 		./src/**/*.js
 
 noTodosOrFixmes:
