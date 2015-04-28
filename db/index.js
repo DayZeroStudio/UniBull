@@ -9,32 +9,32 @@ module.exports = Promise.promisify(function(callback) {
             : new DB(cfg.db.name, cfg.db.username,
                 cfg.db.password, cfg.db.options));
 
-    var models = {};
+    var dbModels = {};
 
     var path = require("path");
     ["Class", "Thread", "User"].forEach(function(model) {
-        models[model] = db.import(path.join(__dirname, model.toLowerCase()));
+        dbModels[model] = db.import(path.join(__dirname, model.toLowerCase()));
     });
 
     (function(ms) {
         ms.Class.hasMany(ms.Thread);
-    })(models);
+    })(dbModels);
 
-    models.db = db;
+    dbModels.db = db;
 
     var dbOpts = {
         force: !cfg.isProd
     };
-    models.Class.sync(dbOpts).then(function() {
-        return models.Class.create({
+    dbModels.Class.sync(dbOpts).then(function() {
+        return dbModels.Class.create({
             title: "WebDev101",
             info: "WEB DEV WILL RUIN YOUR LIFE",
             school: "UC SHITTY CRUZ"
         });
     }).then(function() {
-        models.Thread.sync(dbOpts).then(function() {
-            models.User.sync(dbOpts).then(function() {
-                callback(null, models);
+        dbModels.Thread.sync(dbOpts).then(function() {
+            dbModels.User.sync(dbOpts).then(function() {
+                callback(null, dbModels);
             });
         });
     });

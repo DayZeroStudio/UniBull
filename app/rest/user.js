@@ -1,7 +1,7 @@
 "use strict";
 var Promise = require("sequelize").Promise;
 
-module.exports = Promise.promisify(function(models, routePrefix, callback) {
+module.exports = Promise.promisify(function(dbModels, routePrefix, callback) {
     var express = require("express");
     var router = express.Router();
     var bodyParser = require("body-parser");
@@ -19,7 +19,7 @@ module.exports = Promise.promisify(function(models, routePrefix, callback) {
             _.partial(append, routePrefix));
     auth.setupAuth(router, publicEndpoints);
 
-    var User = models.User;
+    var User = dbModels.User;
     router.get("/", function(req, res) {
         log.info("GET - Get all users");
         User.findAll().then(function(dbData) {

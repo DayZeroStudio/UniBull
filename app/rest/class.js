@@ -1,7 +1,7 @@
 "use strict";
 var Promise = require("sequelize").Promise;
 
-module.exports = Promise.promisify(function(models, routePrefix, callback) {
+module.exports = Promise.promisify(function(dbModels, routePrefix, callback) {
     var express = require("express");
     var router = express.Router();
     var bodyParser = require("body-parser");
@@ -18,9 +18,9 @@ module.exports = Promise.promisify(function(models, routePrefix, callback) {
         .concat([/all$/]);
     auth.setupAuth(router, publicEndpoints);
 
-    var Class = models.Class;
-    var Thread = models.Thread;
-    var User = models.User;
+    var Class = dbModels.Class;
+    var Thread = dbModels.Thread;
+    var User = dbModels.User;
 
     router.get("/", function(req, res) {
         log.info("GET - Get all classes");

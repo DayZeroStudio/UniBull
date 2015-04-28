@@ -1,7 +1,7 @@
 "use strict";
 var Promise = require("sequelize").Promise;
 
-module.exports = Promise.promisify(function setupHtmlPages(models, done) {
+module.exports = Promise.promisify(function setupHtmlPages(dbModels, done) {
     var path = require("path");
 
     var fs = require("fs");
@@ -10,6 +10,8 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
 
     var express = require("express");
     var router = express.Router();
+
+    var Class = dbModels.Class;
 
     var publicEndpoints = ["/login", "/signup"];
     require("../app/auth.js").setupAuth(router, publicEndpoints);
@@ -96,7 +98,7 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
         });
         addBundleRoute("class", {
             getLocals: function() {
-                return models.Class.findAll({}, {
+                return Class.findAll({}, {
                     raw: true
                 }).then(function(classes) {
                     return {classes: classes};
