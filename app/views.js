@@ -41,12 +41,12 @@ module.exports = Promise.promisify(function setupHtmlPages(models, done) {
 
         var toAdds = opts.adds || [];
         toAdds.forEach(function(toAdd) {
-            var dirPath = toAdd.path || path.join("lib", "adds");
+            var dirPath = toAdd.path || path.join("src", "adds");
             bundle.add(path.join(__dirname, "..", dirPath, toAdd.name));
         });
         var toRequires = opts.requires || [];
         toRequires.forEach(function(toReq) {
-            var dirPath = toReq.path || path.join("lib", "requires");
+            var dirPath = toReq.path || path.join("src", "requires");
             bundle.require(path.join(__dirname, "..", dirPath, toReq.name), {
                 expose: toReq.expose || toReq.name
             });

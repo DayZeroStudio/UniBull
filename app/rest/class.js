@@ -9,10 +9,10 @@ module.exports = Promise.promisify(function(models, routePrefix, callback) {
 
     var _ = require("lodash");
     function append(a, b) {return a+b; }
-    var cfg = require("../config");
+    var cfg = require("../../config");
     var log = cfg.log.logger;
 
-    var auth = require("../app/auth.js");
+    var auth = require("../auth.js");
     var publicEndpoints = _.map(["", "/"],
             _.partial(append, routePrefix))
         .concat([/all$/]);

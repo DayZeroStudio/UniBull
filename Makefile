@@ -31,32 +31,32 @@ test: lint test-server test-web
 
 test-server: lint
 	@set -o pipefail\
-		&& NODE_ENV=test ${MOCHA} ${MOCHA_OPTS} ./test/server | ${BUNYAN}
+		&& NODE_ENV=test ${MOCHA} ${MOCHA_OPTS} ./tests/server | ${BUNYAN}
 
 test-web: lint
 	@set -o pipefail\
-		&& NODE_ENV=test ${MOCHA} ${MOCHA_OPTS} ./test/web | ${BUNYAN}
+		&& NODE_ENV=test ${MOCHA} ${MOCHA_OPTS} ./tests/web | ${BUNYAN}
 
 test-web-%: lint
 	@set -o pipefail\
 		&& NODE_ENV=test SEL_BROWSER=$*\
-		${MOCHA} ${MOCHA_OPTS} ./test/web | ${BUNYAN}
+		${MOCHA} ${MOCHA_OPTS} ./tests/web | ${BUNYAN}
 
 test-%: lint test-server
 	make test-web-$*
 
 _test-server: lint
 	-@set -o pipefail\
-		&& NODE_ENV=test ${MOCHA} ${MOCHA_OPTS} ./test/server | ${BUNYAN}
+		&& NODE_ENV=test ${MOCHA} ${MOCHA_OPTS} ./tests/server | ${BUNYAN}
 
 autotest:
 	@nodemon ${AUTOTEST_IGNORES} --exec "make _test-server"
 
 lint: noTodosOrFixmes
 	@${LINTER} ./index.js ./config/*.js\
-		./test/server/*.js ./test/web/*.js\
-		./models/*.js ./rest/*.js ./db/*.js\
-		./lib/adds/*.js ./lib/requires/*.js
+		./tests/server/*.js ./tests/web/*.js\
+		./models/*.js ./app/*.js ./app/**/*.js ./db/*.js\
+		./src/**/*.js
 
 noTodosOrFixmes:
 	-@git grep -n 'TODO\|FIXME' --\

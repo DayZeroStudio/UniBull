@@ -11,12 +11,13 @@ module.exports = Promise.promisify(function(models, routePrefix, callback) {
     function append(a, b) {return a+b; }
     var jwt = require("jsonwebtoken");
 
-    var cfg = require("../config");
+    var cfg = require("../../config");
     var log = cfg.log.logger;
 
+    var auth = require("../auth.js");
     var publicEndpoints = _.map(["", "/", "/login", "/signup"],
             _.partial(append, routePrefix));
-    require("../app/auth.js").setupAuth(router, publicEndpoints);
+    auth.setupAuth(router, publicEndpoints);
 
     var User = models.User;
     router.get("/", function(req, res) {
@@ -61,7 +62,6 @@ module.exports = Promise.promisify(function(models, routePrefix, callback) {
 
     router.get("/restricted", function(req, res) {
         log.info("GET - Restricted");
-        var auth = require("../app/auth.js");
         res.json({
             success: true,
             decoded: auth.decodeRequest(req)

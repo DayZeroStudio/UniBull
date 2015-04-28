@@ -9,7 +9,7 @@ var _ = require("lodash");
 var cfg = require("../../config");
 var log = cfg.log.logger;
 
-var login = require("../../lib/requires/login.js").onLogin;
+var login = require("../../src/requires/login.js").onLogin;
 
 describe("lib/login.js", function() {
     context("when the user submits a login form", function() {

@@ -24,16 +24,11 @@ var token = "Bearer "+jwt.sign(validUser, cfg.jwt.secret);
 var route = "/rest/class";
 describe("'"+route+"'", function() {
     before(function(done) {
-        require("../../db")().bind({}).then(function(dbModels) {
-            this.dbModels = dbModels;
-            return require("../../"+route)(dbModels, route);
+        require("../../db")().then(function(dbModels) {
+            return require("../../app/rest")(dbModels);
         }).then(function(router) {
-            app.use(route, router);
-            return require("../../rest/user.js")(this.dbModels, "/rest/user");
-        }).then(function(router) {
-            app.use("/rest/user", router);
-            done();
-        });
+            app.use(router);
+        }).then(done);
     });
     function makeNewClass() {
         var id = _.uniqueId();
