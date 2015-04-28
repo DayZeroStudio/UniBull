@@ -80,7 +80,7 @@ describe("testing front end sign up", function() {
                 client.setValue("#username", user.username)
                     .setValue("#password", user.password)
                     .click("#loginButton")
-                    .waitForExist("#loginButton", 100, true)
+                    .waitForExist("#loginButton", 500, true)
                     .title_async().then(function(res) {
                         res.value.should.contain("Home");
                     });
