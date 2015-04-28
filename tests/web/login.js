@@ -1,78 +1,43 @@
-/*eslint no-unused-vars:0*/
+/*eslint no-underscore-dangle:0, curly:0, no-unused-vars:0, no-unused-expressions:0*/
 "use strict";
 
 var chai = require("chai");
 chai.should();
-var driver = require("webdriverio");
+var sinon = require("sinon");
+var _ = require("lodash");
 
 var cfg = require("../../config");
 var log = cfg.log.logger;
 
-var options = {
-    port: cfg.webdriver.server.port,
-    desiredCapabilities: {
-        browserName: cfg.webdriver.name
-    }
-};
+var login = require("../../src/requires/login.js").onLogin;
 
-describe("testing front end login", function() {
-    this.timeout(cfg.webdriver.timeout);
-    var client = {};
-    var PORT = 9090;
-    var baseUrl = "http://localhost:" + PORT;
-    before(function(done) {
-        require("../../index.js")(PORT).then(function() {
-            client = driver.remote(options);
-            client.init(done);
-        });
-    });
-    context("once on the login page", function() {
-        it("should have content", function(done) {
-            client.url(baseUrl)
-                .title(function(err, res) {
-                    if (err) {done(err); }
-                    res.value.should.contain("Login");
-                }).click("#signupButton")
-                .waitForExist("#signupButton", 300, true)
-                .title(function(err, res) {
-                    if (err) {done(err); }
-                    res.value.should.contain("Signup");
-                    return done();
-                });
-        });
-    });
-    context("when the user clicks login with invalid credentials", function() {
-        it("should do nothing..", function(done) {
-            client.url(baseUrl)
-                .setValue("#username", "")
-                .setValue("#password", "")
-                .click("#loginButton")
-                .saveScreenshot(cfg.genScreenshotPath("login_empty"))
-                .title(function(err, res) {
-                    if (err) {done(err); }
-                    res.value.should.contain("Login");
-                })
-                .call(done);
-        });
-    });
-    context("when the user clicks login with valid credentials", function() {
-        it("should authenticate and go to home page", function(done) {
-            var username = "FirstUser";
-            var password = "mypasswd";
-            client.url(baseUrl)
-                .setValue("#username", username)
-                .setValue("#password", password)
-                .click("#loginButton")
-                .waitForExist("#loginButton", 500, true)
-                .saveScreenshot(cfg.genScreenshotPath("login_valid"))
-                .title(function(err, res) {
-                    if (err) {done(err); }
-                    res.value.should.contain("Home");
-                })
-                .call(done);
-        });
-    });
-    after(function(done) {
-        client.end(done);
+describe("lib/login.js", function() {
+    context("when the user submits a login form", function() {
+        // Wrapping the test function with sinon.test is important,
+        // use it, and call this.[spy|stub|mock]()
+        // so that things get restored once the test is done.
+        it("it should trigger an ajax call", sinon.test(function() {
+            var fields = {each: _.identity};
+            var jq = {ajax: _.identity};
+            sinon.stub(jq, "ajax").yieldsTo("success", {
+                redirect: "SUCCESS"
+            });
+            var callback = this.spy();
+            this.stub(console, "log");
+
+            login(jq, fields, callback); // UNIT UNDER TEST
+
+            callback.firstCall.args[1]
+                .should.deep.equal({redirect: "SUCCESS"});
+            jq.ajax.firstCall.args[0].should.contain({
+                type: "POST",
+                data: "{}",
+                dataType: "json",
+                contentType: "application/json"
+            });
+            jq.ajax.calledWithMatch(sinon.match(function(value) {
+                return value.url.should.match(/login$/);
+            }));
+        }));
     });
 });
