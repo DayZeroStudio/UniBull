@@ -16,6 +16,7 @@ var options = {
     }
 };
 
+require("blanket")();
 describe("testing front end sign up", function() {
     this.timeout(cfg.webdriver.timeout);
     var client = {};

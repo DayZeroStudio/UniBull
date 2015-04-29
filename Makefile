@@ -1,11 +1,11 @@
 SHELL 				:= /bin/bash
 BIN			     	:= ./node_modules/.bin
-MOCHA		     	:= ${BIN}/mocha
+MOCHA		     	:= multi='spec=- html-cov=coverage.html' ${BIN}/mocha
 BUNYAN				:= ${BIN}/bunyan
 LINTER		     	:= eslint
 SEL_SERVER			:= ./selenium-server-standalone-2.45.0.jar
 PHANTOMJS			:= ./phantomjs
-MOCHA_OPTS	     	:= --recursive --colors
+MOCHA_OPTS	     	:= --recursive --colors -r blanket --reporter mocha-multi
 AUTOTEST_IGNORES 	:= --ignore ./public/ --ignore ./logs/ --ignore '.[!.]*'
 
 start:

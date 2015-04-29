@@ -17,6 +17,7 @@ var validUser = {
 };
 var token = "Bearer "+jwt.sign(validUser, cfg.jwt.secret);
 
+require("blanket")();
 describe("testing class endpoints", function() {
     before(function() {
         return require("../../db")().then(function(dbModels) {

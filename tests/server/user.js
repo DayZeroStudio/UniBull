@@ -13,6 +13,7 @@ app.use(require("cookie-parser")());
 
 var cfg = require("../../config");
 
+require("blanket")();
 describe("testing user endpoints", function() {
     before(function() {
         return require("../../db")().then(function(dbModels) {

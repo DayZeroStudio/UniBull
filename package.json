@@ -22,10 +22,12 @@
     "watch": "^0.16.0"
   },
   "devDependencies": {
+    "blanket": "^1.1.6",
     "chai": "^2.2.0",
     "chai-as-promised": "^5.0.0",
     "chai-things": "^0.2.0",
     "mocha": "^2.2.4",
+    "mocha-multi": "^0.7.1",
     "pre-commit": "^1.0.6",
     "sinon": "^1.14.1",
     "supertest": "^0.15.0",
@@ -38,5 +40,13 @@
   },
   "pre-commit": [
     "test"
-  ]
+  ],
+  "config": {
+    "blanket": {
+      "pattern": [ "app", "config", "db", "src" ],
+      "data-cover-never": [ "node_modules", "tests" ],
+      "data-cover-reporter-options": {
+      }
+    }
+  }
 }
