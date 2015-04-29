@@ -90,7 +90,7 @@ module.exports = Promise.promisify(function(dbModels, routePrefix, callback) {
     router.post("/:userID/joinClass", function(req, res) {
         log.info("POST - Join a class");
         var userID = req.params.userID;
-        var classID = req.query.classID;
+        var classID = req.body.classID;
         User.find({
             where: {username: userID}
         }).then(function(user) {

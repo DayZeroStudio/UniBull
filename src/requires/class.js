@@ -15,7 +15,7 @@ module.exports = (function() {
         return false;
     };
     exports.joinClass = function($, userID, classID, callback) {
-        var data = { userID: userID, classID: classID };
+        var data = { classID: classID };
         var enrollUrl = "rest/user/" + userID + "/joinClass";
         ajax.postJSON($, enrollUrl, data, callback);
     };
