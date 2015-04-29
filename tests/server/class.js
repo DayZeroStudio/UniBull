@@ -6,7 +6,6 @@ chai.should();
 chai.use(require("chai-things"));
 var request = require("supertest");
 var sinon = require("sinon");
-var async = require("async");
 var _ = require("lodash");
 
 var app = require("express")();
