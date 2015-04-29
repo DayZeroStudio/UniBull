@@ -65,8 +65,7 @@ lint: noTodosOrFixmes
 		./src/**/*.js
 noTodosOrFixmes:
 	-@ git grep -n 'TODO\|FIXME' --\
-		`git ls-files\
-		| grep -v '^Makefile\|^public/\|^lib/'`\
+		`git ls-files | grep -v '^Makefile\|^public/\|^lib/'`\
 		> .todos
 	@ [ ! "$$(cat .todos)" ]\
 		|| [ "$${SKIPTODOS=n}" != "n" ]\
@@ -76,6 +75,7 @@ noTodosOrFixmes:
 
 clean:
 	-@ rm ./tmp/**/* ./logs/*\
+		.todos\
 		2> /dev/null
 spotless: clean
 	-@ rm ./public/js/*-bundle.js
@@ -86,6 +86,6 @@ spotless: clean
 		|| echo "aborting...")
 
 help:
-	make -rpn | sed -n -e '/^$$/ { n ; /^[^ ]*:/p; }' | egrep --color '^[^ ]*:'
+	make -rpn | sed -n -e '/^$$/ { n ; /^[^ ]*:/p; }' | sort | egrep --color '^[^ ]*:'
 
 .PHONY: start install lint test test-server test-web autotest clean
