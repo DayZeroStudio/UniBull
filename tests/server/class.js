@@ -1,17 +1,14 @@
-/*eslint curly:0, no-unused-vars:0, no-unused-expressions:0*/
 "use strict";
 
 var chai = require("chai");
 chai.should();
 chai.use(require("chai-things"));
 var request = require("supertest-as-promised");
-var sinon = require("sinon");
 var _ = require("lodash");
 
 var app = require("express")();
 
 var cfg = require("../../config");
-var log = cfg.log.logger;
 
 var jwt = require("jsonwebtoken");
 var validUser = {
@@ -23,10 +20,9 @@ var token = "Bearer "+jwt.sign(validUser, cfg.jwt.secret);
 describe("testing class endpoints", function() {
     before(function() {
         return require("../../db")().then(function(dbModels) {
-            return require("../../app/rest")(dbModels)
-                .then(function(router) {
-                    app.use(router);
-                });
+            return require("../../app/rest")(dbModels);
+        }).then(function(router) {
+            app.use(router);
         });
     });
     function makeNewClass() {
@@ -125,7 +121,7 @@ describe("testing class endpoints", function() {
                 classID = body.class.title;
             });
         });
-        function joinClass(klass) {
+        function joinClass() {
             return request(app)
                 .post("/rest/user/login")
                 .send({
@@ -145,13 +141,13 @@ describe("testing class endpoints", function() {
         }
         context("that you are NOT enrolled in", function() {
             it("should redirect to the class page", function() {
-                return joinClass(classID).spread(function(body) {
+                return joinClass().spread(function(body) {
                     body.should.contain.keys("redirect");
                     body.redirect.should.match(/\/class\/.+/);
                 });
             });
             it("should add it to the users classes", function() {
-                return joinClass(classID).spread(function(body, token) {
+                return joinClass().spread(function(body, token) {
                     return request(app)
                         .get("/rest/user/"+userID)
                         .set("Authorization", token)
@@ -166,8 +162,8 @@ describe("testing class endpoints", function() {
         });
         context("that you ARE enrolled in", function() {
             it("should return an error", function() {
-                return joinClass(classID).spread(function(body, token) {
-                    return joinClass(classID).spread(function(body, token) {
+                return joinClass().spread(function() {
+                    return joinClass().spread(function(body) {
                         body.should.have.keys("error");
                     });
                 });

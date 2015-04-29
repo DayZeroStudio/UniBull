@@ -16,10 +16,9 @@ var cfg = require("../../config");
 describe("testing user endpoints", function() {
     before(function() {
         return require("../../db")().then(function(dbModels) {
-            return require("../../app/rest")(dbModels)
-                .then(function(router) {
-                    app.use(router);
-                });
+            return require("../../app/rest")(dbModels);
+        }).then(function(router) {
+            app.use(router);
         });
     });
     context("without authentication", function() {
