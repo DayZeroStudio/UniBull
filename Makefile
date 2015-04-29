@@ -1,8 +1,10 @@
-#!/bin/bash
+SHELL 				:= /bin/bash
 BIN			     	:= ./node_modules/.bin
 MOCHA		     	:= ${BIN}/mocha
 BUNYAN				:= ${BIN}/bunyan
 LINTER		     	:= eslint
+SEL_SERVER			:= ./selenium-server-standalone-2.45.0.jar
+PHANTOMJS			:= ./phantomjs
 MOCHA_OPTS	     	:= --recursive --colors
 AUTOTEST_IGNORES 	:= --ignore ./public/ --ignore ./logs/ --ignore '.[!.]*'
 
@@ -10,11 +12,13 @@ start:
 	nodemon ${AUTOTEST_IGNORES} | ${BUNYAN}
 
 start-selenium:
-	@ java -jar ./selenium-server-standalone-2.45.0.jar\
-		-log ./logs/selenium.log 2> ./logs/selenium.err &
+	@ java -jar ${SEL_SERVER}\
+		-log ./logs/selenium.log\
+		2> ./logs/selenium.err &
 
 start-phantomjs:
-	@ ./phantomjs --webdriver=4445\
+	@ #4445 because selenium uses 4444
+	@ ${PHANTOMJS} --webdriver=4445\
 		--webdriver-logfile=./logs/phantomjs-wd.log\
 		> ./logs/phantomjs.log\
 		2> ./logs/phantomjs.err &
@@ -31,18 +35,17 @@ run-heroku:
 test: lint test-server test-web
 
 test-server: lint
-	@ set -o pipefail\
-		&& NODE_ENV=test ${MOCHA} ${MOCHA_OPTS}\
+	@ set -o pipefail && NODE_ENV=test\
+		${MOCHA} ${MOCHA_OPTS}\
 	   	${MOCHA_ARGS} ./tests/server | ${BUNYAN}
 
 test-web: lint
-	@ set -o pipefail\
-		&& NODE_ENV=test ${MOCHA} ${MOCHA_OPTS}\
+	@ set -o pipefail && NODE_ENV=test\
+		${MOCHA} ${MOCHA_OPTS}\
 	   	${MOCHA_ARGS} ./tests/web* | ${BUNYAN}
 
 test-web-%: lint
-	@ set -o pipefail\
-		&& NODE_ENV=test SEL_BROWSER=$*\
+	@ set -o pipefail && NODE_ENV=test SEL_BROWSER=$*\
 		${MOCHA} ${MOCHA_OPTS} ${MOCHA_ARGS} ./tests/web* | ${BUNYAN}
 
 test-%: lint test-server
@@ -51,8 +54,8 @@ test-%: lint test-server
 autotest:
 	@ nodemon ${AUTOTEST_IGNORES} --exec "make _test-server"
 _test-server: lint
-	-@ set -o pipefail\
-		&& NODE_ENV=test ${MOCHA} ${MOCHA_OPTS}\
+	-@ set -o pipefail && NODE_ENV=test\
+		${MOCHA} ${MOCHA_OPTS}\
 	   	${MOCHA_ARGS} ./tests/server | ${BUNYAN}
 
 lint: noTodosOrFixmes
@@ -60,7 +63,6 @@ lint: noTodosOrFixmes
 		./tests/server/*.js ./tests/web*/*.js\
 		./app/*.js ./app/**/*.js ./db/*.js\
 		./src/**/*.js
-
 noTodosOrFixmes:
 	-@ git grep -n 'TODO\|FIXME' --\
 		`git ls-files\
@@ -73,8 +75,15 @@ noTodosOrFixmes:
 			&& exit 1)
 
 clean:
-	-rm ./tmp/**/* ./logs/*\
-		./public/js/*-bundle.js 2> /dev/null
+	-@ rm ./tmp/**/* ./logs/*\
+		2> /dev/null
+spotless: clean
+	-@ rm ./public/js/*-bundle.js
+	-@ read -p "Are you sure you want rm node_modules? [y|N]" confirm;\
+		echo $${confirm,,};\
+		([[ $${confirm,,} =~ ^(yes|y)$$ ]]\
+		&& mv ./node_modules ~/.Trash\
+		|| echo "aborting...")
 
 help:
 	make -rpn | sed -n -e '/^$$/ { n ; /^[^ ]*:/p; }' | egrep --color '^[^ ]*:'
