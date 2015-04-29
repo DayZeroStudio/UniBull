@@ -95,7 +95,7 @@ module.exports = Promise.promisify(function(dbModels, routePrefix, callback) {
             where: {username: userID}
         }).then(function(user) {
             if (!user) {
-                return res.json({error: "user not found"});
+                throw Error(cfg.errmsgs.invalidUserInfo);
             }
             return user.addClass(classID);
         }).then(function(user) {

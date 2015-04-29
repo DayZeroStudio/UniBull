@@ -16,9 +16,10 @@ var cfg = require("../../config");
 describe("testing user endpoints", function() {
     before(function() {
         return require("../../db")().then(function(dbModels) {
-            return require("../../app/rest")(dbModels);
-        }).then(function(router) {
-            app.use(router);
+            return require("../../app/rest")(dbModels)
+                .then(function(router) {
+                    app.use(router);
+                });
         });
     });
     context("without authentication", function() {
@@ -108,7 +109,7 @@ describe("testing user endpoints", function() {
                     sandbox.restore();
                 });
                 it("we are denied access", function() {
-                    return loginToApp(validUser).then(function gotToken(res) {
+                    return loginToApp(validUser).then(function(res) {
                         sandbox.clock.tick(timeout);
                         return request(app)
                             .get("/rest/user/restricted")
@@ -148,8 +149,8 @@ describe("testing user endpoints", function() {
                     .send({
                         username: username,
                         password: "password",
-                        email: username + "@email.com"})
-                    .expect(200).toPromise();
+                        email: username + "@email.com"
+                    }).expect(200).toPromise();
             }
             it("we are auth'd and redirected to /home", function() {
                 return signupNewUser(_.uniqueId("newuser_")).then(function(res) {
