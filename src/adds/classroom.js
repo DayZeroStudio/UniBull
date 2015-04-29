@@ -43,6 +43,10 @@ $("#toevents").button().click(function() {
     alert("Under Construction");
 });
 
+$("#tomenu").button().click(function() {
+    window.location.href = "/menu";
+});
+
 $("#newpost").button().click(function() {
     $("#submit_wrapper").slideToggle();
 });

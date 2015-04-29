@@ -5,7 +5,6 @@ var uniBull = Promise.promisify(function(PORT, callback) {
     var express = require("express");
     var app = express();
     var path = require("path");
-
     var cfg = require("./config");
     var log = cfg.log.logger;
 
