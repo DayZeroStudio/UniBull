@@ -12,7 +12,7 @@ module.exports = Promise.promisify(function(callback) {
     var dbModels = {};
 
     var path = require("path");
-    ["Class", "Thread", "User"].forEach(function(model) {
+    ["Class", "Thread", "User", "Menu"].forEach(function(model) {
         dbModels[model] = db.import(path.join(__dirname, model.toLowerCase()));
     });
 
@@ -32,10 +32,12 @@ module.exports = Promise.promisify(function(callback) {
             school: "UC SHITTY CRUZ"
         });
     }).then(function() {
-        dbModels.Thread.sync(dbOpts).then(function() {
-            dbModels.User.sync(dbOpts).then(function() {
-                callback(null, dbModels);
-            });
-        });
+        return dbModels.Thread.sync(dbOpts);
+    }).then(function() {
+        return dbModels.User.sync(dbOpts);
+    }).then(function() {
+        return dbModels.Menu.sync(dbOpts);
+    }).then(function() {
+        return callback(null, dbModels);
     });
 });

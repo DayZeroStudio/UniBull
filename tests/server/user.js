@@ -24,7 +24,7 @@ describe("testing user endpoints", function() {
     context("without authentication", function() {
         it("GET '/' should return a list of all users", function() {
             return request(app)
-                .get("/rest/user/")
+                .get("/rest/user")
                 .expect(200)
                 .expect(function(res) {
                     res.body.users.should.have.length.above(0);

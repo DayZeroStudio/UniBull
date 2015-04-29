@@ -20,11 +20,12 @@ module.exports = Promise.promisify(function(dbModels, routePrefix, callback) {
     auth.setupAuth(router, publicEndpoints);
 
     var User = dbModels.User;
+
     router.get("/", function(req, res) {
         log.info("GET - Get all users");
         User.findAll().then(function(dbData) {
             var users = _.invoke(dbData, "get");
-            res.json({users: users});
+            return res.json({users: users});
         });
     });
 

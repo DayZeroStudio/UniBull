@@ -1,4 +1,3 @@
-/*eslint curly:0, no-unused-vars:0, no-unused-expressions:0*/
 "use strict";
 
 var chai = require("chai");
@@ -8,22 +7,20 @@ var _ = require("lodash");
 
 var app = require("express")();
 
-var cfg = require("../config");
-var log = cfg.log.logger;
-
-var routePrefix = "/rest/menu";
-describe("<"+routePrefix+">", function() {
-    before(function(done) {
-        require(".."+routePrefix)(routePrefix, function(router) {
-            app.use(routePrefix, router);
-            done();
+describe("testing menu endpoints", function() {
+    this.timeout(5000);
+    before(function() {
+        return require("../../db")().then(function(dbModels) {
+            return require("../../app/rest")(dbModels);
+        }).then(function(router) {
+            app.use(router);
         });
     });
     describe("when getting the menu", function() {
         context("from nine for today", function() {
             it("should contain a title, name, and meals", function(done) {
                 request(app)
-                    .get(routePrefix + "/nine/0")
+                    .get("/rest/menu/nine/0")
                     .expect(200)
                     .expect(function(res) {
                         res.body.should
@@ -41,4 +38,3 @@ describe("<"+routePrefix+">", function() {
         });
     });
 });
-
