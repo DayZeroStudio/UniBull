@@ -8,7 +8,9 @@ var sinon = require("sinon");
 var async = require("async");
 var _ = require("lodash");
 
-var app = require("express")();
+var express = require("express");
+var app = express();
+app.use(require("cookie-parser")());
 
 var cfg = require("../../config");
 var log = cfg.log.logger;
@@ -115,18 +117,56 @@ describe("testing user endpoints", function() {
                 loginToApp(validUser, gotToken);
             });
             context("for a long enough time", function() {
+                var sandbox;
+                beforeEach(function() {
+                    sandbox = sinon.sandbox.create();
+                    sandbox.useFakeTimers();
+                });
+                afterEach(function() {
+                    sandbox.restore();
+                });
                 it("we are denied access", function(done) {
-                    var clock = sinon.useFakeTimers();
                     function gotToken(err, body) {
                         if (err) return done(err);
-                        clock.tick(cfg.jwt.timeoutInSeconds * 1000);
+                        sandbox.clock.tick(cfg.jwt.timeoutInSeconds * 1000);
                         request(app)
                             .get("/rest/user/restricted")
                             .set("Authorization", body.token)
                             .expect(401, done);
-                        clock.restore();
                     }
                     loginToApp(validUser, gotToken);
+                });
+                context("but we've refreshed the token", function() {
+                    it("we are NOT denied access", function(done) {
+                        var agent = request.agent(app);
+                        (function(callback) {
+                            agent.post("/rest/user/login")
+                                .send(validUser)
+                                .expect(200)
+                                .end(function(err, res) {
+                                    if (err) return callback(err);
+                                    callback(null, res);
+                                });
+                        })(function(err, res) {
+                            if (err) return done(err);
+                            sandbox.clock.tick(cfg.jwt.timeoutInSeconds * 500);
+                            agent.get("/rest/user/restricted")
+                                .expect(200)
+                                .end(function(err, res) {
+                                    if (err) return done(err);
+                                    sandbox.clock.tick(cfg.jwt.timeoutInSeconds * 500);
+                                    agent.get("/rest/user/restricted")
+                                        .expect(200)
+                                        .end(function(err, res) {
+                                            if (err) return done(err);
+                                            sandbox.clock.tick(cfg.jwt.timeoutInSeconds * 1000);
+                                            agent.get("/rest/user/restricted")
+                                                .expect(401)
+                                                .end(done);
+                                        });
+                                });
+                        });
+                    });
                 });
             });
         });

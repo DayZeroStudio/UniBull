@@ -30,11 +30,10 @@ module.exports = Promise.promisify(function(dbModels, routePrefix, callback) {
 
     function onValidUser(user, res) {
         var publicUserInfo = _.pick(user, ["username", "email"]);
-        var token = "Bearer " + jwt.sign(publicUserInfo, cfg.jwt.secret, {
-            issuer: "UniBull",
-            expiresInSeconds: cfg.jwt.timeoutInSeconds
-        });
-        res.set({"Authorization": token}).json({
+        var token = "Bearer " + jwt.sign(publicUserInfo, cfg.jwt.secret, cfg.jwt.options);
+        res.cookie("token", token).set({
+            "Authorization": token
+        }).json({
             token: token,
             user: publicUserInfo,
             redirect: "/home"
