@@ -68,12 +68,17 @@ module.exports = Promise.promisify(function(dbModels, routePrefix, callback) {
     });
 
     router.post("/signup", function(req, res) {
-        User.create({
-            username: req.body.username,
+        User.findOrCreate({where: {
+            username: req.body.username
+        }, defaults: {
             password: req.body.password,
             email: req.body.email
-        }).then(_.partialRight(onValidUser, res))
-        .catch(function(err) {
+        }}).spread(function(user, created) {
+            if (!created) {// ie: username taken
+                throw Error(cfg.errmsgs.userAlreadyTaken);
+            }
+            return onValidUser(user, res);
+        }).catch(function(err) {
             res.json({error: err.message});
         });
     });

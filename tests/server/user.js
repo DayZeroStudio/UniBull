@@ -142,16 +142,16 @@ describe("testing user endpoints", function() {
         });
     });
     describe("after signing up", function() {
-        context("with valid user info", function() {
-            function signupNewUser(username) {
-                return request(app)
-                    .post("/rest/user/signup")
-                    .send({
-                        username: username,
-                        password: "password",
-                        email: username + "@email.com"
-                    }).expect(200).toPromise();
+        function signupNewUser(username) {
+            return request(app)
+                .post("/rest/user/signup")
+                .send({
+                    username: username,
+                    password: "password",
+                    email: username + "@email.com"
+                }).expect(200).toPromise();
             }
+        context("with valid user info", function() {
             it("we are auth'd and redirected to /home", function() {
                 return signupNewUser(_.uniqueId("newuser_")).then(function(res) {
                     res.body.token.should.match(/^Bearer/);
@@ -167,6 +167,15 @@ describe("testing user endpoints", function() {
                         .then(function(res) {
                             res.body.should.contain.keys("success", "decoded");
                         });
+                });
+            });
+        });
+        context("when the username is already take", function() {
+            it("should return an error", function() {
+                return signupNewUser("duplicateUser").then(function() {
+                    return signupNewUser("duplicateUser").then(function(res) {
+                        res.body.should.contain.key("error");
+                    });
                 });
             });
         });

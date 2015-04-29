@@ -1,10 +1,11 @@
 SHELL 				:= /bin/bash
-BIN			     	:= ./node_modules/.bin
-MOCHA		     	:= multi='spec=- html-cov=coverage.html' ${BIN}/mocha
-BUNYAN				:= ${BIN}/bunyan
+BIN					:= ./bin
+NM_BIN		     	:= ./node_modules/.bin
+MOCHA		     	:= multi='spec=- html-cov=coverage.html' ${NM_BIN}/mocha
+BUNYAN				:= ${NM_BIN}/bunyan
 LINTER		     	:= eslint
-SEL_SERVER			:= ./selenium-server-standalone-2.45.0.jar
-PHANTOMJS			:= ./phantomjs
+SEL_SERVER			:= ${BIN}/selenium-server-standalone-2.45.0.jar
+PHANTOMJS			:= ${BIN}/phantomjs
 MOCHA_OPTS	     	:= --recursive --colors -r blanket --reporter mocha-multi
 AUTOTEST_IGNORES 	:= --ignore ./public/ --ignore ./logs/ --ignore '.[!.]*'
 
@@ -37,12 +38,12 @@ test: lint test-server test-web
 test-server: lint
 	@ set -o pipefail && NODE_ENV=test\
 		${MOCHA} ${MOCHA_OPTS}\
-	   	${MOCHA_ARGS} ./tests/server | ${BUNYAN}
+		${MOCHA_ARGS} ./tests/server | ${BUNYAN}
 
 test-web: lint
 	@ set -o pipefail && NODE_ENV=test\
 		${MOCHA} ${MOCHA_OPTS}\
-	   	${MOCHA_ARGS} ./tests/web* | ${BUNYAN}
+		${MOCHA_ARGS} ./tests/web* | ${BUNYAN}
 
 test-web-%: lint
 	@ set -o pipefail && NODE_ENV=test SEL_BROWSER=$*\
@@ -56,7 +57,7 @@ autotest:
 _test-server: lint
 	-@ set -o pipefail && NODE_ENV=test\
 		${MOCHA} ${MOCHA_OPTS}\
-	   	${MOCHA_ARGS} ./tests/server | ${BUNYAN}
+		${MOCHA_ARGS} ./tests/server | ${BUNYAN}
 
 lint: noTodosOrFixmes
 	@ ${LINTER} ./index.js ./config/*.js\

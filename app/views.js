@@ -24,8 +24,9 @@ module.exports = Promise.promisify(function setupHtmlPages(dbModels, done) {
     }
 
     function addJustRoute(baseFile, options) {
+        var getLocals = options.getLocals || function() {return Promise.resolve({}); };
         router.get("/"+baseFile, function(req, res) {
-            options.getLocals().then(function(locals) {
+            getLocals().then(function(locals) {
                 res.locals = locals;
                 res.render(baseFile);
             });
@@ -109,6 +110,10 @@ module.exports = Promise.promisify(function setupHtmlPages(dbModels, done) {
             adds: [{name: "class.js"}]
         });
     })(express.Router());
+
+    addBundleRoute("menu", {
+        adds: [{name: "menu.js"}]
+    });
 
     return done(null, router);
 });
