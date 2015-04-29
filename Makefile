@@ -3,7 +3,7 @@ BIN			     	:= ./node_modules/.bin
 MOCHA		     	:= ${BIN}/mocha
 BUNYAN				:= ${BIN}/bunyan
 LINTER		     	:= eslint
-MOCHA_OPTS	     	:= --recursive
+MOCHA_OPTS	     	:= --recursive --colors
 AUTOTEST_IGNORES 	:= --ignore ./public/ --ignore ./logs/ --ignore '.[!.]*'
 
 start:
