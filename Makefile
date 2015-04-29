@@ -37,7 +37,7 @@ test: lint test-server test-web
 
 test-server: lint
 	@ set -o pipefail && NODE_ENV=test\
-		${MOCHA} ${MOCHA_OPTS
+		${MOCHA} ${MOCHA_OPTS}\
 		${MOCHA_ARGS} ./tests/server | ${BUNYAN}
 
 test-web: lint
