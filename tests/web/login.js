@@ -1,13 +1,9 @@
-/*eslint no-underscore-dangle:0, curly:0, no-unused-vars:0, no-unused-expressions:0*/
 "use strict";
 
 var chai = require("chai");
 chai.should();
 var sinon = require("sinon");
 var _ = require("lodash");
-
-var cfg = require("../../config");
-var log = cfg.log.logger;
 
 var login = require("../../src/requires/login.js").onLogin;
 
