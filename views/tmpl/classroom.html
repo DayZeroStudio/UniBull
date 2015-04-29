@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<%- watchScript %>
+<html lang="us">
+    <head>
+        <title>UniBull Class</title>
+        <link href="/jqueryui/jquery-ui.css" rel="stylesheet">
+        <link href="/css/classroom.css" rel="stylesheet" type="text/css">
+        <script src="/jqueryui/external/jquery/jquery.js"></script>
+        <script src="/jqueryui/jquery-ui.js"></script>
+        <script src="/jqueryui/jquery.layout-latest.js"></script>
+    </head>
+
+    <body>
+        <div id="container">
+            <div class="pane ui-layout-center">
+                <div>
+                    <button id="toclass">Classrooms</button>
+                    <button id="toclubs">Clubs</button>
+                    <button id="toevents">Events</button>
+                </div>
+                <hr>
+                <h1 class="center" id="classID"><%= classID %> </h1>
+                <button id="newpost"> Submit a post </button><br>
+                <div class="submit_wrapper" id="submit_wrapper">
+                    <form id="submitform" name="submitform" accept-charset="utf-8">
+                        <label for="title">Title</label><br>
+                        <input id="title" type="text" name="title"><br>
+                        <label for="content">Content</label><br>
+                        <input class="submissioncontent" id="content" type="text" name="content">
+                    </form>
+                    <br>
+                    <button id="submit_post">Submit</button>
+                    <button id="cancel">Cancel</button>
+                </div>
+                <hr>
+                <div id="forum">
+                    <div id="accordion" class="accordion">
+                        <h3>First Post</h3>
+                        <div>Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui-layout-north">
+                <p class="alignleft">
+                <button id="home">Home</button>
+                </p>
+                <p class="aligncenter">
+                <font size="12">UniBull</font>
+                </p>
+                <p class="alignright">Profile Pic</p>
+            </div>
+            <div class="ui-layout-south center">
+                <button id="logout">LOGOUT</button>
+            </div>
+            <div class="ui-layout-east center pane">
+                <h1>Notification Center</h1>
+            </div>
+        </div>
+
+        <script>
+var classTitle = "<%= classID %>";
+console.log(classTitle);
+        </script>
+        <script src="/js/classroom-bundle.js"></script>
+    </body>
+</html>

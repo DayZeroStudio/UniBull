@@ -1,4 +1,3 @@
-/*eslint no-underscore-dangle:0, curly:0, no-unused-vars:0, no-unused-expressions:0*/
 "use strict";
 
 var chai = require("chai");
@@ -6,12 +5,9 @@ chai.should();
 var sinon = require("sinon");
 var _ = require("lodash");
 
-var cfg = require("../../config");
-var log = cfg.log.logger;
+var login = require("../../src/requires/login.js").onLogin;
 
-var login = require("../../views/login.js").onLogin;
-
-describe("views/login.js", function() {
+describe("testing front end login module", function() {
     context("when the user submits a login form", function() {
         // Wrapping the test function with sinon.test is important,
         // use it, and call this.[spy|stub|mock]()

@@ -1,21 +1,21 @@
-module.exports = function(CFG) {
+module.exports = function(CFG, log) {
     "use strict";
-    var cfg = {};
+    var _ = require("lodash");
 
-    var dev_db_cfg = {
+    var db_cfg = {
         name: CFG.env.DB_NAME
-            || (function(){throw new Error("Missing ENV DB_NAME"); })(),
+            || (!CFG.isProd ? (function() {throw new Error(CFG.errmsgs.missingDbEnvVars); })()
+                    : undefined),
         username: CFG.env.DB_USERNAME
-            || (function(){throw new Error("Missing ENV DB_USERNAME"); })(),
-        password: CFG.env.DB_PASSWORD || ""
+            || (!CFG.isProd ? (function() {throw new Error(CFG.errmsgs.missingDbEnvVars); })()
+                    : undefined),
+        password: CFG.env.DB_PASSWORD || "",
+        url: (CFG.isProd ? CFG.env.DATABASE_URL : undefined),
+        options: {
+            dialect: "postgres",
+            logging: (CFG.isTest ? _.noop : log.debug.bind(log))
+        }
     };
 
-    if (CFG.isDev) {
-        cfg.db = dev_db_cfg;
-    } else {
-        //TODO: change once set up with heroku
-        cfg.db = dev_db_cfg;
-    }
-
-    return cfg;
+    return db_cfg;
 };

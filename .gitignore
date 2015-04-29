@@ -1,11 +1,5 @@
 node_modules
-.tern-project
-*.log
-*.log.*
-.*rc
-public/js/*-bundle.js
-**/.*
+.*
+logs/
 selenium-server-standalone-*.jar
 phantomjs
-*.err
-tmp/

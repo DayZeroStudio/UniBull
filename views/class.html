@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<%- watchScript %>
+<html lang="us">
+    <head>
+        <link href="jqueryui/jquery-ui.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/css/class.css">
+        <script src="jqueryui/external/jquery/jquery.js"></script>
+        <script src="jqueryui/jquery-ui.js"></script>
+        <script src="jqueryui/jquery.layout-latest.js"></script>
+        <title>UniBull Class</title>
+    </head>
+
+    <body>
+        <div id="container">
+            <div class="pane ui-layout-center">
+                <div>
+                    <button id="toclass">Classrooms</button>
+                    <button id="toclubs">Clubs</button>
+                    <button id="toevents">Events</button>
+                </div>
+                <hr>
+                <h1 class="center">Enrolled Classes</h1>
+                <button id="addclass">Add a Class (+)</button><br><br>
+                <div class="submit_wrapper" id="submit_wrapper">
+                    <form id="submitform" name="submitform" accept-charset="utf-8">
+                        <label for="title">Class Title</label><br>
+                        <input id="title" type="text" name="title"><br>
+                        <label for="info">Class Description</label><br>
+                        <input id="info" type="text" name="info"><br>
+                        <label for="school">University</label><br>
+                        <input id="school" type="text" name="school"><br>
+                    </form>
+                    <br>
+                    <button id="submit_class"> Submit</button>
+                    <button id="cancel"> Cancel</button>
+                </div>
+                <hr>
+                <div id="classlist">
+                    <% classes.forEach(function(klass){ %>
+                        <a href="class/<%=klass.title%>"><%=klass.title%></a><br>
+                    <% }); %>
+                </div>
+            </div>
+            <div class="ui-layout-north">
+                <p class="alignleft">
+                <button id="home">Home</button>
+                </p>
+                <p class="aligncenter">
+                <font size="12">UniBull</font>
+                </p>
+                <p class="alignright">Profile Pic</p>
+            </div>
+            <div class="ui-layout-south center">
+                <button class="center" id="logout">LOGOUT</button>
+            </div>
+            <div class="ui-layout-east pane center">
+                <h1>Notification Center</h1>
+            </div>
+        </div>
+        <script src="js/class-bundle.js"></script>
+    </body>
+</html>
