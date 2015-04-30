@@ -19,7 +19,7 @@ require("blanket")();
 describe("testing front end home page", function() {
   this.timeout(cfg.webdriver.timeout);
   var client = {};
-  var PORT = 9090;
+  var PORT = 9092;// Make sure is unique
   //var baseUrl = "http://localhost:/home" + PORT;
   before(function() {
       return require("../../index.js")(PORT).then(function() {

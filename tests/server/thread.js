@@ -45,7 +45,6 @@ describe("testing thread endpoints", function() {
             });
     }
     var classID;
-    var userID = "FirstUser";
     beforeEach(function() {
         var newClass = makeNewClass();
         return createClass(newClass).then(function(body) {
@@ -55,13 +54,10 @@ describe("testing thread endpoints", function() {
     function joinClass() {
         return request(app)
             .post("/rest/user/login")
-            .send({
-                username: userID,
-                password: "mypasswd"
-            }).then(function(res) {
+            .send(validUser).then(function(res) {
                 var token = res.body.token;
                 return request(app)
-                    .post("/rest/user/"+userID+"/joinClass")
+                    .post("/rest/user/"+validUser.username+"/joinClass")
                     .send({classID: classID})
                     .set("Authorization", token)
                     .expect(200)
