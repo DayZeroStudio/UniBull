@@ -2,7 +2,7 @@ SHELL 				:= /bin/bash
 BIN					:= ./bin
 NM_BIN		     	:= ./node_modules/.bin
 MOCHA		     	:= multi='spec=- html-cov=coverage.html' ${NM_BIN}/mocha
-BUNYAN				:= tee logs/bunyan.out | ./bin/timber.js "${BUNYAN_TAGS}" | tee logs/timber.out | ${NM_BIN}/bunyan
+BUNYAN				:= tee logs/bunyan.out | ./bin/timber.js "${TAGS}" | tee logs/timber.out | ${NM_BIN}/bunyan
 LINTER		     	:= eslint
 SEL_SERVER			:= ${BIN}/selenium-server-standalone-2.45.0.jar
 PHANTOMJS			:= ${BIN}/phantomjs

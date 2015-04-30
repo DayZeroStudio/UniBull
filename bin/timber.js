@@ -17,7 +17,10 @@ function isSubsetOf(subset, superset) {
 }
 
 rl.on("line", function(line) {
-    if (line.charAt(0) !== "{") {
+    if (line === "") {
+        return;
+    } else if (line.charAt(0) !== "{") {
+        console.log(line);
         return;
     }
     var parsedLine = JSON.parse(line);
