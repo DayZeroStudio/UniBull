@@ -132,7 +132,7 @@ describe("testing class endpoints", function() {
                     var token = res.body.token;
                     return request(app)
                         .post("/rest/user/"+userID+"/joinClass")
-                        .query({classID: classID})
+                        .send({classID: classID})
                         .set("Authorization", token)
                         .expect(200)
                         .then(function(res) {
