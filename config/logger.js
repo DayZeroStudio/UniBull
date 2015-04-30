@@ -3,16 +3,18 @@ module.exports = function(CFG) {
     var cfg = {};
 
     var bunyan = require("bunyan");
-    cfg.logger = bunyan.createLogger({
+    var parentLogger = bunyan.createLogger({
         name: "UniBull",
         src: CFG.isDev || CFG.isTest,
         level: (CFG.isTest ? "warn"
                 : (CFG.isDev ? "debug" : "info")),
-        serializers: {
-            req: bunyan.stdSerializers.req,
-            res: bunyan.stdSerializers.res
-        }
+        serializers: bunyan.stdSerializers
     });
+    cfg.makeLogger = function(tags) {
+        return parentLogger.child({
+            tags: tags.replace(" ", "").split(",")
+        });
+    };
 
     return cfg;
 };

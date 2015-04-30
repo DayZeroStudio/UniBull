@@ -10,7 +10,7 @@ module.exports = Promise.promisify(function(dbModels, routePrefix, callback) {
     var _ = require("lodash");
     function append(a, b) {return a+b; }
     var cfg = require("../../config");
-    var log = cfg.log.logger;
+    var log = cfg.log.makeLogger("rest,class");
 
     var auth = require("../auth.js");
     var publicEndpoints = _.map(["", "/"],

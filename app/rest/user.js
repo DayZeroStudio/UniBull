@@ -12,7 +12,7 @@ module.exports = Promise.promisify(function(dbModels, routePrefix, callback) {
     var jwt = require("jsonwebtoken");
 
     var cfg = require("../../config");
-    var log = cfg.log.logger;
+    var log = cfg.log.makeLogger("rest,user");
 
     var auth = require("../auth.js");
     var publicEndpoints = _.map(["", "/", "/login", "/signup"],

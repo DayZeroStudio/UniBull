@@ -6,7 +6,7 @@ var uniBull = Promise.promisify(function(PORT, callback) {
     var app = express();
     var path = require("path");
     var cfg = require("./config");
-    var log = cfg.log.logger;
+    var log = cfg.log.makeLogger("main,setup");
 
     // For automagical HTML page reloading
     var reloadify = require("./lib/reloadify");

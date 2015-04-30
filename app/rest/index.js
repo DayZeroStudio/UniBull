@@ -3,7 +3,7 @@ var Promise = require("sequelize").Promise;
 
 module.exports = function setupRestEndpoints(dbModels) {
     var cfg = require("../../config");
-    var log = cfg.log.logger;
+    var log = cfg.log.makeLogger("rest,index,setup");
 
     var express = require("express");
     var appRouter = express.Router();

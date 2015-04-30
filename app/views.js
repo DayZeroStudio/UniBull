@@ -6,7 +6,7 @@ module.exports = Promise.promisify(function setupHtmlPages(dbModels, done) {
 
     var fs = require("fs");
     var cfg = require("../config");
-    var log = cfg.log.logger;
+    var log = cfg.log.makeLogger("views,html,setup");
 
     var express = require("express");
     var router = express.Router();

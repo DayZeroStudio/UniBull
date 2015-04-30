@@ -18,6 +18,7 @@
     "brace-style": [2, "1tbs", {"allowSingleLine": true}],
     "consistent-this": [2, "self"],
     "space-return-throw-case": 2,
+    "no-process-exit": 0,
     "wrap-regex": 2
   }
 }
