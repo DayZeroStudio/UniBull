@@ -1,7 +1,5 @@
 "use strict";
 module.exports = function(CFG, log) {
-    var _ = require("lodash");
-
     var db_cfg = {
         name: CFG.env.DB_NAME
             || (!CFG.isProd ? (function() {throw new Error(CFG.errmsgs.missingDbEnvVars); })()
@@ -13,7 +11,7 @@ module.exports = function(CFG, log) {
         url: (CFG.isProd ? CFG.env.DATABASE_URL : undefined),
         options: {
             dialect: "postgres",
-            logging: (CFG.isTest ? _.noop : log.debug.bind(log))
+            logging: log.debug.bind(log)
         }
     };
 

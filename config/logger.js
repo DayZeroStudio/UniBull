@@ -1,6 +1,7 @@
 "use strict";
 module.exports = function(CFG) {
     var cfg = {};
+    var _ = require("lodash");
 
     var bunyan = require("bunyan");
     var parentLogger = bunyan.createLogger({
@@ -11,9 +12,12 @@ module.exports = function(CFG) {
         serializers: bunyan.stdSerializers
     });
     cfg.makeLogger = function(tags) {
-        return parentLogger.child({
-            tags: tags.replace(" ", "").split(",")
-        });
+        var logger = parentLogger.child();
+        var debugTags = _.map(tags.split(","), function(elt) {
+            return "unibull:" + elt;
+        }).join(",");
+        logger.debug = require("debug")(debugTags);
+        return logger;
     };
 
     return cfg;
