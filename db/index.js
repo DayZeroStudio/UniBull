@@ -12,12 +12,13 @@ module.exports = Promise.promisify(function(callback) {
     var dbModels = {};
 
     var path = require("path");
-    ["Class", "Thread", "User"].forEach(function(model) {
+    ["Class", "Thread", "User", "Reply"].forEach(function(model) {
         dbModels[model] = db.import(path.join(__dirname, model.toLowerCase()));
     });
 
     (function(ms) {
         ms.Class.hasMany(ms.Thread);
+        ms.Thread.hasMany(ms.Reply);
     })(dbModels);
 
     dbModels.db = db;
@@ -32,10 +33,12 @@ module.exports = Promise.promisify(function(callback) {
             school: "UC SHITTY CRUZ"
         });
     }).then(function() {
-        dbModels.Thread.sync(dbOpts).then(function() {
-            dbModels.User.sync(dbOpts).then(function() {
-                callback(null, dbModels);
-            });
-        });
+        return dbModels.Thread.sync(dbOpts);
+    }).then(function() {
+        return dbModels.Reply.sync(dbOpts);
+    }).then(function() {
+        return dbModels.User.sync(dbOpts);
+    }).then(function() {
+        callback(null, dbModels);
     });
 });

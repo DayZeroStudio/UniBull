@@ -117,10 +117,18 @@ module.exports = Promise.promisify(function(dbModels, routePrefix, callback) {
         });
     });
 
+    var Class = dbModels.Class;
     return User.create({
         username: "FirstUser",
         password: "mypasswd",
         email: "first.user@email.com"
+    }).bind({}).then(function(user) {
+        this.user = user;
+        return Class.find({where: {title: "WebDev101"}});
+    }).then(function(klass) {
+        return this.user.addClass(klass.title);
+    }).then(function() {
+        return this.user.save();
     }).then(function() {
         return callback(null, router);
     });

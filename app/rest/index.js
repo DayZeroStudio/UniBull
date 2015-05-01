@@ -8,9 +8,13 @@ module.exports = function setupRestEndpoints(dbModels) {
     var express = require("express");
     var appRouter = express.Router();
 
-    return Promise.resolve(["user", "class"]).map(function(name) {
-        var route = "/rest/" + name;
-        return require("./"+name+".js")(dbModels, route).then(function(router) {
+    return Promise.resolve([
+        {name: "user", route: "user"},
+        {name: "class", route: "class"},
+        {name: "reply", route: "class"}
+    ]).map(function(obj) {
+        var route = "/rest/" + obj.route;
+        return require("./"+obj.name+".js")(dbModels, route).then(function(router) {
             log.info("Adding REST endpoint: (" + route + ")");
             appRouter.use(route, router);
         });

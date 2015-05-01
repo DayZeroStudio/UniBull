@@ -86,6 +86,16 @@ describe("testing class endpoints", function() {
                 });
         });
     });
+    describe("getting all the threads in a class", function() {
+        it("should return a list of all the threads", function() {
+            return request(app)
+                .get("/rest/class/"+"WebDev101"+"/all")
+                .expect(200)
+                .expect(function(res) {
+                    res.body.threads.should.be.an("array");
+                });
+        });
+    });
     describe("joining an existing class", function() {
         var classID;
         beforeEach(function() {
