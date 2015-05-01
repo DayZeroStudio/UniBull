@@ -151,6 +151,14 @@ describe("testing user endpoints", function() {
                         });
                 });
             });
+            it("we can then login again successfully", function() {
+                var newUser = utils.makeNewUser();
+                return utils.signupNewUser(newUser).then(function() {
+                    return utils.loginToApp(newUser);
+                }).then(function(res) {
+                    res.body.should.contain.keys("user", "token", "redirect");
+                });
+            });
         });
         context("when the username is already take", function() {
             it("should return an error", function() {
