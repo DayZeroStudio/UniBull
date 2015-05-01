@@ -19,11 +19,13 @@ require("blanket")();
 describe("testing front end home page", function() {
   this.timeout(cfg.webdriver.timeout);
   var client = {};
+  var utils = {};
   var PORT = 9092;// Make sure is unique
-  //var baseUrl = "http://localhost:/home" + PORT;
+  var baseUrl = "http://localhost:" + PORT;
   before(function() {
       return require("../../index.js")(PORT).then(function() {
           client = driver.remote(options);
+          utils = require("../utils").wd(baseUrl).user(client);
           Promise.promisifyAll(client, {suffix: "_async"});
           client.init();
       });
@@ -31,4 +33,13 @@ describe("testing front end home page", function() {
   after(function() {
       return client.end();
   });
+    context("once on the home page", function() {
+        it("should have content", function() {
+            utils.loginWithUser(utils.validUser);
+            client.saveScreenshot(cfg.screenshot.at("valid"))
+                .title_async().then(function(res) {
+                    res.value.should.contain("Home");
+                });
+            });
+    });
 });

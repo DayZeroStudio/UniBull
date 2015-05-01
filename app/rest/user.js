@@ -112,7 +112,7 @@ module.exports = function(dbModels, routePrefix) {
             });
         }).catch(function(err) {
             return res.json({
-                error: err
+                error: err.message
             });
         });
     });

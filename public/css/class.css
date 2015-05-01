@@ -56,6 +56,12 @@ label {
 #forum{
     width: 600px;
 }
+.joinclass{
+    float: right;
+}
+.classroomlink{
+    float: left;
+}
 .submit_wrapper{
     display: none;
     text-align: left;

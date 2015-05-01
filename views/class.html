@@ -21,7 +21,7 @@
                 </div>
                 <hr>
                 <h1 class="center">Enrolled Classes</h1>
-                <button id="addclass">Add a Class (+)</button><br><br>
+                <button id="addclass">Add a new Class (+)</button><br><br>
                 <div class="submit_wrapper" id="submit_wrapper">
                     <form id="submitform" name="submitform" accept-charset="utf-8">
                         <label for="title">Class Title</label><br>
@@ -39,6 +39,15 @@
                 <div id="classlist">
                     <% classes.forEach(function(klass){ %>
                         <a href="class/<%=klass.title%>"><%=klass.title%></a><br>
+                    <% }); %>
+
+                </div>
+                <hr><h1 class="center"> Other Classes</h1><hr>
+                <div id="allclasslist">
+                    <% classes.forEach(function(klass){ %>
+                        <a class="classroomlink" href="class/<%=klass.title%>"><%=klass.title%></a>
+                        <button data-klass="<%=klass.title%>" class="joinclass">Join this class!</button>
+                        <br>
                     <% }); %>
                 </div>
             </div>

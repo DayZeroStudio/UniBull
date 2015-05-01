@@ -90,7 +90,14 @@ module.exports = function setupHtmlPages(dbModels) {
             var classID = req.params.classID;
             log.warn("classID:", classID);
             res.locals.classID = classID;
-            res.render("tmpl/classroom");
+            Class.find({
+                where: { title: classID }
+            }).then(function(klass) {
+                return klass.getThreads({raw: true});
+            }).then(function(threads) {
+                res.locals.threads = threads;
+                return res.render("tmpl/classroom");
+            });
         });
         addBundleRoute("classroom", {
             addRoute: false,
@@ -102,7 +109,9 @@ module.exports = function setupHtmlPages(dbModels) {
                 return Class.findAll({}, {
                     raw: true
                 }).then(function(classes) {
-                    return {classes: classes};
+                    return {
+                        classes: classes
+                    };
                 });
             },
             router: router,

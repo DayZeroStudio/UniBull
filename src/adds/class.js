@@ -2,6 +2,30 @@
 /*eslint no-alert:0*/
 "use strict";
 
+function logout(name) {
+    $.cookie("usernameCookie", null);
+    document.cookie = name+"=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+}
+
+function joinclass(classID) {
+    var userID = $.cookie("userameCookie");
+    console.log("userid", userID);
+    var classroom = require("class");
+    var joinClass = classroom.joinClass;
+    return joinClass($, userID, classID, function(err, data) {
+        if (err) { return console.log(err); }
+        if (data.action) {
+            console.log("joined class");
+        }
+    });
+}
+
+function end_submission() {
+    $("#submit_wrapper").slideUp();
+    $("#title").val("");
+    $("#content").val("");
+}
+
 $("#container").layout({
     north: {
         enableCursorHotkey: false,
@@ -19,10 +43,6 @@ $("#container").layout({
     }
 });
 
-function logout(name) {
-    $.cookie("usernameCookie", null);
-    document.cookie = name+"=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-}
 $("#logout").button().click(function() {
     logout("token");
     window.location.href = "/login";
@@ -51,11 +71,10 @@ $("#addclass").button().click(function() {
     $("#submit_wrapper").slideToggle();
 });
 
-function end_submission() {
-    $("#submit_wrapper").slideUp();
-    $("#title").val("");
-    $("#content").val("");
-}
+$(".joinclass").button().click(function(klass) {
+    var classID = $(klass.currentTarget).attr("data-klass");
+    joinclass(classID);
+});
 
 $("#cancel").button().click(function() {
     $("#submit_wrapper").slideUp();
@@ -75,6 +94,7 @@ $("#submit_class").button().click(function() {
         if (data.redirect) {
             var classTitle = $("#title").val();
             var userID = $.cookie("usernameCookie");
+            console.log("USERID", userID);
             $( "#classlist" ).append("<br><a href='/class/" + classTitle + "'>" + classTitle + "</a>");
             end_submission();
             return joinClass($, userID, classTitle, function(err, data) {

@@ -30,6 +30,12 @@ module.exports = function() {
             title: "WebDev101",
             info: "WEB DEV WILL RUIN YOUR LIFE",
             school: "UC SHITTY CRUZ"
+        }).then(function() {
+            return dbModels.Class.create({
+                title: "TestClass",
+                info: "for testing purposes",
+                school: "UC NOT SO SHITTY CRUZ"
+            });
         });
     }).then(function() {
         return dbModels.Thread.sync(dbOpts);
