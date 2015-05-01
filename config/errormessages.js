@@ -1,5 +1,5 @@
+"use strict";
 module.exports = (function() {
-    "use strict";
     var errmsgs = {};
 
     errmsgs.tokenExpired = "Your session has expired, please re-login.";

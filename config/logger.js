@@ -1,5 +1,5 @@
+"use strict";
 module.exports = function(CFG) {
-    "use strict";
     var cfg = {};
 
     var bunyan = require("bunyan");

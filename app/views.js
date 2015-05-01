@@ -1,7 +1,7 @@
 "use strict";
 var Promise = require("sequelize").Promise;
 
-module.exports = Promise.promisify(function setupHtmlPages(dbModels, done) {
+module.exports = function setupHtmlPages(dbModels) {
     var path = require("path");
 
     var fs = require("fs");
@@ -115,5 +115,5 @@ module.exports = Promise.promisify(function setupHtmlPages(dbModels, done) {
         adds: [{name: "menu.js"}]
     });
 
-    return done(null, router);
-});
+    return Promise.resolve(router);
+};

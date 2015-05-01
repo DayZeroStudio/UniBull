@@ -1,5 +1,5 @@
+"use strict";
 module.exports = function(CFG) {
-    "use strict";
     var cfg = {};
 
     cfg.secret = "Teid]Ib+Cu[ig/elJ$Ig;wuJ?wiAn+vO";

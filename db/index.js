@@ -1,7 +1,6 @@
 "use strict";
-var Promise = require("sequelize").Promise;
 
-module.exports = Promise.promisify(function(callback) {
+module.exports = function() {
     var cfg = require("../config");
 
     var DB = require("sequelize");
@@ -26,7 +25,7 @@ module.exports = Promise.promisify(function(callback) {
     var dbOpts = {
         force: !cfg.isProd
     };
-    dbModels.Class.sync(dbOpts).then(function() {
+    return dbModels.Class.sync(dbOpts).then(function() {
         return dbModels.Class.create({
             title: "WebDev101",
             info: "WEB DEV WILL RUIN YOUR LIFE",
@@ -39,6 +38,6 @@ module.exports = Promise.promisify(function(callback) {
     }).then(function() {
         return dbModels.User.sync(dbOpts);
     }).then(function() {
-        callback(null, dbModels);
+        return dbModels;
     });
-});
+};

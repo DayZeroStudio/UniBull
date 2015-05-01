@@ -1,7 +1,6 @@
 "use strict";
-var Promise = require("sequelize").Promise;
 
-module.exports = Promise.promisify(function(dbModels, routePrefix, callback) {
+module.exports = function(dbModels, routePrefix) {
     var express = require("express");
     var router = express.Router();
     var bodyParser = require("body-parser");
@@ -130,6 +129,6 @@ module.exports = Promise.promisify(function(dbModels, routePrefix, callback) {
     }).then(function() {
         return this.user.save();
     }).then(function() {
-        return callback(null, router);
+        return router;
     });
-});
+};

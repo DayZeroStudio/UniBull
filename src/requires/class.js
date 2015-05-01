@@ -1,5 +1,5 @@
+"use strict";
 module.exports = (function() {
-    "use strict";
     var ajax = require("../utils/ajax.js");
     var exports = {};
     exports.onCreate = function($, fields, callback) {

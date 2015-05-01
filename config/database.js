@@ -1,5 +1,5 @@
+"use strict";
 module.exports = function(CFG, log) {
-    "use strict";
     var _ = require("lodash");
 
     var db_cfg = {
