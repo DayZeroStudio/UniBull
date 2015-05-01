@@ -6,7 +6,7 @@ function logout(name) {
 }
 
 function joinclass(classID) {
-    var userID = $.cookie("userameCookie");
+    var userID = $.cookie("usernameCookie");
     console.log("userid", userID);
     var classroom = require("class");
     var joinClass = classroom.joinClass;
