@@ -73,7 +73,7 @@ module.exports = Promise.promisify(function(dbModels, routePrefix, callback) {
     });
 
     router.post("/:classID/submit", function(req, res) {
-        log.info("POST - Submit a post to :classID");
+        log.info("POST - Submit a new thread to :classID");
         var title = req.body.title;
         var content = req.body.content;
         var classID = req.params.classID;

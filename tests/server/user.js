@@ -5,11 +5,10 @@ var should = chai.should();
 var request = require("supertest-as-promised");
 var sinon = require("sinon");
 
-var _ = require("lodash");
-
 var express = require("express");
 var app = express();
 app.use(require("cookie-parser")());
+var utils = require("../utils").server(request, app).user;
 
 var cfg = require("../../config");
 
@@ -41,27 +40,21 @@ describe("testing user endpoints", function() {
         });
     });
     describe("logging in", function() {
-        function loginToApp(user) {
-            return request(app)
-                .post("/rest/user/login")
-                .send(user)
-                .toPromise();
-        }
         context("with invalid credentials", function() {
             it("(none) should return an error", function() {
-                return loginToApp({}).then(function(res) {
+                return utils.loginToApp({}).then(function(res) {
                     res.body.should.have.key("error");
                 });
             });
             it("(only username) should return an error", function() {
-                return loginToApp({
+                return utils.loginToApp({
                     username: "FirstUser"
                 }).then(function(res) {
                     res.body.should.have.key("error");
                 });
             });
             it("(both) should return an error", function() {
-                return loginToApp({
+                return utils.loginToApp({
                     username: "FirstUser",
                     password: "imNotTheCorrectPassword"
                 }).then(function(res) {
@@ -70,14 +63,10 @@ describe("testing user endpoints", function() {
             });
         });
         context("with valid credentials", function() {
-            var validUser = {
-                username: "FirstUser",
-                password: "mypasswd"
-            };
             it("we are auth'd and redirected to '/home'", function() {
                 return request(app)
                     .post("/rest/user/login")
-                    .send(validUser)
+                    .send(utils.validUser)
                     .expect(200)
                     .expect("Content-Type", /json/)
                     .expect(function(res) {
@@ -87,7 +76,7 @@ describe("testing user endpoints", function() {
                     }).toPromise();
             });
             it("we can view restricted pages", function() {
-                return loginToApp(validUser).then(function gotToken(res) {
+                return utils.loginToApp(utils.validUser).then(function(res) {
                     return request(app)
                         .get("/rest/user/restricted")
                         .set("Authorization", res.body.token)
@@ -109,7 +98,7 @@ describe("testing user endpoints", function() {
                     sandbox.restore();
                 });
                 it("we are denied access", function() {
-                    return loginToApp(validUser).then(function(res) {
+                    return utils.loginToApp(utils.validUser).then(function(res) {
                         sandbox.clock.tick(timeout);
                         return request(app)
                             .get("/rest/user/restricted")
@@ -121,7 +110,7 @@ describe("testing user endpoints", function() {
                     it("we are NOT denied access", function() {
                         var agent = request.agent(app);
                         return agent.post("/rest/user/login")
-                            .send(validUser)
+                            .send(utils.validUser)
                             .expect(200)
                             .then(function() {
                                 sandbox.clock.tick(timeout / 2);
@@ -142,24 +131,17 @@ describe("testing user endpoints", function() {
         });
     });
     describe("after signing up", function() {
-        function signupNewUser(username) {
-            return request(app)
-                .post("/rest/user/signup")
-                .send({
-                    username: username,
-                    password: "password",
-                    email: username + "@email.com"
-                }).expect(200).toPromise();
-            }
         context("with valid user info", function() {
             it("we are auth'd and redirected to /home", function() {
-                return signupNewUser(_.uniqueId("newuser_")).then(function(res) {
+                var newUser = utils.makeNewUser();
+                return utils.signupNewUser(newUser).then(function(res) {
                     res.body.token.should.match(/^Bearer/);
                     res.body.redirect.should.equal("/home");
                 });
             });
             it("we are auth'd and redirected to '/home'", function() {
-                return signupNewUser(_.uniqueId("newuser_")).then(function(res) {
+                var newUser = utils.makeNewUser();
+                return utils.signupNewUser(newUser).then(function(res) {
                     return request(app)
                         .get("/rest/user/restricted")
                         .set("Authorization", res.body.token)
@@ -172,8 +154,9 @@ describe("testing user endpoints", function() {
         });
         context("when the username is already take", function() {
             it("should return an error", function() {
-                return signupNewUser("duplicateUser").then(function() {
-                    return signupNewUser("duplicateUser").then(function(res) {
+                var duplicateUser = utils.makeNewUser();
+                return utils.signupNewUser(duplicateUser).then(function() {
+                    return utils.signupNewUser(duplicateUser).then(function(res) {
                         res.body.should.contain.key("error");
                     });
                 });

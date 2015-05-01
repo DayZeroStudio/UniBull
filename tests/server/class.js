@@ -4,18 +4,9 @@ var chai = require("chai");
 chai.should();
 chai.use(require("chai-things"));
 var request = require("supertest-as-promised");
-var _ = require("lodash");
 
 var app = require("express")();
-
-var cfg = require("../../config");
-
-var jwt = require("jsonwebtoken");
-var validUser = {
-    username: "FirstUser",
-    password: "mypasswd"
-};
-var token = "Bearer "+jwt.sign(validUser, cfg.jwt.secret);
+var utils = require("../utils").server(request, app);
 
 require("blanket")();
 describe("testing class endpoints", function() {
@@ -26,36 +17,18 @@ describe("testing class endpoints", function() {
             app.use(router);
         });
     });
-    function makeNewClass() {
-        var id = _.uniqueId();
-        return {
-            info: "info"+id,
-            school: "school"+id,
-            title: "title"+id
-        };
-    }
-    function createClass(klass) {
-        return request(app)
-            .post("/rest/class/create")
-            .set("Authorization", token)
-            .send(klass)
-            .expect(200)
-            .then(function(res) {
-                return res.body;
-            });
-    }
     describe("creating a class", function() {
         context("with valid info", function() {
             context("that does not exist", function() {
                 it("should return the class information", function() {
-                    var newClass = makeNewClass();
-                    return createClass(newClass).then(function(body) {
+                    var newClass = utils.class.makeNewClass();
+                    return utils.class.createClass(newClass).then(function(body) {
                         body.class.should.contain(newClass);
                     });
                 });
                 it("should add it to the list of all classes", function() {
-                    var newClass = makeNewClass();
-                    return createClass(newClass).then(function() {
+                    var newClass = utils.class.makeNewClass();
+                    return utils.class.createClass(newClass).then(function() {
                         return request(app)
                             .get("/rest/class")
                             .expect(function(res) {
@@ -67,8 +40,8 @@ describe("testing class endpoints", function() {
                     });
                 });
                 it("should redirect to the new class page", function() {
-                    var newClass = makeNewClass();
-                    return createClass(newClass).then(function(body) {
+                    var newClass = utils.class.makeNewClass();
+                    return utils.class.createClass(newClass).then(function(body) {
                         body.should.contain.key("redirect");
                         body.redirect.should.to.match(/\/class\/.+/);
                     });
@@ -77,16 +50,16 @@ describe("testing class endpoints", function() {
             context("that does exist", function() {
                 var newClass;
                 beforeEach(function() {
-                    newClass = makeNewClass();
-                    return createClass(newClass);
+                    newClass = utils.class.makeNewClass();
+                    return utils.class.createClass(newClass);
                 });
                 it("should return an error", function() {
-                    return createClass(newClass).then(function(body) {
+                    return utils.class.createClass(newClass).then(function(body) {
                         body.should.contain.keys("error");
                     });
                 });
                 it("should redirect to the existing class", function() {
-                    return createClass(newClass).then(function(body) {
+                    return utils.class.createClass(newClass).then(function(body) {
                         body.should.contain.keys("redirect");
                         body.redirect.should.match(/\/class\/.+/);
                     });
@@ -96,7 +69,7 @@ describe("testing class endpoints", function() {
         context("with invalid info", function() {
             it("should return an error", function() {
                 var invalidClassInfo = {};
-                return createClass(invalidClassInfo).then(function(body) {
+                return utils.class.createClass(invalidClassInfo).then(function(body) {
                     body.should.contain.keys("error");
                     body.error.should.match(/^notNull Violation/);
                 });
@@ -115,42 +88,23 @@ describe("testing class endpoints", function() {
     });
     describe("joining an existing class", function() {
         var classID;
-        var userID = "FirstUser";
         beforeEach(function() {
-            var newClass = makeNewClass();
-            return createClass(newClass).then(function(body) {
+            var newClass = utils.class.makeNewClass();
+            return utils.class.createClass(newClass).then(function(body) {
                 classID = body.class.title;
             });
         });
-        function joinClass() {
-            return request(app)
-                .post("/rest/user/login")
-                .send({
-                    username: userID,
-                    password: "mypasswd"
-                }).then(function(res) {
-                    var token = res.body.token;
-                    return request(app)
-                        .post("/rest/user/"+userID+"/joinClass")
-                        .send({classID: classID})
-                        .set("Authorization", token)
-                        .expect(200)
-                        .then(function(res) {
-                            return [res.body, token];
-                        });
-                });
-        }
         context("that you are NOT enrolled in", function() {
             it("should redirect to the class page", function() {
-                return joinClass().spread(function(body) {
+                return utils.class.joinClass(classID).spread(function(body) {
                     body.should.contain.keys("redirect");
                     body.redirect.should.match(/\/class\/.+/);
                 });
             });
             it("should add it to the users classes", function() {
-                return joinClass().spread(function(body, token) {
+                return utils.class.joinClass(classID).spread(function(body, token) {
                     return request(app)
-                        .get("/rest/user/"+userID)
+                        .get("/rest/user/"+utils.class.validUser.username)
                         .set("Authorization", token)
                         .expect(200)
                         .expect(function(res) {
@@ -163,8 +117,8 @@ describe("testing class endpoints", function() {
         });
         context("that you ARE enrolled in", function() {
             it("should return an error", function() {
-                return joinClass().spread(function() {
-                    return joinClass().spread(function(body) {
+                return utils.class.joinClass(classID).spread(function() {
+                    return utils.class.joinClass(classID).spread(function(body) {
                         body.should.have.keys("error");
                     });
                 });

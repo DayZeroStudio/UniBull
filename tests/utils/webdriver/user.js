@@ -1,13 +1,10 @@
 "use strict";
 
-module.exports = function(baseUrl, client) {
+module.exports = function(UTILS, baseUrl, client) {
     var utils = {};
     var _ = require("lodash");
 
-    utils.validUser = {
-        username: "FirstUser",
-        password: "mypasswd"
-    };
+    utils.validUser = UTILS.validUser;
 
     utils.makeNewUser = function() {
         var id = _.uniqueId();
@@ -18,10 +15,6 @@ module.exports = function(baseUrl, client) {
         };
     };
 
-    /**
-     * loginWithUser
-     * takes a user and logs in with its credentials
-     */
     utils.loginWithUser = function(user) {
         client.url(baseUrl)
             .setValue("#username", user.username || "")
