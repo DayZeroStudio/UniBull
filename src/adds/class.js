@@ -1,5 +1,3 @@
-/*eslint-env browser, jquery*/
-/*eslint no-alert:0*/
 "use strict";
 
 function logout(name) {

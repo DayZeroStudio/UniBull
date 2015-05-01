@@ -1,5 +1,3 @@
-/*eslint-env jquery, browser*/
-/*eslint no-alert:0*/
 "use strict";
 
 //get username cookie and set as title
