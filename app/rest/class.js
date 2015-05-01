@@ -15,7 +15,7 @@ module.exports = Promise.promisify(function(dbModels, routePrefix, callback) {
     var auth = require("../auth.js");
     var publicEndpoints = _.map(["", "/"],
             _.partial(append, routePrefix))
-            .concat([/all$/, /reply$/]);
+            .concat([/all$/, /\/reply/]);
     auth.setupAuth(router, publicEndpoints);
 
     var Class = dbModels.Class;

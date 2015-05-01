@@ -7,17 +7,12 @@ module.exports = Promise.promisify(function(dbModels, routePrefix, callback) {
     var bodyParser = require("body-parser");
     router.use(bodyParser.json());
 
-    // function append(a, b) {return a+b; }
-
     var cfg = require("../../config");
     var log = cfg.log.makeLogger("rest,reply");
 
-    // var auth = require("../auth.js");
-    // var publicEndpoints = _.map(["", "/"],
-    //         _.partial(append, routePrefix))
-    //         .concat([/reply$/]);
-    // log.warn("publicEndpoints", publicEndpoints);
-    // auth.setupAuth(router, publicEndpoints);
+    var auth = require("../auth.js");
+    var publicEndpoints = [/\/reply/];
+    auth.setupAuth(router, publicEndpoints);
 
     var Class = dbModels.Class;
     var Reply = dbModels.Reply;
