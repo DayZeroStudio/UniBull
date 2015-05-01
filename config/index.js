@@ -1,5 +1,5 @@
+"use strict";
 module.exports = (function() {
-    "use strict";
     var _ = require("lodash");
     var cfg = {};
 
@@ -14,7 +14,7 @@ module.exports = (function() {
     var frozenCFG = Object.freeze(_.cloneDeep(cfg));
     cfg.log = require("./logger.js")(frozenCFG);
     cfg.jwt = require("./jsonwebtoken.js")(frozenCFG);
-    cfg.db = require("./database.js")(frozenCFG, cfg.log.logger);
+    cfg.db = require("./database.js")(frozenCFG, cfg.log.makeLogger("db"));
 
     cfg.webdriver = require("./webdriver.js")(frozenCFG);
     cfg.screenshot = {};

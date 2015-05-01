@@ -2,7 +2,7 @@
 
 var chai = require("chai");
 chai.should();
-var request = require("supertest");
+var request = require("supertest-as-promised");
 var _ = require("lodash");
 
 var app = require("express")();
@@ -18,11 +18,11 @@ describe("testing menu endpoints", function() {
     });
     describe("when getting the menu", function() {
         context("from nine for today", function() {
-            it("should contain a title, name, and meals", function(done) {
-                request(app)
+            it("should contain a title, name, and meals", function() {
+                return request(app)
                     .get("/rest/menu/nine/0")
                     .expect(200)
-                    .expect(function(res) {
+                    .then(function(res) {
                         res.body.should
                             .contain.keys("title", "name", "dtdate");
                         var meals = _(res.body)
@@ -33,7 +33,7 @@ describe("testing menu endpoints", function() {
                             meal.should.be.an("array");
                             meal.should.have.length.above(1);
                         });
-                    }).end(done);
+                    });
             });
         });
     });

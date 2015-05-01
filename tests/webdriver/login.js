@@ -15,17 +15,24 @@ var options = {
     }
 };
 
+require("blanket")();
 describe("testing front end login", function() {
     this.timeout(cfg.webdriver.timeout);
     var client = {};
-    var PORT = 9090;
+    var utils = {};
+    var PORT = 9090;// Make sure is unique
     var baseUrl = "http://localhost:" + PORT;
     before(function() {
         return require("../../index.js")(PORT).then(function() {
             client = driver.remote(options);
+            utils = require("../utils").wd(baseUrl).user(client);
             Promise.promisifyAll(client, {suffix: "_async"});
             client.init();
         });
+    });
+    // Reset state, eg: always start at baseUrl
+    beforeEach(function() {
+        return client.url_async(baseUrl);
     });
     after(function() {
         return client.end();
@@ -46,11 +53,8 @@ describe("testing front end login", function() {
     });
     context("when the user clicks login with invalid credentials", function() {
         it("should do nothing..", function() {
-            return client.url(baseUrl)
-                .setValue("#username", "")
-                .setValue("#password", "")
-                .click("#loginButton")
-                .saveScreenshot(cfg.screenshot.at("empty"))
+            utils.loginWithUser({});
+            client.saveScreenshot(cfg.screenshot.at("empty"))
                 .title_async().then(function(res) {
                     res.value.should.contain("Login");
                 });
@@ -58,14 +62,8 @@ describe("testing front end login", function() {
     });
     context("when the user clicks login with valid credentials", function() {
         it("should authenticate and go to home page", function() {
-            var username = "FirstUser";
-            var password = "mypasswd";
-            return client.url(baseUrl)
-                .setValue("#username", username)
-                .setValue("#password", password)
-                .click("#loginButton")
-                .waitForExist("#loginButton", 500, true)
-                .saveScreenshot(cfg.screenshot.at("valid"))
+            utils.loginWithUser(utils.validUser);
+            client.saveScreenshot(cfg.screenshot.at("valid"))
                 .title_async().then(function(res) {
                     res.value.should.contain("Home");
                 });

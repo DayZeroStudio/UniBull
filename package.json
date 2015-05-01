@@ -10,6 +10,7 @@
     "bunyan": "^1.3.5",
     "cheerio": "^0.19.0",
     "cookie-parser": "^1.3.4",
+    "debug": "^2.1.3",
     "ejs": "^2.3.1",
     "express": "^4.12.3",
     "express-jwt": "^3.0.0",
@@ -24,10 +25,12 @@
     "watch": "^0.16.0"
   },
   "devDependencies": {
+    "blanket": "^1.1.6",
     "chai": "^2.2.0",
     "chai-as-promised": "^5.0.0",
     "chai-things": "^0.2.0",
     "mocha": "^2.2.4",
+    "mocha-multi": "^0.7.1",
     "pre-commit": "^1.0.6",
     "sinon": "^1.14.1",
     "supertest": "^0.15.0",
@@ -40,5 +43,20 @@
   },
   "pre-commit": [
     "test"
-  ]
+  ],
+  "config": {
+    "blanket": {
+      "pattern": [
+        "app",
+        "config",
+        "db",
+        "src"
+      ],
+      "data-cover-never": [
+        "node_modules",
+        "tests"
+      ],
+      "data-cover-reporter-options": {}
+    }
+  }
 }

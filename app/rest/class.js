@@ -1,7 +1,7 @@
 "use strict";
 var Promise = require("sequelize").Promise;
 
-module.exports = Promise.promisify(function(dbModels, routePrefix, callback) {
+module.exports = function(dbModels, routePrefix) {
     var express = require("express");
     var router = express.Router();
     var bodyParser = require("body-parser");
@@ -10,12 +10,12 @@ module.exports = Promise.promisify(function(dbModels, routePrefix, callback) {
     var _ = require("lodash");
     function append(a, b) {return a+b; }
     var cfg = require("../../config");
-    var log = cfg.log.logger;
+    var log = cfg.log.makeLogger("rest,class");
 
     var auth = require("../auth.js");
     var publicEndpoints = _.map(["", "/"],
             _.partial(append, routePrefix))
-        .concat([/all$/]);
+            .concat([/all$/, /\/reply/]);
     auth.setupAuth(router, publicEndpoints);
 
     var Class = dbModels.Class;
@@ -73,7 +73,7 @@ module.exports = Promise.promisify(function(dbModels, routePrefix, callback) {
     });
 
     router.post("/:classID/submit", function(req, res) {
-        log.info("POST - Submit a post to :classID");
+        log.info("POST - Submit a new thread to :classID");
         var title = req.body.title;
         var content = req.body.content;
         var classID = req.params.classID;
@@ -120,5 +120,5 @@ module.exports = Promise.promisify(function(dbModels, routePrefix, callback) {
         });
     });
 
-    return callback(null, router);
-});
+    return Promise.resolve(router);
+};

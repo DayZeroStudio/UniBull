@@ -3,3 +3,4 @@ node_modules
 logs/
 selenium-server-standalone-*.jar
 phantomjs
+coverage.html

@@ -6,7 +6,6 @@ var driver = require("webdriverio");
 
 var Promise = require("bluebird");
 
-var _ = require("lodash");
 var cfg = require("../../config");
 
 var options = {
@@ -16,17 +15,24 @@ var options = {
     }
 };
 
+require("blanket")();
 describe("testing front end sign up", function() {
     this.timeout(cfg.webdriver.timeout);
     var client = {};
-    var PORT = 9091;
+    var utils = {};
+    var PORT = 9091; // Make sure is unique
     var baseUrl = "http://localhost:" + PORT;
     before(function() {
         return require("../../index.js")(PORT).then(function() {
             client = driver.remote(options);
+            utils = require("../utils").wd(baseUrl).user(client);
             Promise.promisifyAll(client, {suffix: "_async"});
             return client.init();
         });
+    });
+    // Reset state, eg: always start at baseUrl
+    beforeEach(function() {
+        return client.url_async(baseUrl);
     });
     after(function() {
         return client.end();
@@ -41,48 +47,25 @@ describe("testing front end sign up", function() {
                 });
         });
     });
-    function makeNewUser() {
-        var id = _.uniqueId();
-        return {
-            username: "user_"+id,
-            email: "email_"+id,
-            password: "password_"+id
-        };
-    }
-    var signupWithUser = function(user) {
-        return client.url(baseUrl + "/signup")
-            .setValue("#username", user.username)
-            .setValue("#email", user.email)
-            .setValue("#password", user.password)
-            .setValue("#confirmpassword", user.password)
-            .click("#submit")
-            .waitForExist("#submit", 100, true)
-            .title_async().then(function(res) {
-                return res.value;
-            });
-    };
     context("when the user fills out the form", function() {
         it("should redirect you to home", function() {
-            var user = makeNewUser();
-            return signupWithUser(user).then(function(title) {
+            var user = utils.makeNewUser();
+            return utils.signupWithUser(user).then(function(title) {
                 client.saveScreenshot(cfg.screenshot.at("submit"));
                 title.should.contain("Home");
             });
         });
         it("should allow you to re-login as the new user", function() {
-            var user = makeNewUser();
-            return signupWithUser(user).then(function() {
+            var user = utils.makeNewUser();
+            return utils.signupWithUser(user).then(function() {
                 return client.click("#logout")
                     .waitForExist("#logout", 100, true)
                     .title_async().then(function(res) {
                         res.value.should.contain("Login");
                     });
             }).then(function() {
-                return client.setValue("#username", user.username)
-                    .setValue("#password", user.password)
-                    .click("#loginButton")
-                    .waitForExist("#loginButton", 500, true)
-                    .title_async().then(function(res) {
+                utils.loginWithUser(utils.validUser);
+                client.title_async().then(function(res) {
                         res.value.should.contain("Home");
                     });
             });

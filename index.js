@@ -1,13 +1,12 @@
 "use strict";
 var Promise = require("sequelize").Promise;
 
-var uniBull = Promise.promisify(function(PORT, callback) {
+var uniBull = function(PORT) {
     var express = require("express");
     var app = express();
     var path = require("path");
-
     var cfg = require("./config");
-    var log = cfg.log.logger;
+    var log = cfg.log.makeLogger("main,setup");
 
     // For automagical HTML page reloading
     var reloadify = require("./lib/reloadify");
@@ -28,7 +27,7 @@ var uniBull = Promise.promisify(function(PORT, callback) {
         res.render("login");
     });
 
-    require("./db")().bind({}).then(function(dbModels) {
+    return require("./db")().bind({}).then(function(dbModels) {
         this.dbModels = dbModels;
         return ["rest", "views"];
     }).map(function(path) {
@@ -49,9 +48,9 @@ var uniBull = Promise.promisify(function(PORT, callback) {
             var host = server.address().address;
             log.info("UniBull is now listening at http://%s:%s", host, PORT);
         });
-        return callback(null, app, server);
+        return Promise.resolve([app, server]);
     });
-});
+};
 
 if (require.main === module) {
     uniBull(process.env.PORT || 8080);

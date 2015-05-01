@@ -1,7 +1,6 @@
 "use strict";
-var Promise = require("sequelize").Promise;
 
-module.exports = Promise.promisify(function(dbModels, routePrefix, callback) {
+module.exports = function(dbModels, routePrefix) {
     var express = require("express");
     var router = express.Router();
     var bodyParser = require("body-parser");
@@ -12,7 +11,7 @@ module.exports = Promise.promisify(function(dbModels, routePrefix, callback) {
     var jwt = require("jsonwebtoken");
 
     var cfg = require("../../config");
-    var log = cfg.log.logger;
+    var log = cfg.log.makeLogger("rest,user");
 
     var auth = require("../auth.js");
     var publicEndpoints = _.map(["", "/", "/login", "/signup"],
@@ -69,12 +68,17 @@ module.exports = Promise.promisify(function(dbModels, routePrefix, callback) {
     });
 
     router.post("/signup", function(req, res) {
-        User.create({
-            username: req.body.username,
+        User.findOrCreate({where: {
+            username: req.body.username
+        }, defaults: {
             password: req.body.password,
             email: req.body.email
-        }).then(_.partialRight(onValidUser, res))
-        .catch(function(err) {
+        }}).spread(function(user, created) {
+            if (!created) {// ie: username taken
+                throw Error(cfg.errmsgs.userAlreadyTaken);
+            }
+            return onValidUser(user, res);
+        }).catch(function(err) {
             res.json({error: err.message});
         });
     });
@@ -91,7 +95,7 @@ module.exports = Promise.promisify(function(dbModels, routePrefix, callback) {
     router.post("/:userID/joinClass", function(req, res) {
         log.info("POST - Join a class");
         var userID = req.params.userID;
-        var classID = req.query.classID;
+        var classID = req.body.classID;
         User.find({
             where: {username: userID}
         }).then(function(user) {
@@ -113,11 +117,19 @@ module.exports = Promise.promisify(function(dbModels, routePrefix, callback) {
         });
     });
 
+    var Class = dbModels.Class;
     return User.create({
         username: "FirstUser",
         password: "mypasswd",
         email: "first.user@email.com"
+    }).bind({}).then(function(user) {
+        this.user = user;
+        return Class.find({where: {title: "WebDev101"}});
+    }).then(function(klass) {
+        return this.user.addClass(klass.title);
     }).then(function() {
-        return callback(null, router);
+        return this.user.save();
+    }).then(function() {
+        return router;
     });
-});
+};

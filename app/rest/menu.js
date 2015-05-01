@@ -14,7 +14,7 @@ module.exports = function(dbModels, routePrefix) {
     var request = Promise.promisifyAll(require("superagent"));
 
     var cfg = require("../../config");
-    var log = cfg.log.logger;
+    var log = cfg.log.makeLogger("menu,dh");
 
     var Menu = dbModels.Menu;
 
@@ -56,7 +56,7 @@ module.exports = function(dbModels, routePrefix) {
                     var meal = {};
                     meal[mealName] = mealMenu;
                     return meal;
-                });
+                }).get();
                 log.debug("meals:", meals);
 
                 var menu = _.reduce(meals, _.merge);
@@ -78,9 +78,19 @@ module.exports = function(dbModels, routePrefix) {
             if (!dbData) {
                 return getMenuForDh(req.params.dh).then(function(menu) {
                     res.json(menu);
+                }).catch(function(err) {
+                    log.error("ERROR");
+                    res.status(502).json({
+                        error: err.message
+                    });
                 });
             }
             return res.json(dbData);
+        }).catch(function(err) {
+            log.error("ERROR", err);
+            return res.status(501).json({
+                error: err.message
+            });
         });
     });
 

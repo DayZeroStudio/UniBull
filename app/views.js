@@ -1,12 +1,12 @@
 "use strict";
 var Promise = require("sequelize").Promise;
 
-module.exports = Promise.promisify(function setupHtmlPages(dbModels, done) {
+module.exports = function setupHtmlPages(dbModels) {
     var path = require("path");
 
     var fs = require("fs");
     var cfg = require("../config");
-    var log = cfg.log.logger;
+    var log = cfg.log.makeLogger("views,html,setup");
 
     var express = require("express");
     var router = express.Router();
@@ -24,8 +24,9 @@ module.exports = Promise.promisify(function setupHtmlPages(dbModels, done) {
     }
 
     function addJustRoute(baseFile, options) {
+        var getLocals = options.getLocals || function() {return Promise.resolve({}); };
         router.get("/"+baseFile, function(req, res) {
-            options.getLocals().then(function(locals) {
+            getLocals().then(function(locals) {
                 res.locals = locals;
                 res.render(baseFile);
             });
@@ -110,5 +111,9 @@ module.exports = Promise.promisify(function setupHtmlPages(dbModels, done) {
         });
     })(express.Router());
 
-    return done(null, router);
-});
+    addBundleRoute("menu", {
+        adds: [{name: "menu.js"}]
+    });
+
+    return Promise.resolve(router);
+};
