@@ -1,8 +1,7 @@
 "use strict";
 
 //get username cookie and set as title
-var username;
-username = $.cookie("usernameCookie");
+var username = $.cookie("usernameCookie");
 $("#feedtitle").append("<h1><center>" + username + "'s Feed</center></h1>");
 
 $("#home").button();
@@ -41,9 +40,9 @@ $("#container").layout({
   }
 });
 
-var i = 0;
-for (i = 0; i < 200; i++) {
-    $( "#feedcontainer" ).append("<p><b>Title</b>: (Feed #" + i + ") <br><b><i>Content</i></b><br>Author: <br> <i>#Tags</i><hr>");
+for (var i = 0; i < 50; i++) {
+    $( "#feedcontainer" )
+    .append("<p><b>Title</b>: (Feed #" + i + ") <br><b><i>Content</i></b><br>Author: <br> <i>#Tags</i><hr>");
 }
 
 $("#feedcontainer").jscroll({
@@ -52,12 +51,12 @@ $("#feedcontainer").jscroll({
 
 //$( "#feedcontainer" ).load( "/jqueryui/external/jquery/jquery.js");
 
-function logout(name) {
-		$.cookie("usernameCookie", null);
-    document.cookie = name+"=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+function logout() {
+    $.cookie("usernameCookie", null);
+    $.cookie("token", null);
 }
 
 $("#logout").button().click(function() {
-    logout("token");
+    logout();
     window.location.href = "/login";
 });

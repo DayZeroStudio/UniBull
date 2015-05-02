@@ -16,6 +16,7 @@ $("#submit").click(function() {
         }
         if (data.redirect) {
             document.cookie = "token="+data.token+";max-age="+(60*15);
+            $.cookie("token", data.token, {expires: 1, path: "/"});
             window.location.replace(data.redirect);
         }
     });

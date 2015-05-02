@@ -17,12 +17,12 @@ $("#container").layout({
   }
 });
 
-function logout(name) {
+function logout() {
     $.cookie("usernameCookie", null);
-    document.cookie = name+"=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+    $.cookie("token", null);
 }
 $("#logout").button().click(function() {
-    logout("token");
+    logout();
     window.location.href = "/login";
 });
 $("#home").button().click(function() {

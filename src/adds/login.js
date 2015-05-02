@@ -1,8 +1,8 @@
 "use strict";
 
-function logout(name) {
+function logout() {
     $.cookie("usernameCookie", null);
-    document.cookie = name+"=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+    $.cookie("token", null);
 }
 
 $( "#loginButton" ).button();
@@ -15,8 +15,8 @@ $( "#loginButton" ).click(function() {
             return console.log(err);
         }
         if (data.redirect) {
-            document.cookie = "token="+data.token+";max-age="+(60*15);
-            $.cookie("usernameCookie", $("#username").val());
+            $.cookie("token", data.token, { expires: 1, path: "/" });
+            $.cookie("usernameCookie", $("#username").val(), { expires: 1, path: "/" });
             window.location.href = data.redirect;
         }
     });
@@ -29,6 +29,6 @@ $( "#signupButton" ).click(function() {
 
 $("#logoutButton").button();
 $("#logoutButton").click(function() {
-    logout("token");
+    logout();
     window.location.href = "/login";
 });

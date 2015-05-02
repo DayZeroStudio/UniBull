@@ -1,8 +1,8 @@
 "use strict";
 
-function logout(name) {
+function logout() {
     $.cookie("usernameCookie", null);
-    document.cookie = name+"=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+    $.cookie("token", null);
 }
 
 function joinclass(classID) {
@@ -42,7 +42,7 @@ $("#container").layout({
 });
 
 $("#logout").button().click(function() {
-    logout("token");
+    logout();
     window.location.href = "/login";
 });
 $("#home").button().click(function() {
@@ -93,7 +93,7 @@ $("#submit_class").button().click(function() {
             var classTitle = $("#title").val();
             var userID = $.cookie("usernameCookie");
             console.log("USERID", userID);
-            $( "#classlist" ).append("<br><a href='/class/" + classTitle + "'>" + classTitle + "</a>");
+            $( "#classlist" ).append("<a href='/class/" + classTitle + "'>" + classTitle + "</a>");
             end_submission();
             return joinClass($, userID, classTitle, function(err, data) {
                 if (err) { return console.log(err); }
