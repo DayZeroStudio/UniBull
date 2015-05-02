@@ -1,5 +1,3 @@
 node_modules
 .*
-selenium-server-standalone-*.jar
-phantomjs
 coverage.html
