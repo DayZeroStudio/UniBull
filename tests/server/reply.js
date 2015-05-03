@@ -2,6 +2,8 @@
 
 var chai = require("chai");
 /*var should = */chai.should();
+chai.use(require("chai-things"));
+chai.use(require("chai-subset"));
 var request = require("supertest-as-promised");
 
 var express = require("express");
@@ -48,6 +50,7 @@ describe("testing reply endpoints", function() {
                         //check it was added
                         res.body.should.contain.keys("replies");
                         res.body.replies.should.be.an("array");
+                        res.body.replies.should.containSubset([reply]);
                     });
                 });
             });

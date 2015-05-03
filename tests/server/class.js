@@ -1,7 +1,7 @@
 "use strict";
 
 var chai = require("chai");
-chai.should();
+/*var should =*/chai.should();
 chai.use(require("chai-things"));
 var request = require("supertest-as-promised");
 
@@ -13,6 +13,7 @@ var cfg = require("../../config");
 
 cfg.coverage();
 describe("testing class endpoints", function() {
+    this.timeout(5000);
     before(function() {
         return require("../../db")().then(function(dbModels) {
             return require("../../app/rest")(dbModels);

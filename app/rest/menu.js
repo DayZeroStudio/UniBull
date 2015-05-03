@@ -65,7 +65,9 @@ module.exports = function(dbModels, routePrefix) {
                 menu.name = dhName;
                 log.debug("meals.keys:", _.keys(menu));
 
-                return Menu.create(menu).return(menu);
+                return Menu.create(menu).then(function() {
+                    return menu;
+                });
             });
     }
 
