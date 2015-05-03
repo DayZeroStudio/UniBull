@@ -44,7 +44,7 @@ module.exports = function(dbModels, routePrefix) {
             }
         }).spread(function(klass, created) {
             if (!created) {//ie found it
-                return res.json({
+                return res.status(400).json({
                     error: "Class already exists",
                     redirect: "/class/"+klass.title
                 });
@@ -54,7 +54,9 @@ module.exports = function(dbModels, routePrefix) {
                 redirect: "/class/"+klass.title
             });
         }).catch(function(err) {
-            res.json({error: err.message});
+            return res.status(400).json({
+                error: err.message
+            });
         });
     });
 
@@ -114,6 +116,7 @@ module.exports = function(dbModels, routePrefix) {
                 action: "refresh"
             });
         }).catch(function(err) {
+            res.status(400);
             return res.json({
                 error: err.message
             });

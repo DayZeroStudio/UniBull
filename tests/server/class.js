@@ -63,6 +63,7 @@ describe("testing class endpoints", function() {
                 });
                 it("should return an error", function() {
                     return utils.class.createClass(newClass).then(function(res) {
+                        res.statusCode.should.equal(400);
                         res.body.should.contain.keys("error");
                     });
                 });
@@ -78,6 +79,7 @@ describe("testing class endpoints", function() {
             it("should return an error", function() {
                 var invalidClassInfo = {};
                 return utils.class.createClass(invalidClassInfo).then(function(res) {
+                    res.statusCode.should.equal(400);
                     res.body.should.contain.keys("error");
                     res.body.error.should.match(/^notNull Violation/);
                 });
@@ -145,6 +147,7 @@ describe("testing class endpoints", function() {
                     return utils.class.joinClass(classID);
                 }).then(function() {
                     return utils.class.joinClass(classID).then(function(res) {
+                        res.statusCode.should.equal(400);
                         res.body.should.have.key("error");
                     });
                 });

@@ -79,7 +79,9 @@ module.exports = function(dbModels, routePrefix) {
             }
             return onValidUser(user, res);
         }).catch(function(err) {
-            res.json({error: err.message});
+            return res.status(400).json({
+                error: err.message
+            });
         });
     });
 
@@ -111,7 +113,7 @@ module.exports = function(dbModels, routePrefix) {
                 classes: user.get().classes
             });
         }).catch(function(err) {
-            return res.json({
+            return res.status(400).json({
                 error: err.message
             });
         });

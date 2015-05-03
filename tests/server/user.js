@@ -44,6 +44,7 @@ describe("testing user endpoints", function() {
         context("with invalid credentials", function() {
             it("(none) should return an error", function() {
                 return utils.loginToApp({}).then(function(res) {
+                    res.statusCode.should.equal(401);
                     res.body.should.have.key("error");
                 });
             });
@@ -51,6 +52,7 @@ describe("testing user endpoints", function() {
                 return utils.loginToApp({
                     username: "FirstUser"
                 }).then(function(res) {
+                    res.statusCode.should.equal(401);
                     res.body.should.have.key("error");
                 });
             });
@@ -59,6 +61,7 @@ describe("testing user endpoints", function() {
                     username: "FirstUser",
                     password: "imNotTheCorrectPassword"
                 }).then(function(res) {
+                    res.statusCode.should.equal(401);
                     res.body.should.have.key("error");
                 });
             });
@@ -168,6 +171,7 @@ describe("testing user endpoints", function() {
                 var duplicateUser = utils.makeNewUser();
                 return utils.signupNewUser(duplicateUser).then(function() {
                     return utils.signupNewUser(duplicateUser).then(function(res) {
+                        res.statusCode.should.equal(400);
                         res.body.should.contain.key("error");
                     });
                 });

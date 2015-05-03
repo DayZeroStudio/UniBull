@@ -60,6 +60,7 @@ describe("testing thread endpoints", function() {
                     return utils.class.joinClass(userID, classID).then(function() {
                         return utils.thread.submitThread(classID, {});
                     }).then(function(res) {
+                        res.statusCode.should.equal(400);
                         res.body.should.contain.key("error");
                     });
                 });
@@ -69,6 +70,7 @@ describe("testing thread endpoints", function() {
             it("should return an error", function() {
                 return utils.thread.submitThread(classID, utils.class.token, thread)
                 .then(function(res) {
+                        res.statusCode.should.equal(400);
                     res.body.should.contain.key("error");
                 });
             });
