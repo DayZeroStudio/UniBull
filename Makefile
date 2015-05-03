@@ -52,6 +52,14 @@ test-web-%: lint
 test-%: lint test-server
 	make test-web-$*
 
+test-coverage: lint
+	@ set -o pipefail && NODE_ENV=test COVERAGE=y\
+		${MOCHA} ${MOCHA_OPTS}\
+		${MOCHA_ARGS} ./tests/server | ${BUNYAN}
+	@ set -o pipefail && NODE_ENV=test COVERAGE=y\
+		${MOCHA} ${MOCHA_OPTS}\
+		${MOCHA_ARGS} ./tests/web* | ${BUNYAN}	
+
 autotest:
 	@ nodemon ${AUTOTEST_IGNORES} --exec "make _test-server"
 _test-server: lint

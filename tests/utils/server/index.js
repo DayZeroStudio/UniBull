@@ -1,12 +1,12 @@
 "use strict";
 
-module.exports = function(UTILS, request, app) {
+module.exports = function(UTILS, agent) {
     var utils = {};
 
-    utils.user = require("./user.js")(UTILS, request, app);
-    utils.class = require("./class.js")(UTILS, request, app);
-    utils.thread = require("./thread.js")(UTILS, request, app);
-    utils.reply = require("./reply.js")(UTILS, request, app);
+    utils.user = require("./user.js")(UTILS, agent);
+    utils.class = require("./class.js")(UTILS, agent);
+    utils.thread = require("./thread.js")(UTILS, agent);
+    utils.reply = require("./reply.js")(UTILS, agent);
 
     return utils;
 };

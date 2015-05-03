@@ -7,6 +7,8 @@ var _ = require("lodash");
 
 var app = require("express")();
 
+var cfg = require("../../config");
+cfg.coverage();
 describe("testing menu endpoints", function() {
     this.timeout(5000);
     before(function() {
@@ -21,8 +23,8 @@ describe("testing menu endpoints", function() {
             it("should contain a title, name, and meals", function() {
                 return request(app)
                     .get("/rest/menu/nine/0")
-                    .expect(200)
                     .then(function(res) {
+                        res.statusCode.should.equal(200);
                         res.body.should
                             .contain.keys("title", "name", "dtdate");
                         var meals = _(res.body)

@@ -8,11 +8,12 @@ var sinon = require("sinon");
 var express = require("express");
 var app = express();
 app.use(require("cookie-parser")());
-var utils = require("../utils").server(request, app).user;
+var agent = request.agent(app);
+var utils = require("../utils").server(agent).user;
 
 var cfg = require("../../config");
 
-require("blanket")();
+cfg.coverage();
 describe("testing user endpoints", function() {
     before(function() {
         return require("../../db")().then(function(dbModels) {
@@ -25,16 +26,16 @@ describe("testing user endpoints", function() {
         it("GET '/' should return a list of all users", function() {
             return request(app)
                 .get("/rest/user")
-                .expect(200)
                 .expect(function(res) {
+                    res.statusCode.should.equal(200);
                     res.body.users.should.have.length.above(0);
                 }).toPromise();
         });
         it("POST '/restricted' should be unauthorized", function() {
             return request(app)
                 .post("/rest/user/restricted")
-                .expect(401)
                 .expect(function(res) {
+                    res.statusCode.should.equal(401);
                     res.body.should.contain.keys("error");
                 }).toPromise();
         });
@@ -67,9 +68,8 @@ describe("testing user endpoints", function() {
                 return request(app)
                     .post("/rest/user/login")
                     .send(utils.validUser)
-                    .expect(200)
-                    .expect("Content-Type", /json/)
                     .expect(function(res) {
+                        res.statusCode.should.equal(200);
                         should.exist(res.body.token);
                         res.body.token.should.match(/^Bearer/);
                         res.body.redirect.should.equal("/home");
@@ -77,11 +77,11 @@ describe("testing user endpoints", function() {
             });
             it("we can view restricted pages", function() {
                 return utils.loginToApp(utils.validUser).then(function(res) {
-                    return request(app)
+                    return agent
                         .get("/rest/user/restricted")
                         .set("Authorization", res.body.token)
-                        .expect(200)
                         .expect(function(res) {
+                            res.statusCode.should.equal(200);
                             res.body.decoded.should
                                 .contain.keys("username", "email");
                         }).toPromise();
@@ -98,32 +98,36 @@ describe("testing user endpoints", function() {
                     sandbox.restore();
                 });
                 it("we are denied access", function() {
-                    return utils.loginToApp(utils.validUser).then(function(res) {
+                    return utils.loginToApp(utils.validUser).then(function() {
                         sandbox.clock.tick(timeout);
-                        return request(app)
+                        return agent
                             .get("/rest/user/restricted")
-                            .set("Authorization", res.body.token)
-                            .expect(401).toPromise();
+                            .toPromise();
                     });
                 });
                 context("but we've refreshed the token", function() {
                     it("we are NOT denied access", function() {
-                        var agent = request.agent(app);
                         return agent.post("/rest/user/login")
                             .send(utils.validUser)
-                            .expect(200)
-                            .then(function() {
+                            .then(function(res) {
+                                res.statusCode.should.equal(200);
                                 sandbox.clock.tick(timeout / 2);
                                 return agent.get("/rest/user/restricted")
-                                    .expect(200).toPromise();
+                                    .then(function(res) {
+                                        res.statusCode.should.equal(200);
+                                    });
                             }).then(function() {
                                 sandbox.clock.tick(timeout / 2);
                                 return agent.get("/rest/user/restricted")
-                                    .expect(200).toPromise();
+                                    .then(function(res) {
+                                        res.statusCode.should.equal(200);
+                                    });
                             }).then(function() {
                                 sandbox.clock.tick(timeout);
                                 return agent.get("/rest/user/restricted")
-                                    .expect(401).toPromise();
+                                    .then(function(res) {
+                                        res.statusCode.should.equal(401);
+                                    });
                             });
                     });
                 });
@@ -141,12 +145,11 @@ describe("testing user endpoints", function() {
             });
             it("we are auth'd and redirected to '/home'", function() {
                 var newUser = utils.makeNewUser();
-                return utils.signupNewUser(newUser).then(function(res) {
-                    return request(app)
+                return utils.signupNewUser(newUser).then(function() {
+                    return agent
                         .get("/rest/user/restricted")
-                        .set("Authorization", res.body.token)
-                        .expect(200)
                         .then(function(res) {
+                            res.statusCode.should.equal(200);
                             res.body.should.contain.keys("success", "decoded");
                         });
                 });

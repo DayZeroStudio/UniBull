@@ -10,16 +10,13 @@ module.exports = function(db, DataTypes) {
             allowNull: false
         },
         breakfast: {
-            type: DataTypes.ARRAY(DataTypes.STRING),
-            allowNull: false
+            type: DataTypes.ARRAY(DataTypes.STRING)
         },
         lunch: {
-            type: DataTypes.ARRAY(DataTypes.STRING),
-            allowNull: false
+            type: DataTypes.ARRAY(DataTypes.STRING)
         },
         dinner: {
-            type: DataTypes.ARRAY(DataTypes.STRING),
-            allowNull: false
+            type: DataTypes.ARRAY(DataTypes.STRING)
         },
         dtdate: {
             type: DataTypes.INTEGER,

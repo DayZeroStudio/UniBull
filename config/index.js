@@ -11,6 +11,12 @@ module.exports = (function() {
     cfg.isProd = !(cfg.isTest || cfg.isDev);
     cfg.errmsgs = require("./errormessages.js");
 
+    cfg.coverage = function() {
+        if (!cfg.isProd && cfg.env.COVERAGE === "y") {
+            require("blanket")();
+        }
+    };
+
     var frozenCFG = Object.freeze(_.cloneDeep(cfg));
     cfg.log = require("./logger.js")(frozenCFG);
     cfg.jwt = require("./jsonwebtoken.js")(frozenCFG);

@@ -20,6 +20,8 @@ module.exports = function(dbModels/*, routePrefix*/) {
         log.info("POST - Reply to a thread");
         var classID = req.params.classID;
         var threadID = req.params.threadID;
+        log.debug("classID", classID);
+        log.debug("threadID", threadID);
         // Verify req body
         var reply = {
             content: req.body.content

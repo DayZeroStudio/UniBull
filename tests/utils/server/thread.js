@@ -1,7 +1,9 @@
 "use strict";
 
-module.exports = function(UTILS, request, app) {
+module.exports = function(UTILS, agent) {
     var utils = {};
+    var chai = require("chai");
+    chai.should();
     var _ = require("lodash");
 
     utils.validUser = UTILS.validUser;
@@ -14,11 +16,10 @@ module.exports = function(UTILS, request, app) {
         };
     };
 
-    utils.submitThread = function(classID, token, thread) {
-        return request(app)
+    utils.submitThread = function(classID, thread) {
+        return agent
             .post("/rest/class/"+classID+"/submit")
-            .set("Authorization", token)
-            .send(thread).expect(200)
+            .send(thread)
             .toPromise();
     };
 

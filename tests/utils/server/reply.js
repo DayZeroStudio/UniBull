@@ -1,14 +1,23 @@
 "use strict";
 
-module.exports = function(UTILS, request, app) {
+module.exports = function(UTILS, agent) {
     var utils = {};
-    //var _ = require("lodash");
+    var chai = require("chai");
+    chai.should();
+    var _ = require("lodash");
 
     utils.validUser = UTILS.validUser;
 
-    utils.replyToThread = function(threadID, reply) {
-        return request(app)
-            .post("/rest/class/"+"WebDev101"+"/thread/"+threadID+"/reply")
+    utils.makeNewReply = function() {
+        var id = _.uniqueId();
+        return {
+            content: "content_"+id
+        };
+    };
+
+    utils.replyToThread = function(classID, threadID, reply) {
+        return agent
+            .post("/rest/class/"+classID+"/thread/"+threadID+"/reply")
             .send(reply)
             .toPromise();
     };

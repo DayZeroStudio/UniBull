@@ -1,19 +1,12 @@
 "use strict";
 
-module.exports = function(UTILS, request, app) {
+module.exports = function(UTILS, agent) {
     var utils = {};
+    var chai = require("chai");
+    chai.should();
     var _ = require("lodash");
 
     utils.validUser = UTILS.validUser;
-
-    var cfg = require("../../../config");
-    var jwt = require("jsonwebtoken");
-    var validUser = {
-        username: "FirstUser",
-        password: "mypasswd"
-    };
-    var token = "Bearer "+jwt.sign(validUser, cfg.jwt.secret);
-    utils.token = token;
 
     utils.makeNewClass = function() {
         var id = _.uniqueId();
@@ -25,25 +18,17 @@ module.exports = function(UTILS, request, app) {
     };
 
     utils.createClass = function(klass) {
-        return request(app)
+        return agent
             .post("/rest/class/create")
-            .set("Authorization", token)
             .send(klass)
-            .expect(200)
-            .then(function(res) {
-                return res.body;
-            });
+            .toPromise();
     };
 
-    utils.joinClass = function(classID) {
-        return request(app)
-            .post("/rest/user/"+utils.validUser.username+"/joinClass")
+    utils.joinClass = function(userID, classID) {
+        return agent
+            .post("/rest/user/"+ userID +"/joinClass")
             .send({classID: classID})
-            .set("Authorization", token)
-            .expect(200)
-            .then(function(res) {
-                return [res.body, token];
-            });
+            .toPromise();
     };
 
     return utils;

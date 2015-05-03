@@ -1,7 +1,9 @@
 "use strict";
 
-module.exports = function(UTILS, request, app) {
+module.exports = function(UTILS, agent) {
     var utils = {};
+    var chai = require("chai");
+    chai.should();
     var _ = require("lodash");
 
     utils.validUser = UTILS.validUser;
@@ -16,17 +18,16 @@ module.exports = function(UTILS, request, app) {
     };
 
     utils.loginToApp = function(user) {
-        return request(app)
+        return agent
             .post("/rest/user/login")
             .send(user)
             .toPromise();
     };
 
     utils.signupNewUser = function(user) {
-        return request(app)
+        return agent
             .post("/rest/user/signup")
             .send(user)
-            .expect(200)
             .toPromise();
     };
 

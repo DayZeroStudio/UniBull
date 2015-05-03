@@ -6,9 +6,11 @@ chai.use(require("chai-things"));
 var request = require("supertest-as-promised");
 
 var app = require("express")();
-var utils = require("../utils").server(request, app);
+var agent = request.agent(app);
+var utils = require("../utils").server(agent);
 
-require("blanket")();
+var cfg = require("../../config");
+cfg.coverage();
 describe("testing thread endpoints", function() {
     before(function() {
         return require("../../db")().then(function(dbModels) {
@@ -17,20 +19,23 @@ describe("testing thread endpoints", function() {
             app.use(router);
         });
     });
-    var classID;
+    var classID, userID, thread;
     beforeEach(function() {
+        thread = utils.thread.makeNewThread();
         var newClass = utils.class.makeNewClass();
-        return utils.class.createClass(newClass).then(function(body) {
-            classID = body.class.title;
+        classID = newClass.title;
+        var user = utils.user.makeNewUser();
+        userID = user.username;
+        return utils.user.signupNewUser(user).then(function() {
+            return utils.class.createClass(newClass);
         });
     });
     describe("creating a thread in a class", function() {
         context("that you are enrolled in", function() {
             context("with required info", function() {
                 it("should add the thread to the class", function() {
-                    return utils.class.joinClass(classID).spread(function(body, token) {
-                        var thread = utils.thread.makeNewThread();
-                        return utils.thread.submitThread(classID, token, thread);
+                    return utils.class.joinClass(userID, classID).then(function() {
+                        return utils.thread.submitThread(classID, thread);
                     }).then(function(res) {
                         res.body.should.contain.key("threads");
                         res.body.threads.should.be.an("array");
@@ -42,9 +47,8 @@ describe("testing thread endpoints", function() {
                     });
                 });
                 it("should return {action: 'refresh'}", function() {
-                    return utils.class.joinClass(classID).spread(function(body, token) {
-                        var thread = utils.thread.makeNewThread();
-                        return utils.thread.submitThread(classID, token, thread);
+                    return utils.class.joinClass(userID, classID).then(function() {
+                        return utils.thread.submitThread(classID, thread);
                     }).then(function(res) {
                         res.body.should.contain.key("action");
                         res.body.action.should.equal("refresh");
@@ -53,8 +57,8 @@ describe("testing thread endpoints", function() {
             });
             context("without required info", function() {
                 it("should return an error", function() {
-                    return utils.class.joinClass(classID).spread(function(body, token) {
-                        return utils.thread.submitThread(classID, token, {});
+                    return utils.class.joinClass(userID, classID).then(function() {
+                        return utils.thread.submitThread(classID, {});
                     }).then(function(res) {
                         res.body.should.contain.key("error");
                     });
@@ -63,7 +67,6 @@ describe("testing thread endpoints", function() {
         });
         context("that you are NOT enrolled in", function() {
             it("should return an error", function() {
-                var thread = utils.thread.makeNewThread();
                 return utils.thread.submitThread(classID, utils.class.token, thread)
                 .then(function(res) {
                     res.body.should.contain.key("error");
@@ -75,8 +78,8 @@ describe("testing thread endpoints", function() {
         it("should return a list of all the threads in the class", function() {
             return request(app)
                 .get("/rest/class/"+classID+"/all")
-                .expect(200)
                 .expect(function(res) {
+                    res.statusCode.should.equal(200);
                     res.body.should.contain.key("threads");
                     res.body.threads.should
                         .all.contain.keys("title", "content");

@@ -15,7 +15,7 @@ var options = {
     }
 };
 
-require("blanket")();
+cfg.coverage();
 describe("testing front end login", function() {
     this.timeout(cfg.webdriver.timeout);
     var client = {};

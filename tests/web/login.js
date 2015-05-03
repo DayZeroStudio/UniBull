@@ -5,7 +5,8 @@ chai.should();
 var sinon = require("sinon");
 var _ = require("lodash");
 
-require("blanket")();
+var cfg = require("../../config");
+cfg.coverage();
 var login = require("../../src/requires/login.js").onLogin;
 describe("testing front end login module", function() {
     context("when the user submits a login form", function() {
