@@ -4,5 +4,6 @@ coverage.html
 #Ignore all hidden files
 .*
 #Except for
+!.gitignore
 !.eslintrc
 !.eslintignore
