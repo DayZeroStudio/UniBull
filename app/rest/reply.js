@@ -1,7 +1,7 @@
 "use strict";
 var Promise = require("sequelize").Promise;
 
-module.exports = function(dbModels/*, routePrefix*/) {
+module.exports = function(dbModels) {
     var express = require("express");
     var router = express.Router();
     var bodyParser = require("body-parser");
@@ -9,10 +9,6 @@ module.exports = function(dbModels/*, routePrefix*/) {
 
     var cfg = require("../../config");
     var log = cfg.log.makeLogger("rest,reply");
-
-    var auth = require("../auth.js");
-    var publicEndpoints = [/\/reply/];
-    auth.setupAuth(router, publicEndpoints);
 
     var Class = dbModels.Class;
     var Reply = dbModels.Reply;

@@ -79,7 +79,7 @@ describe("testing thread endpoints", function() {
     describe("viewing all threads in a class", function() {
         it("should return a list of all the threads in the class", function() {
             return request(app)
-                .get("/rest/class/"+classID+"/all")
+                .get("/rest/class/"+ classID +"/all")
                 .expect(function(res) {
                     res.statusCode.should.equal(200);
                     res.body.should.contain.key("threads");

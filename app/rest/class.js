@@ -15,113 +15,60 @@ module.exports = function(dbModels, routePrefix) {
     var auth = require("../auth.js");
     var publicEndpoints = _.map(["", "/"],
             _.partial(append, routePrefix))
-            .concat([/all$/, /\/reply/]);
+            .concat([/all$/]);
     auth.setupAuth(router, publicEndpoints);
 
-    var Class = dbModels.Class;
-    var Thread = dbModels.Thread;
-    var User = dbModels.User;
+    // Setup Thread routing
+    return require("./thread.js")(dbModels).then(function(threadRouter) {
+        return router.use(threadRouter);
+    }).then(function() {
+        // Setup Reply routing
+        return require("./reply.js")(dbModels).then(function(replyRouter) {
+            return router.use(replyRouter);
+        });
+    }).then(function() {
+        // Setup Class routing
+        var Class = dbModels.Class;
+        var Thread = dbModels.Thread;
 
-    router.get("/", function(req, res) {
-        log.info("GET - Get all classes");
-        Class.findAll({
-            include: [Thread]
-        }).then(function(classes) {
-            res.json({
-                classes: classes
+        router.get("/", function(req, res) {
+            log.info("GET - Get all classes");
+            Class.findAll({
+                include: [Thread]
+            }).then(function(classes) {
+                return res.json({
+                    classes: classes
+                });
             });
         });
-    });
 
-    router.post("/create", function(req, res) {
-        log.info("POST - Create a class");
-        Class.findOrCreate({
-            where: {
-                title: req.body.title
-            }, defaults: {
-                info: req.body.info,
-                school: req.body.school
-            }
-        }).spread(function(klass, created) {
-            if (!created) {//ie found it
-                return res.status(400).json({
-                    error: "Class already exists",
+        router.post("/create", function(req, res) {
+            log.info("POST - Create a class");
+            Class.findOrCreate({
+                where: {
+                    title: req.body.title
+                }, defaults: {
+                    info: req.body.info,
+                    school: req.body.school
+                }
+            }).spread(function(klass, created) {
+                if (!created) {//ie found it
+                    return res.status(400).json({
+                        error: "Class already exists",
+                        redirect: "/class/"+klass.title
+                    });
+                }
+                return res.json({
+                    class: klass.get(),
                     redirect: "/class/"+klass.title
                 });
-            }
-            return res.json({
-                class: klass.get(),
-                redirect: "/class/"+klass.title
-            });
-        }).catch(function(err) {
-            return res.status(400).json({
-                error: err.message
+            }).catch(function(err) {
+                return res.status(400).json({
+                    error: err.message
+                });
             });
         });
-    });
 
-    router.get("/:classID/all", function(req, res) {
-        log.info("GET - Get all threads");
-        var classID = req.params.classID;
-        Class.find({
-            where: {title: classID}
-        }).then(function(klass) {
-            return klass.getThreads();
-        }).then(function(threads) {
-            return res.json({
-                threads: threads
-            });
-        });
+        return Promise.resolve(router);
     });
-
-    router.post("/:classID/submit", function(req, res) {
-        log.info("POST - Submit a new thread to :classID");
-        var title = req.body.title;
-        var content = req.body.content;
-        var classID = req.params.classID;
-        Class.find({
-            where: {title: classID}
-        }).bind({}).then(function(klass) {
-            if (!content || !title) {
-                throw Error(cfg.errmsgs.missingReqInfo);
-            }
-            this.class = klass;
-        }).then(function() {
-            // Get the user
-            var decoded = auth.decodeRequest(req);
-            var username = decoded.username;
-            // check user is enrolled in :classID
-            return User.find({where:
-                {username: username}
-            }, {raw: true});
-        }).then(function(user) {
-            if (!user) {
-                throw Error(cfg.errmsgs.invalidUserInfo);
-            }
-            if (!_.contains(user.classes, classID)) {
-                throw Error(cfg.errmsgs.userNotEnrolled);
-            }
-        }).then(function() {
-            return Thread.create({
-                title: title,
-                content: content
-            });
-        }).then(function(thread) {
-            return this.class.addThread(thread);
-        }).then(function() {
-            return this.class.getThreads({}, {raw: true});
-        }).then(function(threads) {
-            return res.json({
-                threads: threads,
-                action: "refresh"
-            });
-        }).catch(function(err) {
-            res.status(400);
-            return res.json({
-                error: err.message
-            });
-        });
-    });
-
-    return Promise.resolve(router);
 };

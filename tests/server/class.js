@@ -22,21 +22,20 @@ describe("testing class endpoints", function() {
         });
     });
     describe("creating a class", function() {
-        var user;
-        beforeEach(function() {
-            user = utils.user.makeNewUser();
-            return utils.user.signupNewUser(user);
-        });
         context("with valid info", function() {
-            context("that does not exist", function() {
+            context("that does NOT already exist", function() {
+                var user, newClass;
+                beforeEach(function() {
+                    user = utils.user.makeNewUser();
+                    newClass = utils.class.makeNewClass();
+                    return utils.user.signupNewUser(user);
+                });
                 it("should return the class information", function() {
-                    var newClass = utils.class.makeNewClass();
                     return utils.class.createClass(newClass).then(function(res) {
                         res.body.class.should.contain(newClass);
                     });
                 });
                 it("should add it to the list of all classes", function() {
-                    var newClass = utils.class.makeNewClass();
                     return utils.class.createClass(newClass).then(function() {
                         return agent
                             .get("/rest/class")
@@ -49,14 +48,13 @@ describe("testing class endpoints", function() {
                     });
                 });
                 it("should redirect to the new class page", function() {
-                    var newClass = utils.class.makeNewClass();
                     return utils.class.createClass(newClass).then(function(res) {
                         res.body.should.contain.key("redirect");
                         res.body.redirect.should.to.match(/\/class\/.+/);
                     });
                 });
             });
-            context("that does exist", function() {
+            context("that already exists", function() {
                 var newClass;
                 beforeEach(function() {
                     newClass = utils.class.makeNewClass();
@@ -89,21 +87,11 @@ describe("testing class endpoints", function() {
     });
     describe("getting all the classes", function() {
         it("should return a list of all the classes", function() {
-            return agent
+            return request(app)
                 .get("/rest/class/")
                 .expect(function(res) {
                     res.statusCode.should.equal(200);
                     res.body.classes.should.be.an("array");
-                });
-        });
-    });
-    describe("getting all the threads in a class", function() {
-        it("should return a list of all the threads", function() {
-            return agent
-                .get("/rest/class/"+"WebDev101"+"/all")
-                .expect(function(res) {
-                    res.statusCode.should.equal(200);
-                    res.body.threads.should.be.an("array");
                 });
         });
     });
@@ -129,15 +117,17 @@ describe("testing class endpoints", function() {
             });
             it("should add it to the users classes", function() {
                 return utils.user.loginToApp(user).then(function() {
-                    return utils.class.joinClass(classID);
+                    return utils.class.joinClass(userID, classID);
                 }).then(function() {
                     return agent
-                        .get("/rest/user/"+utils.class.validUser.username)
+                        .get("/rest/user/"+user.username)
                         .expect(function(res) {
                             res.statusCode.should.equal(200);
                             res.body.should.have.key("user");
                             res.body.user.classes
                                 .should.have.length.above(0);
+                            res.body.user.classes
+                                .should.include(classID);
                         });
                 });
             });
@@ -145,9 +135,9 @@ describe("testing class endpoints", function() {
         context("that you ARE enrolled in", function() {
             it("should return an error", function() {
                 return utils.user.loginToApp(user).then(function() {
-                    return utils.class.joinClass(classID);
+                    return utils.class.joinClass(userID, classID);
                 }).then(function() {
-                    return utils.class.joinClass(classID).then(function(res) {
+                    return utils.class.joinClass(userID, classID).then(function(res) {
                         res.statusCode.should.equal(400);
                         res.body.should.have.key("error");
                     });

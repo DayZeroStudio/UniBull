@@ -34,7 +34,6 @@ module.exports = (function() {
                 var refreshedToken = jwt.sign(req.jwt, cfg.jwt.secret, cfg.jwt.options);
                 res.cookie("token", "Bearer " + refreshedToken);
             }
-
             return next();
         });
 
