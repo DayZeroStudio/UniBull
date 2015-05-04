@@ -45,7 +45,7 @@ module.exports = function(dbModels) {
                 action: "refresh"
             });
         }).catch(function(err) {
-            log.error(err);
+            log.debug(err);
             return res.status(400).json({
                 error: err.message
             });

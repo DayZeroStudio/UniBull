@@ -9,13 +9,11 @@ module.exports = function setupRestEndpoints(dbModels) {
     var appRouter = express.Router();
 
     return Promise.resolve([
-        {name: "user", route: "user"},
-        {name: "class", route: "class"},
-        {name: "menu", route: "menu"}
-    ]).map(function(obj) {
-        var route = "/rest/" + obj.route;
-        return require("./"+obj.name+".js")(dbModels, route).then(function(router) {
-            log.info("Adding REST endpoint: (" + obj.name + ")");
+        "user", "class", "menu"
+    ]).map(function(name) {
+        var route = "/rest/" + name;
+        return require("./"+ name +".js")(dbModels, route).then(function(router) {
+            log.info("Adding REST endpoint: (" + name + ")");
             appRouter.use(route, router);
         });
     }).then(function() {

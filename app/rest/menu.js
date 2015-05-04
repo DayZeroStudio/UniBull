@@ -1,8 +1,7 @@
-/*eslint no-unused-vars:0*/
 "use strict";
 var Promise = require("bluebird");
 
-module.exports = function(dbModels, routePrefix) {
+module.exports = function(dbModels) {
     var express = require("express");
     var router = express.Router();
     var bodyParser = require("body-parser");

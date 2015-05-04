@@ -9,7 +9,7 @@ var app = require("express")();
 
 var cfg = require("../../config");
 cfg.coverage();
-describe("testing menu endpoints", function() {
+describe.skip("testing menu endpoints", function() {
     this.timeout(15000);
     before(function() {
         return require("../../db")().then(function(dbModels) {
