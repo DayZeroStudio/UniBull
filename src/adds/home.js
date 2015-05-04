@@ -41,15 +41,34 @@ $("#container").layout({
 });
 
 for (var i = 0; i < 50; i++) {
-    $( "#feedcontainer" )
-    .append("<p><b>Title</b>: (Feed #" + i + ") <br><b><i>Content</i></b><br>Author: <br> <i>#Tags</i><hr>");
+    if ((i % 2) === 0) {
+        $( "#feedcontainers" ).append("<div id='feedcontainer'><a id='title'>Neeraj got a job at Costco!)</a>"
+        + "<p id='content'>So I was walking down the block with my old watch and realized that it was a good time to eat pizza."
+        + " But I was no where near a pizza store so I had to make a decision:"
+        + " Should I go to a store to pick up the raw ingredients to make my own pizza?"
+        + " Or should I order a Pizza? When I make this decision I have to make even more decisions!"
+        + " For example, If I choose to make my own pizza, I have to decide on what ingredients to buy."
+        + " Or If I choose to order a pizza, I have to choose what brand of pizza to order from!"
+        + " This is why life is tough!</p>"
+        + "<p id='author'>@Author_"+ i + "</p>"
+        + "<p id='postdate'>May 7th 2015 Mon 4:22 PM</p>"
+        + "</div>");
+    } else {
+        $( "#feedcontainers" ).append("<div id='feedcontainer'>"
+        + "<a id='title'>Title: (Feed #" + i+ ")</a>"
+        + "<p id='content'>Content for feed #" + i + ": Some content</p>"
+        + "<p id='author'>@Author_"+ i + "<p>"
+        + "<p id='postdate'>May 7th 2015 Mon 4:22 PM</p>"
+        + "</div>");
+    }
+
 }
 
-$("#feedcontainer").jscroll({
+$("#feedcontainers").jscroll({
 	//autoTriggerUntil: 3
 });
 
-//$( "#feedcontainer" ).load( "/jqueryui/external/jquery/jquery.js");
+//$( "#feedcontainers" ).load( "/jqueryui/external/jquery/jquery.js");
 
 function logout() {
     $.cookie("usernameCookie", null);
