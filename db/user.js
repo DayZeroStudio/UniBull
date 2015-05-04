@@ -21,15 +21,24 @@ module.exports = function(db, DataTypes) {
                 var hashed = bcrypt.hashSync(password, 12);
                 this.setDataValue("password_hash", hashed);
             },
-            validate: {len: [(cfg.isProd ? 7 : 3), 64]}
+            validate: {len: [(cfg.isProd ? 7 : 3), 64]},
+            allowNull: false
         },
         email: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            allowNull: false
         },
         classes: {
             type: DataTypes.ARRAY(DataTypes.STRING),
-            defaultValue: [],
-            validate: {}
+            defaultValue: []
+        },
+        threads: {
+            type: DataTypes.ARRAY(DataTypes.STRING),
+            defaultValue: []
+        },
+        replies: {
+            type: DataTypes.ARRAY(DataTypes.STRING),
+            defaultValue: []
         }
     }, {
         classMethods: {
@@ -49,6 +58,11 @@ module.exports = function(db, DataTypes) {
                     throw Error(cfg.errmsgs.userAlreadyEnrolled(newClass));
                 }
                 this.setDataValue("classes", classes.concat([newClass]));
+                return this;
+            }),
+            addReply: Promise.method(function(newReply) {
+                var replies = this.getDataValue("replies");
+                this.setDataValue("replies", replies.concat([newReply]));
                 return this;
             })
         }

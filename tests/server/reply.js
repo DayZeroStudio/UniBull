@@ -12,7 +12,7 @@ app.use(require("cookie-parser")());
 var agent = request.agent(app);
 var utils = require("../utils").server(agent);
 var cfg = require("../../config");
-//var log = cfg.log.makeLogger("tests,server,reply");
+// var log = cfg.log.makeLogger("tests,server,reply");
 
 cfg.coverage();
 describe("testing reply endpoints", function() {
@@ -51,6 +51,19 @@ describe("testing reply endpoints", function() {
                         res.body.should.contain.keys("replies");
                         res.body.replies.should.be.an("array");
                         res.body.replies.should.containSubset([reply]);
+                    });
+                });
+                it("should add the reply to the user's submissions", function() {
+                    var reply = utils.reply.makeNewReply();
+                    return utils.reply.replyToThread(classID, threadID, reply).then(function() {
+                        return agent.get("/rest/user/"+ userID)
+                            .then(function(res) {
+                                res.body.user.should.contain.key("replies");
+                                res.body.user.replies.should
+                                    .have.length(1);
+                                res.body.user.replies.should
+                                    .include(reply.content);
+                            });
                     });
                 });
             });

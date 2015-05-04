@@ -10,6 +10,7 @@ module.exports = function(dbModels) {
     var cfg = require("../../config");
     var log = cfg.log.makeLogger("rest,reply");
 
+    var User = dbModels.User;
     var Class = dbModels.Class;
     var Reply = dbModels.Reply;
     router.post("/:classID/thread/:threadID/reply", function(req, res) {
@@ -35,8 +36,20 @@ module.exports = function(dbModels) {
                 return [thread, thread.addReply(reply)];
             });
         }).spread(function(thread) {
+            // Save the thread, then return the class replies list
             return thread.save().then(function(thread) {
                 return thread.getReplies({raw: true});
+            });
+        }).then(function(replies) {
+            // Find the user, add the reply to his list
+            var auth = require("../auth.js");
+            var username = auth.decodeRequest(req).username;
+            return User.find({where: {username: username}}).then(function(user) {
+                return user.addReply(reply.content).then(function() {
+                    return user.save();
+                });
+            }).then(function() {
+                return replies;
             });
         }).then(function(replies) {
             // Return res with replies list
