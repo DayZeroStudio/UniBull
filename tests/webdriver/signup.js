@@ -8,13 +8,6 @@ var Promise = require("bluebird");
 
 var cfg = require("../../config");
 
-var options = {
-    port: cfg.webdriver.server.port,
-    desiredCapabilities: {
-        browserName: cfg.webdriver.name
-    }
-};
-
 cfg.coverage();
 describe("testing front end sign up", function() {
     this.timeout(cfg.webdriver.timeout);
@@ -24,7 +17,7 @@ describe("testing front end sign up", function() {
     var baseUrl = "http://localhost:" + PORT;
     before(function() {
         return require("../../index.js")(PORT).then(function() {
-            client = driver.remote(options);
+            client = driver.remote(cfg.webdriver.options);
             utils = require("../utils").wd(baseUrl).user(client);
             Promise.promisifyAll(client, {suffix: "_async"});
             return client.init_async();
