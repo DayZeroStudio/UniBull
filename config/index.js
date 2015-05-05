@@ -29,15 +29,20 @@ module.exports = (function() {
             throw new Error();
         } catch(e) {
             var prev = e.stack.split("\n")[2];
-            var prefix = prev.substring(prev.lastIndexOf("/")+1)
-                .replace(")", "").match(/(.*):[0-9]+$/)[1];
+            var fileAndLineNum =
+                // just get the base filename
+                prev.substring(prev.lastIndexOf("/")+1)
+                    // remove extraneous chars
+                    .replace(")", "")
+                    // remove col num
+                    .match(/(.*):[0-9]+$/)[1];
         }
         var screenshotsDir = "./tmp/screenshots/";
         return screenshotsDir
             + cfg.webdriver.name + "_"
-            + prefix + "_"
-            + name + "_"
-            + _.now()
+            + fileAndLineNum + "__"
+            + name + "__"
+            + "+T" + _.now()
             + ".png";
     };
 
