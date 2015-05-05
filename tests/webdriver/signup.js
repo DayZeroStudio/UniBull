@@ -27,7 +27,7 @@ describe("testing front end sign up", function() {
             client = driver.remote(options);
             utils = require("../utils").wd(baseUrl).user(client);
             Promise.promisifyAll(client, {suffix: "_async"});
-            return client.init();
+            return client.init_async();
         });
     });
     after(function() {
@@ -61,7 +61,7 @@ describe("testing front end sign up", function() {
                     });
             }).then(function() {
                 utils.loginWithUser(utils.validUser);
-                client.title_async().then(function(res) {
+                return client.title_async().then(function(res) {
                         res.value.should.contain("Home");
                     });
             });

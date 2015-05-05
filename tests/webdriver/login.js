@@ -27,7 +27,7 @@ describe("testing front end login", function() {
             client = driver.remote(options);
             utils = require("../utils").wd(baseUrl).user(client);
             Promise.promisifyAll(client, {suffix: "_async"});
-            client.init();
+            return client.init_async();
         });
     });
     after(function() {
@@ -39,7 +39,7 @@ describe("testing front end login", function() {
                 .title_async().then(function(res) {
                     res.value.should.contain("Login");
                 }).then(function() {
-                    client.click("#signupButton")
+                    return client.click("#signupButton")
                         .waitForExist("#signupButton", 300, true)
                         .title_async().then(function(res) {
                             res.value.should.contain("Signup");
@@ -50,7 +50,7 @@ describe("testing front end login", function() {
     context("when the user clicks login with invalid credentials", function() {
         it("should do nothing..", function() {
             utils.loginWithUser({});
-            client.saveScreenshot(cfg.screenshot.at("empty"))
+            return client.saveScreenshot(cfg.screenshot.at("empty"))
                 .title_async().then(function(res) {
                     res.value.should.contain("Login");
                 });
@@ -59,7 +59,7 @@ describe("testing front end login", function() {
     context("when the user clicks login with valid credentials", function() {
         it("should authenticate and go to home page", function() {
             utils.loginWithUser(utils.validUser);
-            client.saveScreenshot(cfg.screenshot.at("valid"))
+            return client.saveScreenshot(cfg.screenshot.at("valid"))
                 .title_async().then(function(res) {
                     res.value.should.contain("Home");
                 });

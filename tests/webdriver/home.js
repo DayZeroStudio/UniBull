@@ -27,7 +27,7 @@ describe("testing front end home page", function() {
             client = driver.remote(options);
             utils = require("../utils").wd(baseUrl).user(client);
             Promise.promisifyAll(client, {suffix: "_async"});
-            client.init();
+            return client.init_async();
         });
     });
     after(function() {
@@ -36,7 +36,7 @@ describe("testing front end home page", function() {
     context("once on the home page", function() {
         it("should have content", function() {
             utils.loginWithUser(utils.validUser);
-            client.saveScreenshot(cfg.screenshot.at("valid"))
+            return client.saveScreenshot(cfg.screenshot.at("valid"))
                 .title_async().then(function(res) {
                     res.value.should.contain("Home");
                 });
