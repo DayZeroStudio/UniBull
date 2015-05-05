@@ -17,16 +17,12 @@ module.exports = function() {
     });
 
     dbModels.ClassesUsers = db.define("ClassesUsers", {});
-    (function(dbm) {
-        dbm.Class.hasMany(dbm.Thread);
-        dbm.Thread.hasMany(dbm.Reply);
-
-        dbm.Class.belongsToMany(dbm.User, {through: dbm.ClassesUsers});
-        dbm.User.belongsToMany(dbm.Class, {through: dbm.ClassesUsers});
-
-        dbm.User.hasMany(dbm.Thread);
-        dbm.User.hasMany(dbm.Reply);
-    })(dbModels);
+    // Let all the models handle their associations
+    Object.keys(dbModels).forEach(function(modelName) {
+        if ("associate" in dbModels[modelName]) {
+            dbModels[modelName].associate(dbModels);
+        }
+    });
     dbModels.db = db;
 
     var dbOpts = {

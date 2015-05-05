@@ -29,6 +29,11 @@ module.exports = function(db, DataTypes) {
         }
     }, {
         classMethods: {
+            associate: function(dbModels) {
+                dbModels.User.belongsToMany(dbModels.Class, {through: dbModels.ClassesUsers});
+                dbModels.User.hasMany(dbModels.Thread);
+                dbModels.User.hasMany(dbModels.Reply);
+            },
             isValidUser: Promise.method(function(password_hash, password) {
                 return verifyPasswords(password, password_hash)
                     .then(function(isValid) {

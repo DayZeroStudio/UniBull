@@ -1,6 +1,6 @@
 "use strict";
 module.exports = function(db, DataTypes) {
-    return db.define("Thread", {
+    var Thread = db.define("Thread", {
         title: {
             type: DataTypes.STRING,
             allowNull: false
@@ -9,5 +9,13 @@ module.exports = function(db, DataTypes) {
             type: DataTypes.STRING,
             allowNull: false
         }
+    }, {
+        classMethods: {
+            associate: function(dbModels) {
+                Thread.hasMany(dbModels.Reply);
+            }
+        }
     });
+
+    return Thread;
 };
