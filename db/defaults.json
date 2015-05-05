@@ -1,0 +1,20 @@
+{
+    "classes": [
+        {
+            "title": "WebDev101",
+            "info": "WEB DEV WILL RUIN YOUR LIFE",
+            "school": "UC SHITTY CRUZ"
+        }, {
+            "title": "TestClass",
+            "info": "for testing purposes",
+            "school": "NOT SO SHITTY CRUZ"
+        }
+    ],
+    "users": [
+        {
+            "username": "FirstUser",
+            "password": "mypasswd",
+            "email": "first.user@email.com"
+        }
+    ]
+}

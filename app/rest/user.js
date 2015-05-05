@@ -1,6 +1,8 @@
 "use strict";
 
 module.exports = function(dbModels, routePrefix) {
+    var Promise = require("bluebird");
+
     var express = require("express");
     var router = express.Router();
     var bodyParser = require("body-parser");
@@ -150,16 +152,5 @@ module.exports = function(dbModels, routePrefix) {
         });
     });
 
-    return User.create({
-        username: "FirstUser",
-        password: "mypasswd",
-        email: "first.user@email.com"
-    }).bind({}).then(function(user) {
-        this.user = user;
-        return Class.find({where: {title: "WebDev101"}});
-    }).then(function(klass) {
-        return this.user.addClass(klass);
-    }).then(function() {
-        return router;
-    });
+    return Promise.resolve(router);
 };

@@ -42,18 +42,16 @@ module.exports = function() {
         return dbModels.Menu.sync(dbOpts);
     }).then(function() {
         return dbModels.Reply.sync(dbOpts);
+    }).bind({}).then(function() {
+        var fs = require("fs");
+        this.defaults = JSON.parse(fs.readFileSync("db/defaults.json", "utf-8"));
+        return this.defaults.classes;
+    }).map(function(klass) {
+        return dbModels.Class.create(klass);
     }).then(function() {
-        return dbModels.Class.create({
-            title: "WebDev101",
-            info: "WEB DEV WILL RUIN YOUR LIFE",
-            school: "UC SHITTY CRUZ"
-        }).then(function() {
-            return dbModels.Class.create({
-                title: "TestClass",
-                info: "for testing purposes",
-                school: "UC NOT SO SHITTY CRUZ"
-            });
-        });
+        return this.defaults.users;
+    }).map(function(user) {
+        return dbModels.User.create(user);
     }).then(function() {
         return dbModels;
     });
