@@ -59,7 +59,7 @@ module.exports = function(dbModels) {
             return user.getClasses({where: {title: classID}});
         }).then(function(klass) {
             // Verify user is enrolled
-            if (!_.contains(klass[0].get(), classID)) {
+            if (klass.length === 0) {
                 throw Error(cfg.errmsgs.userNotEnrolled);
             }
         }).then(function() {
@@ -81,7 +81,8 @@ module.exports = function(dbModels) {
             });
         }).catch(function(err) {
             return res.status(400).json({
-                error: err.message
+                error: err.message,
+                stack: err.stack
             });
         });
     });
