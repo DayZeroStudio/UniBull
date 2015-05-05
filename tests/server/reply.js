@@ -12,7 +12,7 @@ app.use(require("cookie-parser")());
 var agent = request.agent(app);
 var utils = require("../utils").server(agent);
 var cfg = require("../../config");
-// var log = cfg.log.makeLogger("tests,server,reply");
+var log = cfg.log.makeLogger("tests,server,reply");
 
 cfg.coverage();
 describe("testing reply endpoints", function() {
@@ -55,7 +55,7 @@ describe("testing reply endpoints", function() {
                 it("should add the reply to the user's replies", function() {
                     var reply = utils.reply.makeNewReply();
                     return utils.reply.replyToThread(classID, threadID, reply).then(function() {
-                        return agent.get("/rest/user/"+ userID)
+                        return utils.user.getUserInfo(userID)
                             .then(function(res) {
                                 res.body.user.should.contain.key("replies");
                                 res.body.user.replies.should

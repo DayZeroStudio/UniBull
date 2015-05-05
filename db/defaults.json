@@ -14,7 +14,8 @@
         {
             "username": "FirstUser",
             "password": "mypasswd",
-            "email": "first.user@email.com"
+            "email": "first.user@email.com",
+            "classes": ["WebDev101"]
         }
     ]
 }

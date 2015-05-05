@@ -1,6 +1,7 @@
 "use strict";
 
 module.exports = function() {
+    var Promise = require("bluebird");
     var cfg = require("../config");
 
     var DB = require("sequelize");
@@ -51,7 +52,15 @@ module.exports = function() {
     }).then(function() {
         return this.defaults.users;
     }).map(function(user) {
-        return dbModels.User.create(user);
+        return dbModels.User.create(user).then(function(newUser) {
+            if (user.classes) {
+                return Promise.resolve(user.classes).map(function(classID) {
+                    dbModels.Class.find({where: {title: classID}}).then(function(klass) {
+                        newUser.addClass(klass);
+                    });
+                });
+            }
+        });
     }).then(function() {
         return dbModels;
     });
