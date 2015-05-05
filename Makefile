@@ -38,16 +38,16 @@ test: lint test-server test-web
 test-server: lint
 	@ set -o pipefail && NODE_ENV=test\
 		${MOCHA} ${MOCHA_OPTS}\
-		${MOCHA_ARGS} ./tests/server | ${BUNYAN}
+		${MOCHA_ARGS} ./tests/server | tee logs/mocha-server.out | ${BUNYAN}
 
 test-web: lint
 	@ set -o pipefail && NODE_ENV=test\
 		${MOCHA} ${MOCHA_OPTS}\
-		${MOCHA_ARGS} ./tests/web* | ${BUNYAN}
+		${MOCHA_ARGS} ./tests/web* | tee logs/mocha-web.out | ${BUNYAN}
 
 test-web-%: lint
 	@ set -o pipefail && NODE_ENV=test SEL_BROWSER=$*\
-		${MOCHA} ${MOCHA_OPTS} ${MOCHA_ARGS} ./tests/web* | ${BUNYAN}
+		${MOCHA} ${MOCHA_OPTS} ${MOCHA_ARGS} ./tests/web* | tee logs/mocha-web.out | ${BUNYAN}
 
 test-%: lint test-server
 	make test-web-$*
@@ -55,17 +55,17 @@ test-%: lint test-server
 test-coverage: lint
 	@ set -o pipefail && NODE_ENV=test COVERAGE=y\
 		${MOCHA} ${MOCHA_OPTS}\
-		${MOCHA_ARGS} ./tests/server | ${BUNYAN}
+		${MOCHA_ARGS} ./tests/server | tee logs/mocha-coverage.out | ${BUNYAN}
 	@ set -o pipefail && NODE_ENV=test COVERAGE=y\
 		${MOCHA} ${MOCHA_OPTS}\
-		${MOCHA_ARGS} ./tests/web* | ${BUNYAN}	
+		${MOCHA_ARGS} ./tests/web* | tee logs/mocha-coverage.out | ${BUNYAN}
 
 autotest:
 	@ nodemon ${AUTOTEST_IGNORES} --exec "make _test-server"
 _test-server: lint
 	-@ set -o pipefail && NODE_ENV=test\
 		${MOCHA} ${MOCHA_OPTS}\
-		${MOCHA_ARGS} ./tests/server | ${BUNYAN}
+		${MOCHA_ARGS} ./tests/server | tee logs/mocha-autotest.out | ${BUNYAN}
 
 lint: noTodosOrFixmes
 	@ ${LINTER} ./index.js ./config/*.js\
