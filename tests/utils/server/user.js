@@ -31,5 +31,11 @@ module.exports = function(UTILS, agent) {
             .toPromise();
     };
 
+    utils.getUserInfo = function(userID) {
+        return agent
+            .get("/rest/user/"+ userID)
+            .toPromise();
+    };
+
     return utils;
 };

@@ -14,5 +14,4 @@ module.exports = function(db, DataTypes) {
             allowNull: false
         }
     });
-    /*Class hasMany Threads*/
 };

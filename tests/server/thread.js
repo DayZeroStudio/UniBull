@@ -54,6 +54,18 @@ describe("testing thread endpoints", function() {
                         res.body.action.should.equal("refresh");
                     });
                 });
+                it("should add it to the user's threads", function() {
+                    return utils.class.joinClass(userID, classID).then(function() {
+                        return utils.thread.submitThread(classID, thread);
+                    }).then(function() {
+                        return utils.user.getUserInfo(userID);
+                    }).then(function(res) {
+                        res.body.user.should.contain.key("threads");
+                        res.body.user.threads.should
+                            .be.an("array")
+                            .include.something({title: thread.title});
+                    });
+                });
             });
             context("without required info", function() {
                 it("should return an error", function() {

@@ -47,13 +47,12 @@ describe("testing reply endpoints", function() {
                 it("should add the reply to that thread's replies", function() {
                     var reply = utils.reply.makeNewReply();
                     return utils.reply.replyToThread(classID, threadID, reply).then(function(res) {
-                        //check it was added
                         res.body.should.contain.keys("replies");
                         res.body.replies.should.be.an("array");
                         res.body.replies.should.containSubset([reply]);
                     });
                 });
-                it("should add the reply to the user's submissions", function() {
+                it("should add the reply to the user's replies", function() {
                     var reply = utils.reply.makeNewReply();
                     return utils.reply.replyToThread(classID, threadID, reply).then(function() {
                         return agent.get("/rest/user/"+ userID)
@@ -62,7 +61,7 @@ describe("testing reply endpoints", function() {
                                 res.body.user.replies.should
                                     .have.length(1);
                                 res.body.user.replies.should
-                                    .include(reply.content);
+                                    .include.something({content: reply.content});
                             });
                     });
                 });

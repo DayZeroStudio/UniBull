@@ -9,7 +9,7 @@ var app = require("express")();
 var agent = request.agent(app);
 var utils = require("../utils").server(agent);
 var cfg = require("../../config");
-//var log = cfg.log.makeLogger("tests,server,class");
+var log = cfg.log.makeLogger("tests,server,class");
 
 cfg.coverage();
 describe("testing class endpoints", function() {
@@ -124,10 +124,10 @@ describe("testing class endpoints", function() {
                         .expect(function(res) {
                             res.statusCode.should.equal(200);
                             res.body.should.have.key("user");
-                            res.body.user.classes
-                                .should.have.length.above(0);
-                            res.body.user.classes
-                                .should.include(classID);
+                            res.body.user.classes.should
+                                .have.length.above(0);
+                            res.body.user.classes.should
+                                .include.something({title: classID});
                         });
                 });
             });

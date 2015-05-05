@@ -18,6 +18,7 @@ module.exports = function(dbModels, routePrefix) {
             _.partial(append, routePrefix));
     auth.setupAuth(router, publicEndpoints);
 
+    var Class = dbModels.Class;
     var User = dbModels.User;
 
     router.get("/", function(req, res) {
@@ -90,7 +91,28 @@ module.exports = function(dbModels, routePrefix) {
         User.find({
             where: {username: req.params.userID}
         }).then(function(user) {
-            return res.json({user: user});
+            return user.getClasses().then(function(classes) {
+                return classes;
+            }).then(function(classes) {
+                this.classes = classes;
+                return user.getReplies();
+            }).then(function(replies) {
+                this.replies = replies;
+                return user.getThreads();
+            }).then(function(threads) {
+                this.threads = threads;
+            }).then(function() {
+                var fullUser = _(user.get())
+                    .merge({classes: _.invoke(this.classes, "get")})
+                    .merge({replies: _.invoke(this.replies, "get")})
+                    .merge({threads: _.invoke(this.threads, "get")})
+                    .value();
+                return res.json({user: fullUser});
+            });
+        }).catch(function(err) {
+            return res.status(400).json({
+                error: err.message
+            });
         });
     });
 
@@ -100,17 +122,26 @@ module.exports = function(dbModels, routePrefix) {
         var classID = req.body.classID;
         User.find({
             where: {username: userID}
-        }).then(function(user) {
+        }).bind({}).then(function(user) {
             if (!user) {
                 throw Error(cfg.errmsgs.invalidUserInfo);
             }
-            return user.addClass(classID);
-        }).then(function(user) {
-            return user.save();
-        }).then(function(user) {
+            this.user = user;
+            return Class.find({where: {title: classID}});
+        }).then(function(klass) {
+            this.class = klass;
+            return this.user.hasClass(klass);
+        }).then(function(alreadyEnrolled) {
+            if (alreadyEnrolled) {
+                throw Error(cfg.errmsgs.userAlreadyEnrolled(this.class.get().title));
+            }
+            return this.user.addClass(this.class);
+        }).then(function() {
+            return this.user.getClasses();
+        }).then(function(classes) {
             return res.json({
                 redirect: "/class/"+classID,
-                classes: user.get().classes
+                classes: classes
             });
         }).catch(function(err) {
             return res.status(400).json({
@@ -119,7 +150,6 @@ module.exports = function(dbModels, routePrefix) {
         });
     });
 
-    var Class = dbModels.Class;
     return User.create({
         username: "FirstUser",
         password: "mypasswd",
@@ -128,9 +158,7 @@ module.exports = function(dbModels, routePrefix) {
         this.user = user;
         return Class.find({where: {title: "WebDev101"}});
     }).then(function(klass) {
-        return this.user.addClass(klass.title);
-    }).then(function() {
-        return this.user.save();
+        return this.user.addClass(klass);
     }).then(function() {
         return router;
     });

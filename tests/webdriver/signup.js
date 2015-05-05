@@ -30,10 +30,6 @@ describe("testing front end sign up", function() {
             return client.init();
         });
     });
-    // Reset state, eg: always start at baseUrl
-    beforeEach(function() {
-        return client.url_async(baseUrl);
-    });
     after(function() {
         return client.end();
     });

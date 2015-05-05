@@ -5,7 +5,6 @@ module.exports = function(db, DataTypes) {
     var bcrypt = require("bcrypt");
     var verifyPasswords = Promise.promisify(bcrypt.compare);
 
-    var _ = require("lodash");
     var cfg = require("../config");
 
     var User = db.define("User", {
@@ -27,18 +26,6 @@ module.exports = function(db, DataTypes) {
         email: {
             type: DataTypes.STRING,
             allowNull: false
-        },
-        classes: {
-            type: DataTypes.ARRAY(DataTypes.STRING),
-            defaultValue: []
-        },
-        threads: {
-            type: DataTypes.ARRAY(DataTypes.STRING),
-            defaultValue: []
-        },
-        replies: {
-            type: DataTypes.ARRAY(DataTypes.STRING),
-            defaultValue: []
         }
     }, {
         classMethods: {
@@ -50,20 +37,6 @@ module.exports = function(db, DataTypes) {
                         }
                         return true;
                     });
-            })
-        }, instanceMethods: {
-            addClass: Promise.method(function(newClass) {
-                var classes = this.getDataValue("classes");
-                if (_.contains(classes, newClass)) {
-                    throw Error(cfg.errmsgs.userAlreadyEnrolled(newClass));
-                }
-                this.setDataValue("classes", classes.concat([newClass]));
-                return this;
-            }),
-            addReply: Promise.method(function(newReply) {
-                var replies = this.getDataValue("replies");
-                this.setDataValue("replies", replies.concat([newReply]));
-                return this;
             })
         }
     });

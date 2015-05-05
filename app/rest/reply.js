@@ -7,6 +7,7 @@ module.exports = function(dbModels) {
     var bodyParser = require("body-parser");
     router.use(bodyParser.json());
 
+    var _ = require("lodash");
     var cfg = require("../../config");
     var log = cfg.log.makeLogger("rest,reply");
 
@@ -20,9 +21,6 @@ module.exports = function(dbModels) {
         log.debug("classID", classID);
         log.debug("threadID", threadID);
         // Verify req body
-        var reply = {
-            content: req.body.content
-        };
         // Find the class
         Class.find({where: {title: classID}}).bind({}).then(function(klass) {
             // Find the thread
@@ -31,26 +29,27 @@ module.exports = function(dbModels) {
             var thread = threads[0];
             this.thread = thread;
             // Create the reply
-            return Reply.create(reply).then(function(reply) {
+            return Reply.create({
+                content: req.body.content
+            }).then(function(reply) {
                 // Add the reply to the thread
-                return [thread, thread.addReply(reply)];
+                return thread.addReply(reply);
             });
-        }).spread(function(thread) {
+        }).then(function(reply) {
+            this.reply = reply;
             // Save the thread, then return the class replies list
-            return thread.save().then(function(thread) {
-                return thread.getReplies({raw: true});
-            });
+            return this.thread.getReplies({raw: true});
         }).then(function(replies) {
+            this.replies = replies;
             // Find the user, add the reply to his list
             var auth = require("../auth.js");
             var username = auth.decodeRequest(req).username;
-            return User.find({where: {username: username}}).then(function(user) {
-                return user.addReply(reply.content).then(function() {
-                    return user.save();
-                });
-            }).then(function() {
-                return replies;
+            return User.find({where: {username: username}}).bind(this).then(function(user) {
+                this.user = user;
+                return user.addReply(this.reply);
             });
+        }).then(function() {
+            return this.user.getReplies({raw: true});
         }).then(function(replies) {
             // Return res with replies list
             return res.json({
@@ -58,7 +57,6 @@ module.exports = function(dbModels) {
                 action: "refresh"
             });
         }).catch(function(err) {
-            log.debug(err);
             return res.status(400).json({
                 error: err.message
             });

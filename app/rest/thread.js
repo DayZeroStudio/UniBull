@@ -49,12 +49,17 @@ module.exports = function(dbModels) {
             // check user is enrolled in :classID
             return User.find({where:
                 {username: username}
-            }, {raw: true});
+            });
         }).then(function(user) {
+            // Verify user is found
             if (!user) {
                 throw Error(cfg.errmsgs.invalidUserInfo);
             }
-            if (!_.contains(user.classes, classID)) {
+            this.user = user;
+            return user.getClasses({where: {title: classID}});
+        }).then(function(klass) {
+            // Verify user is enrolled
+            if (!_.contains(klass[0].get(), classID)) {
                 throw Error(cfg.errmsgs.userNotEnrolled);
             }
         }).then(function() {
@@ -63,7 +68,10 @@ module.exports = function(dbModels) {
                 content: content
             });
         }).then(function(thread) {
+            this.thread = thread;
             return this.class.addThread(thread);
+        }).then(function() {
+            return this.user.addThread(this.thread);
         }).then(function() {
             return this.class.getThreads({}, {raw: true});
         }).then(function(threads) {
@@ -72,8 +80,7 @@ module.exports = function(dbModels) {
                 action: "refresh"
             });
         }).catch(function(err) {
-            res.status(400);
-            return res.json({
+            return res.status(400).json({
                 error: err.message
             });
         });
