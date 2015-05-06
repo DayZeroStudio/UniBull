@@ -50,15 +50,19 @@ for (var i = 0; i < 50; i++) {
         + " For example, If I choose to make my own pizza, I have to decide on what ingredients to buy."
         + " Or If I choose to order a pizza, I have to choose what brand of pizza to order from!"
         + " This is why life is tough!</p>"
-        + "<p id='author'>@Author_"+ i + "</p>"
+        + "<p id='author'>Author_"+ i + "</p>"
         + "<p id='postdate'>May 7th 2015 Mon 4:22 PM</p>"
+        + "<p id='report'><img src='jqueryui/images/report.png' align='right' width='15' height='20'></p>"
+        + "<p id='hashtags'>@1stWorldProblems @Costco @Noni</p>"
         + "</div>");
     } else {
         $( "#feedcontainers" ).append("<div id='feedcontainer'>"
         + "<a id='title'>Title: (Feed #" + i+ ")</a>"
         + "<p id='content'>Content for feed #" + i + ": Some content</p>"
-        + "<p id='author'>@Author_"+ i + "<p>"
+        + "<p id='author'>Author_"+ i + "<p>"
         + "<p id='postdate'>May 7th 2015 Mon 4:22 PM</p>"
+        + "<p id='report'><img src='jqueryui/images/report.png' align='right' width='15' height='20'></p>"
+        + "<p id='hashtags'>@HW @UCSC</p>"
         + "</div>");
     }
 
