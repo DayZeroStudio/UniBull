@@ -19,7 +19,7 @@ describe("testing user endpoints", function() {
         return require("../../db")().then(function(dbModels) {
             return require("../../app/rest")(dbModels);
         }).then(function(router) {
-            app.use(router);
+            return app.use(router);
         });
     });
     context("without authentication", function() {
@@ -88,6 +88,16 @@ describe("testing user endpoints", function() {
                             res.body.decoded.should
                                 .contain.keys("username", "email");
                         }).toPromise();
+                });
+            });
+            it("we can access our *public* user info", function() {
+                return utils.loginToApp(utils.validUser).then(function() {
+                    return utils.getUserInfo(utils.validUser.username);
+                }).then(function(res) {
+                    res.body.user.should.contain
+                        .keys("username", "email", "classes", "threads", "replies");
+                    res.body.user.should.not.contain
+                        .keys("password_hash");
                 });
             });
             context("for a long enough time", function() {

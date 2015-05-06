@@ -105,6 +105,7 @@ module.exports = function(dbModels, routePrefix) {
                 this.threads = threads;
             }).then(function() {
                 var fullUser = _(user.get())
+                    .omit("password_hash")
                     .merge({classes: _.invoke(this.classes, "get")})
                     .merge({replies: _.invoke(this.replies, "get")})
                     .merge({threads: _.invoke(this.threads, "get")})

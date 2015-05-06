@@ -119,9 +119,8 @@ describe("testing class endpoints", function() {
                 return utils.user.loginToApp(user).then(function() {
                     return utils.class.joinClass(userID, classID);
                 }).then(function() {
-                    return agent
-                        .get("/rest/user/"+user.username)
-                        .expect(function(res) {
+                    return utils.user.getUserInfo(userID)
+                        .then(function(res) {
                             res.statusCode.should.equal(200);
                             res.body.should.have.key("user");
                             res.body.user.classes.should
