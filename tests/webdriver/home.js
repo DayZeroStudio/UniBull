@@ -41,7 +41,6 @@ describe("testing front end home page", function() {
                 utils.loginWithUser(utils.validUser);
                 client.title_async().then(function(res) {
                     res.value.should.contain("Home");
-                    //FIXME: fails on clicking "#toclass"
                     client.click("#toclass")
                     .waitForExist("#toclass", 500, true)
                     .then(function(res) {
