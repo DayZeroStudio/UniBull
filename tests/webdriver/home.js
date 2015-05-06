@@ -35,4 +35,19 @@ describe("testing front end home page", function() {
                 });
             });
     });
+    context("when the user wants to go to a different page", function() {
+        context("clicking on the classes button", function() {
+            it("should take you to the classes page", function() {
+                utils.loginWithUser(utils.validUser);
+                client.title_async().then(function(res) {
+                    res.value.should.contain("Home");
+                    client.click("#toclass")
+                    .waitForExist("#toclass", 500, true)
+                    .then(function(res) {
+                        res.value.should.contain("Classes");
+                    });
+                });
+            });
+        });
+    });
 });
