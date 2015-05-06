@@ -36,5 +36,11 @@ module.exports = function(UTILS, baseUrl, client) {
             });
     };
 
+    utils.goToClassPage = function() {
+        return client.url(baseUrl+"/home")
+            .click("#toclass")
+            .waitForExist("#toclass", 500, true);
+    };
+
     return utils;
 };

@@ -17,63 +17,6 @@ $("#container").layout({
   }
 });
 
-function logout() {
-    $.cookie("usernameCookie", null);
-    $.cookie("token", null);
-}
-$("#logout").button().click(function() {
-    logout();
-    window.location.href = "/login";
-});
-$("#home").button().click(function() {
-    window.location.href = "/home";
-});
-
-$("#toclass").button().click(function() {
-    window.location.href = "/class";
-});
-
-$("#toclubs").button().click(function() {
-    alert("Under Construction");
-});
-
-$("#toevents").button().click(function() {
-    alert("Under Construction");
-});
-
-$("#tomenu").button().click(function() {
-    window.location.href = "/menu";
-});
-
-$("#newpost").button().click(function() {
-    $("#submit_wrapper").slideToggle();
-});
-$("#cancel").button().click(function() {
-    $("#submit_wrapper").slideUp();
-    $("#title").val("");
-    $("#content").val("");
-});
-function addToAccordion(title, content) {
-    $("#accordion").prepend("<h3>" + title + "</h3><div>" + content + "</div>")
-    .accordion("destroy").accordion();
-}
-$("#submit_post").button().click(function() {
-
-    var title = $("#title").val();
-    var content = $("#content").val();
-    var bundle = require("classroom")($);
-    var onSubmitPost = bundle.onSubmitPost;
-    var fields = $("#submitform #content, #submitform #title");
-    return onSubmitPost(classTitle, fields, function(err, data) {
-        if (err) { return console.log(err); }
-        if (data.action) {
-            addToAccordion(title, content);
-            $("#submit_wrapper").slideUp();
-            $("#title").val("");
-            $("#content").val("");
-        }
-    });
-});
 function collapsible() {
     $("#accordion").accordion({
         active: false,
@@ -105,3 +48,74 @@ function collapsible() {
     });
 }
 collapsible();
+
+function logout() {
+    $.cookie("usernameCookie", null);
+    $.cookie("token", null);
+}
+$("#logout").button().click(function() {
+    logout();
+    window.location.href = "/login";
+});
+$("#home").button().click(function() {
+    window.location.href = "/home";
+});
+
+$("#toclass").button().click(function() {
+    window.location.href = "/class";
+});
+
+$("#toclubs").button().click(function() {
+    alert("Under Construction");
+});
+
+$("#toevents").button().click(function() {
+    alert("Under Construction");
+});
+
+$("#tomenu").button().click(function() {
+    window.location.href = "/menu";
+});
+$(".rb").button();
+$("#newpost").button().click(function() {
+    $("#submit_wrapper").slideToggle();
+});
+$("button[data-id=replytothread]").button().click(function(thread) {
+    var threadID = $(thread.currentTarget).attr("data-thread");
+    console.log(threadID);
+    $(".replyformwrapper[data-thread*=" + threadID + "]").slideToggle();
+});
+$("button[data-id=viewreplies]").button().click(function(thread) {
+    var threadID = $(thread.currentTarget).attr("data-thread");
+    $(".replies[data-thread*="+threadID+"]").slideToggle();
+});
+$("#cancel").button().click(function() {
+    $("#submit_wrapper").slideUp();
+    $("#title").val("");
+    $("#content").val("");
+});
+$("button[data-id=cancelreply]").button().click(function(thread) {
+    var threadID = $(thread.currentTarget).attr("data-thread");
+    $(".replyformwrapper[data-thread*="+threadID+"]").slideUp();
+    $(".replycontent[data-thread*="+threadID+"]").val("");
+});
+$("button[data-id=submitreply]").button().click(function(thread) {
+    var threadID = $(thread.currentTarget).attr("data-thread");
+    var content = $(".replycontent[data-thread*="+threadID+"]").val();
+    console.log(content);
+});
+
+$("#submit_post").button().click(function() {
+    var bundle = require("classroom")($);
+    var onSubmitPost = bundle.onSubmitPost;
+    var fields = $("#submitform #content, #submitform #title");
+    return onSubmitPost(classTitle, fields, function(err, data) {
+        if (err) { return console.log(err); }
+        if (data.action) {
+            $("#submit_wrapper").slideUp();
+            $("#title").val("");
+            $("#content").val("");
+            window.location.reload();
+        }
+    });
+});

@@ -7,7 +7,7 @@
         <script src="jqueryui/external/jquery/jquery.js"></script>
         <script src="jqueryui/jquery-ui.js"></script>
         <script src="jqueryui/jquery.layout-latest.js"></script>
-        <title>UniBull Class</title>
+        <title>UniBull Classes</title>
     </head>
 
     <body>
@@ -45,9 +45,11 @@
                 <hr><h1 class="center"> Other Classes</h1><hr>
                 <div id="allclasslist">
                     <% classes.forEach(function(klass){ %>
-                        <a class="classroomlink" href="class/<%=klass.title%>"><%=klass.title%></a>
-                        <button data-klass="<%=klass.title%>" class="joinclass">Join this class!</button>
-                        <br>
+                        <div class="classroom_wrapper">
+                            <a class="classroomlink" href="class/<%=klass.title%>"><%=klass.title%></a>
+                            <button data-klass="<%=klass.title%>" class="joinclass">Join this class!</button>
+                            <br>
+                        </div>
                     <% }); %>
                 </div>
             </div>
