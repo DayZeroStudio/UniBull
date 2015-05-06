@@ -16,6 +16,12 @@
             "password": "mypasswd",
             "email": "first.user@email.com",
             "classes": ["WebDev101"]
+        },
+        {
+            "username": "SecondUser",
+            "password": "mypasswd",
+            "email": "second.user@email.com",
+            "classes": ["TestClass"]
         }
     ]
 }
