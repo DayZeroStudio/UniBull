@@ -61,10 +61,10 @@ $("#submit_post").button().click(function() {
 
     var title = $("#title").val();
     var content = $("#content").val();
-    var classroom = require("classroom");
-    var onSubmitPost = classroom.onSubmitPost;
+    var bundle = require("classroom")($);
+    var onSubmitPost = bundle.onSubmitPost;
     var fields = $("#submitform #content, #submitform #title");
-    return onSubmitPost($, classTitle, fields, function(err, data) {
+    return onSubmitPost(classTitle, fields, function(err, data) {
         if (err) { return console.log(err); }
         if (data.action) {
             addToAccordion(title, content);

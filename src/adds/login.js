@@ -7,10 +7,10 @@ function logout() {
 
 $( "#loginButton" ).button();
 $( "#loginButton" ).click(function() {
-    var login = require("login");
-    var onLogin = login.onLogin;
+    var bundle = require("login")($);
+    var onLogin = bundle.onLogin;
     var fields = $("#myForm #username, #myForm #password");
-    return onLogin($, fields, function(err, data) {
+    return onLogin(fields, function(err, data) {
         if (err) {
             return console.log(err);
         }

@@ -7,7 +7,6 @@ var _ = require("lodash");
 
 var cfg = require("../../config");
 cfg.coverage();
-var login = require("../../src/requires/login.js").onLogin;
 describe("testing front end login module", function() {
     context("when the user submits a login form", function() {
         // Wrapping the test function with sinon.test is important,
@@ -22,7 +21,8 @@ describe("testing front end login module", function() {
             var callback = this.spy();
             this.stub(console, "log");
 
-            login(jq, fields, callback); // UNIT UNDER TEST
+            var login = require("../../src/requires/login.js")(jq).onLogin;
+            login(fields, callback); // UNIT UNDER TEST
 
             callback.firstCall.args[1]
                 .should.deep.equal({redirect: "SUCCESS"});

@@ -8,9 +8,9 @@ function logout() {
 function joinclass(classID) {
     var userID = $.cookie("usernameCookie");
     console.log("userid", userID);
-    var classroom = require("class");
-    var joinClass = classroom.joinClass;
-    return joinClass($, userID, classID, function(err, data) {
+    var bundle = require("class")($);
+    var joinClass = bundle.joinClass;
+    return joinClass(userID, classID, function(err, data) {
         if (err) { return console.log(err); }
         if (data.action) {
             console.log("joined class");
@@ -81,11 +81,11 @@ $("#cancel").button().click(function() {
 });
 
 $("#submit_class").button().click(function() {
-    var classroom = require("class");
-    var onCreate = classroom.onCreate;
-    var joinClass = classroom.joinClass;
+    var bundle = require("class")($);
+    var onCreate = bundle.onCreate;
+    var joinClass = bundle.joinClass;
     var fields = $("#submitform #info, #submitform #school, #submitform #title");
-    return onCreate($, fields, function(err, data) {
+    return onCreate(fields, function(err, data) {
         if (err) {
             return console.log(err);
         }
@@ -95,7 +95,7 @@ $("#submit_class").button().click(function() {
             console.log("USERID", userID);
             $( "#classlist" ).append("<a href='/class/" + classTitle + "'>" + classTitle + "</a>");
             end_submission();
-            return joinClass($, userID, classTitle, function(err, data) {
+            return joinClass(userID, classTitle, function(err, data) {
                 if (err) { return console.log(err); }
                 if (data.action) {
                     console.log("joined class");

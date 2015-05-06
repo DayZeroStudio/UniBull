@@ -7,10 +7,10 @@ $("#loginLink").click(function() {
 
 $("#submit").button();
 $("#submit").click(function() {
-    var signup = require("signup");
-    var onSignUp = signup.onSignUp;
+    var bundle = require("signup")($);
+    var onSignUp = bundle.onSignUp;
     var fields = $("#myForm #username, #myForm #email, #myForm #password, #myForm #passwordconfirm");
-    return onSignUp($, fields, function(err, data) {
+    return onSignUp(fields, function(err, data) {
         if (err) {
             return console.log(err);
         }
