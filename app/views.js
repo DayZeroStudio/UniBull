@@ -121,7 +121,8 @@ module.exports = function setupHtmlPages(dbModels) {
     })(express.Router());
 
     addBundleRoute("menu", {
-        adds: [{name: "menu.js"}]
+        adds: [{name: "menu.js"}],
+        requires: [{name: "menu.js", expose: "menu"}]
     });
 
     return Promise.resolve(router);

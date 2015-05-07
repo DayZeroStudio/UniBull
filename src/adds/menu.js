@@ -3,7 +3,44 @@
 //get username cookie and set as title
 // var username;
 // username = $.cookie("usernameCookie");
-$("#menutitle").append("<h1><center>Your College is serving the following today:</center></h1>");
+// $( document ).ready(function() {
+//     var bundle = require("menu")($);
+//     var getMenu = bundle.getMenu;
+//     return getMenu("nine", 0, function(err, data) {
+//         if (err) {
+//             return console.log(err);
+//         }
+//         console.log(data);
+//     });
+// });
+
+$("#menutitle").append("<h1><center>#CollegName is serving the following today:</center></h1>");
+
+function getFood(name) {
+    var bundle = require("menu")($);
+    var getMenu = bundle.getMenu;
+    return name + " Server not working \n so dummy data";
+    // return getMenu("nine", 0, function(err, data) {
+    //     if (err) {
+    //         return console.log(err);
+    //     }
+    //     console.log(data);
+    // });
+}
+
+function displayFood(data) {
+    $( "#menucontent").empty();
+    $( "#menucontent" ).append("<p>" + data + "</p>");
+}
+
+$( "#menu" ).menu({
+      items: "> :not(.ui-widget-header)",
+      select: function(event, ui) {
+          var name = ui.item.attr("id");
+          var data = getFood(name);
+          displayFood(data);
+      }
+    });
 
 $("#home").button().click(function() {
     window.location.href = "/home";

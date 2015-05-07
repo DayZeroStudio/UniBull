@@ -1,11 +1,12 @@
 "use strict";
 module.exports = function($) {
+    var _ = require("lodash");
     var exports = {};
 
-    exports.postJSON = function(url, formData, callback) {
-        console.log(formData);
+    exports.makeJSON = function(type, url, formData, callback) {
+        console.log(type, url, formData);
         $.ajax({
-            type: "POST",
+            type: type,
             url: url,
             data: JSON.stringify(formData),
             error: function(res, textStatus, errorThrown) {
@@ -19,6 +20,9 @@ module.exports = function($) {
         });
         return false;
     };
+
+    exports.postJSON = _.partial(exports.makeJSON, "POST");
+    exports.getJSON = _.partial(exports.makeJSON, "GET");
 
     return exports;
 };
