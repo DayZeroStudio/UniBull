@@ -54,10 +54,7 @@
                                         <button data-thread="<%= thread.title %>" class="rb" data-id="cancelreply">Cancel</button>
                                     </div>
                                     <div data-thread="<%= thread.title %>" class="replies">
-                                        <div id="accordion" class="accordion">
-
-                                            <h3>first reply</h3>
-                                            <div> first reply content here </div>
+                                        <div data-thread="<%=thread.title%>" data-id="replies_accordion" id="accordion" class="accordion">
                                         </div>
                                     </div>
                                 </div>
