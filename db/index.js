@@ -10,36 +10,33 @@ module.exports = function() {
                 cfg.db.password, cfg.db.options));
 
     var dbModels = {};
-
-    var path = require("path");
-    ["Class", "Thread", "User", "Reply", "Menu"].forEach(function(model) {
-        dbModels[model] = db.import(path.join(__dirname, model.toLowerCase()));
-    });
-
-    dbModels.ClassesUsers = db.define("ClassesUsers", {});
-    // Let all the models handle their associations
-    Object.keys(dbModels).forEach(function(modelName) {
-        if ("associate" in dbModels[modelName]) {
-            dbModels[modelName].associate(dbModels);
-        }
-    });
-    dbModels.db = db;
-
     var dbOpts = {
         force: !cfg.isProd
     };
-    return dbModels.ClassesUsers.sync(dbOpts)
-    .then(function() {
-        return dbModels.Class.sync(dbOpts);
-    }).then(function() {
-        return dbModels.User.sync(dbOpts);
-    }).then(function() {
-        return dbModels.Thread.sync(dbOpts);
-    }).then(function() {
-        return dbModels.Menu.sync(dbOpts);
-    }).then(function() {
-        return dbModels.Reply.sync(dbOpts);
-    }).bind({}).then(function() {
+
+    /*
+     * NOTE:
+     *  - {concurrency: 1} is important to avoid deadlocks
+     */
+    var modelsList = ["Class", "Thread", "User", "Reply", "Menu"];
+    return Promise.resolve(modelsList).map(function(model) {
+        var path = require("path");
+        dbModels[model] = db.import(path.join(__dirname, model.toLowerCase()));
+        // NOTE: Syncing here is vital when tinkering with db tables & schemas
+        return dbModels[model].sync(dbOpts);
+    }, {concurrency: 1}).then(function() {
+        dbModels.ClassesUsers = db.define("ClassesUsers", {});
+        // Models handle their own associations
+        Object.keys(dbModels).forEach(function(modelName) {
+            if ("associate" in dbModels[modelName]) {
+                dbModels[modelName].associate(dbModels);
+            }
+        });
+    }).return(modelsList).map(function(modelName) {
+        // We need to sync after setting all the model associations
+        return dbModels[modelName].sync(dbOpts);
+    }, {concurrency: 1}).bind({}).then(function() {
+        // Populate the tables with data from defaults.json
         var fs = require("fs");
         this.defaults = JSON.parse(fs.readFileSync("db/defaults.json", "utf-8"));
         return this.defaults.classes;
@@ -58,6 +55,7 @@ module.exports = function() {
             }
         });
     }).then(function() {
+        dbModels.db = db;
         return dbModels;
     });
 };

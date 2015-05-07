@@ -8,6 +8,11 @@ module.exports = function(db, DataTypes) {
     var cfg = require("../config");
 
     var User = db.define("User", {
+        uuid: {
+            type: DataTypes.UUID,
+            defaultValue: DataTypes.UUIDV1,
+            primaryKey: true
+        },
         username: {
             type: DataTypes.STRING,
             allowNull: false

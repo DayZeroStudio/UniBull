@@ -1,6 +1,11 @@
 "use strict";
 module.exports = function(db, DataTypes) {
     var Class = db.define("Class", {
+        uuid: {
+            type: DataTypes.UUID,
+            defaultValue: DataTypes.UUIDV1,
+            primaryKey: true
+        },
         info: {
             type: DataTypes.STRING,
             allowNull: false
