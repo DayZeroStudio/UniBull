@@ -1,7 +1,6 @@
 "use strict";
-var Promise = require("sequelize").Promise;
-
 module.exports = function setupHtmlPages(dbModels) {
+    var Promise = require("bluebird");
     var path = require("path");
 
     var fs = require("fs");

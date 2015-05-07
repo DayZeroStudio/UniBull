@@ -122,7 +122,6 @@ describe("testing class endpoints", function() {
                     return utils.user.getUserInfo(userID)
                         .then(function(res) {
                             res.statusCode.should.equal(200);
-                            log.warn("userInfo", res.body);
                             res.body.Classes.should
                                 .have.length.above(0);
                             res.body.Classes.should

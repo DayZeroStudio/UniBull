@@ -1,7 +1,6 @@
 "use strict";
-var Promise = require("sequelize").Promise;
-
 var uniBull = function(PORT) {
+    var Promise = require("bluebird");
     var express = require("express");
     var app = express();
     var path = require("path");

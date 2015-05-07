@@ -1,13 +1,11 @@
 "use strict";
-var Promise = require("sequelize").Promise;
-
 module.exports = function(dbModels) {
+    var Promise = require("bluebird");
     var express = require("express");
     var router = express.Router();
     var bodyParser = require("body-parser");
     router.use(bodyParser.json());
 
-    var _ = require("lodash");
     var auth = require("../auth.js");
     var cfg = require("../../config");
     var log = cfg.log.makeLogger("rest,class");
@@ -22,7 +20,7 @@ module.exports = function(dbModels) {
         Class.find({
             where: {title: classID}
         }).then(function(klass) {
-            return klass.getThreads();
+            return klass.getThreads({include: [{all: true, nested: true}]});
         }).then(function(threads) {
             return res.json({
                 threads: threads

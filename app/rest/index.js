@@ -1,7 +1,6 @@
 "use strict";
-var Promise = require("sequelize").Promise;
-
 module.exports = function setupRestEndpoints(dbModels) {
+    var Promise = require("bluebird");
     var cfg = require("../../config");
     var log = cfg.log.makeLogger("rest,index,setup");
 

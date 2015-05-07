@@ -1,7 +1,6 @@
 "use strict";
-var Promise = require("sequelize").Promise;
-
 module.exports = function(dbModels, routePrefix) {
+    var Promise = require("bluebird");
     var express = require("express");
     var router = express.Router();
     var bodyParser = require("body-parser");

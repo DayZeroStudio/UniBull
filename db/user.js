@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = function(db, DataTypes) {
-    var Promise = require("sequelize").Promise;
+    var Promise = require("bluebird");
     var bcrypt = require("bcrypt");
     var verifyPasswords = Promise.promisify(bcrypt.compare);
 
