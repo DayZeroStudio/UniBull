@@ -10,7 +10,7 @@ var cfg = require("../../config");
 var log = cfg.log.makeLogger("comma,tags");
 
 require("blanket")();
-describe.skip("testing front end class page", function() {
+describe("testing front end class page", function() {
   this.timeout(cfg.webdriver.timeout);
   var client = {};
   var utils = {};
@@ -34,16 +34,15 @@ describe.skip("testing front end class page", function() {
         });
         context("once on the classes page", function() {
             it("should have content", function() {
-                client.title_async().then(function(res) {
+                return client.title_async().then(function(res) {
                     res.value.should.contain("Classes");
                 });
             });
             context("clicking links should redirect you appropriately", function() {
                 it("home goes to home", function() {
-                    //FIXME: cannot read property should of undefined 46:38
-                    client.click("#home")
+                    return client.click("#home")
                         .waitForExist("#home", 500, true)
-                        .then(function(res) {
+                        .title_async().then(function(res) {
                             res.value.should.contain("Home");
                         });
                 });
@@ -51,14 +50,11 @@ describe.skip("testing front end class page", function() {
             });
             context("when the user clicks add a new class", function() {
                 it("should display the form", function() {
-                    client.element_async("#submit_wrapper").then(function() {
-                        client.click("#addclass")
+                    return client.click("#addclass")
                         .waitForVisible("#submit_wrapper")
-                        .saveScreenshot(cfg.screenshot.at("submitclass"))
                         .then(function(res) {
-                            log.warn("response", res);
+                            res.should.equal(true);
                         });
-                    });
                 });
             });
             // context("when the user submits the new class form", function() {
