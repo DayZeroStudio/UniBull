@@ -23,25 +23,25 @@ describe("testing reply endpoints", function() {
             app.use(router);
         });
     });
-    describe("replying to a thread", function() {
-        var klass, classID,
-            thread, threadID,
-            user, userID;
-        beforeEach(function() {
-            klass = utils.class.makeNewClass();
-            thread = utils.thread.makeNewThread();
-            user = utils.user.makeNewUser();
-            userID = user.username;
-            classID = klass.title;
-            threadID = thread.title;
-            return utils.user.signupNewUser(user).then(function() {
-                return utils.class.createClass(klass);
-            }).then(function() {
-                return utils.class.joinClass(userID, classID);
-            }).then(function() {
-                return utils.thread.submitThread(classID, thread);
-            });
+    var klass, classID,
+    thread, threadID,
+        user, userID;
+    beforeEach(function() {
+        klass = utils.class.makeNewClass();
+        thread = utils.thread.makeNewThread();
+        user = utils.user.makeNewUser();
+        userID = user.username;
+        classID = klass.title;
+        threadID = thread.title;
+        return utils.user.signupNewUser(user).then(function() {
+            return utils.class.createClass(klass);
+        }).then(function() {
+            return utils.class.joinClass(userID, classID);
+        }).then(function() {
+            return utils.thread.submitThread(classID, thread);
         });
+    });
+    describe("replying to a thread", function() {
         context("given that you are enrolled in that thread's class", function() {
             context("with required info", function() {
                 it("should add the reply to that thread's replies", function() {
@@ -63,6 +63,34 @@ describe("testing reply endpoints", function() {
                                 res.body.user.replies.should
                                     .include.something({content: reply.content});
                             });
+                    });
+                });
+                it("should return the newly created reply", function() {
+                    var reply = utils.reply.makeNewReply();
+                    return utils.reply.replyToThread(classID, threadID, reply).then(function(res) {
+                        res.body.should.contain.key("reply");
+                        res.body.reply.should.contain
+                            .keys("uuid", "content");
+                    });
+                });
+            });
+        });
+    });
+    describe("replying to a reply", function() {
+        context("given you are enrolled", function() {
+            context("with required info", function() {
+                it("should add the reply to the reply's replies", function() {
+                    var reply = utils.reply.makeNewReply();
+                    return utils.reply.replyToThread(classID, threadID, reply).then(function(res) {
+                        var replyID = res.body.reply.uuid;
+                        var nestedReply = utils.reply.makeNewReply();
+                        return utils.reply.replyToReply(classID, threadID, replyID, nestedReply).then(function(res) {
+                            res.statusCode.should.equal(200);
+                            res.body.reply.should.containSubset(nestedReply);
+                            res.body.topReply.should.contain(reply);
+                            res.body.topReply.Replies.should.include.something
+                                .containSubset([nestedReply]);
+                        });
                     });
                 });
             });

@@ -22,5 +22,12 @@ module.exports = function(UTILS, agent) {
             .toPromise();
     };
 
+    utils.replyToReply = function(classID, threadID, replyID, reply) {
+        return agent
+            .post("/rest/class/"+classID+"/thread/"+threadID+"/reply/"+replyID+"/reply")
+            .send(reply)
+            .toPromise();
+    };
+
     return utils;
 };
