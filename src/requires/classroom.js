@@ -13,6 +13,15 @@ module.exports = function($) {
         ajax.postJSON(restEndpoint, formData, callback);
         return false;
     };
-
+    exports.onSubmitReply = function(classID, threadID, fields, callback) {
+        var formData = {};
+        fields.each(function(i, v) {
+            var name = $(v).attr("name");
+            formData[name] = $(v).val();
+        });
+        var restEndpoint = "/rest/class/"+classID+"/thread/"+threadID+"/reply";
+        ajax.postJSON(restEndpoint, formData, callback);
+        return false;
+    };
     return exports;
 };

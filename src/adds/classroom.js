@@ -1,5 +1,8 @@
 /*globals classTitle*/
 "use strict";
+
+var bundle = require("classroom")($);
+
 $("#container").layout({
     north: {
     enableCursorHotkey: false,
@@ -82,7 +85,6 @@ $("#newpost").button().click(function() {
 });
 $("button[data-id=replytothread]").button().click(function(thread) {
     var threadID = $(thread.currentTarget).attr("data-thread");
-    console.log(threadID);
     $(".replyformwrapper[data-thread*=" + threadID + "]").slideToggle();
 });
 $("button[data-id=viewreplies]").button().click(function(thread) {
@@ -99,14 +101,27 @@ $("button[data-id=cancelreply]").button().click(function(thread) {
     $(".replyformwrapper[data-thread*="+threadID+"]").slideUp();
     $(".replycontent[data-thread*="+threadID+"]").val("");
 });
+
 $("button[data-id=submitreply]").button().click(function(thread) {
     var threadID = $(thread.currentTarget).attr("data-thread");
-    var content = $(".replycontent[data-thread*="+threadID+"]").val();
-    console.log(content);
+    var onSubmitReply = bundle.onSubmitReply;
+    var fields = $(".replycontent[data-thread*="+threadID+"]");
+    console.log(threadID);
+    console.log(classTitle);
+    return onSubmitReply(classTitle, threadID, fields, function(err, data) {
+        if (err) {
+            console.log("data error: ", data.error);
+            return console.log("error", err);
+        }
+        console.log("data", data);
+        if (data.action) {
+            $(".replyformwrapper[data-thread*=" + threadID + "]").slideToggle();
+            $(".replycontent[data-thread*="+threadID+"]").val("");
+            window.location.reload();
+        }
+    });
 });
-
 $("#submit_post").button().click(function() {
-    var bundle = require("classroom")($);
     var onSubmitPost = bundle.onSubmitPost;
     var fields = $("#submitform #content, #submitform #title");
     return onSubmitPost(classTitle, fields, function(err, data) {

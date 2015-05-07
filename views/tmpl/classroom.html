@@ -47,7 +47,7 @@
                                     <div data-thread="<%= thread.title %>" class="replyformwrapper">
                                         <form id="replyform" name="replyform" accept-charset="utf-8">
                                             <label for="replycontent">Content</label><br>
-                                            <input data-thread="<%= thread.title %>" class="replycontent" type="text" size="100">
+                                            <input data-thread="<%= thread.title %>" class="replycontent" type="text" name="content">
                                         </form>
                                         <br>
                                         <button data-thread="<%= thread.title %>" class="rb" data-id="submitreply">Submit</button>
@@ -55,6 +55,7 @@
                                     </div>
                                     <div data-thread="<%= thread.title %>" class="replies">
                                         <div id="accordion" class="accordion">
+
                                             <h3>first reply</h3>
                                             <div> first reply content here </div>
                                         </div>
