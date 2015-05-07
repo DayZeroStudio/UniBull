@@ -7,7 +7,6 @@ module.exports = function(dbModels) {
     var bodyParser = require("body-parser");
     router.use(bodyParser.json());
 
-//  var _ = require("lodash");
     var auth = require("../auth.js");
     var cfg = require("../../config");
     var log = cfg.log.makeLogger("rest,reply");

@@ -57,10 +57,10 @@ describe("testing reply endpoints", function() {
                     return utils.reply.replyToThread(classID, threadID, reply).then(function() {
                         return utils.user.getUserInfo(userID)
                             .then(function(res) {
-                                res.body.user.should.contain.key("replies");
-                                res.body.user.replies.should
+                                res.body.should.contain.key("Replies");
+                                res.body.Replies.should
                                     .have.length(1);
-                                res.body.user.replies.should
+                                res.body.Replies.should
                                     .include.something({content: reply.content});
                             });
                     });

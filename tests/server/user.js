@@ -94,9 +94,9 @@ describe("testing user endpoints", function() {
                 return utils.loginToApp(utils.validUser).then(function() {
                     return utils.getUserInfo(utils.validUser.username);
                 }).then(function(res) {
-                    res.body.user.should.contain
-                        .keys("username", "email", "classes", "threads", "replies");
-                    res.body.user.should.not.contain
+                    res.body.should.contain
+                        .keys("username", "email", "Classes", "Threads", "Replies");
+                    res.body.should.not.contain
                         .keys("password_hash");
                 });
             });

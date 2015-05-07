@@ -60,8 +60,8 @@ describe("testing thread endpoints", function() {
                     }).then(function() {
                         return utils.user.getUserInfo(userID);
                     }).then(function(res) {
-                        res.body.user.should.contain.key("threads");
-                        res.body.user.threads.should
+                        res.body.should.contain.key("Threads");
+                        res.body.Threads.should
                             .be.an("array")
                             .include.something({title: thread.title});
                     });

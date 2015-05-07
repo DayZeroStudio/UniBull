@@ -122,10 +122,10 @@ describe("testing class endpoints", function() {
                     return utils.user.getUserInfo(userID)
                         .then(function(res) {
                             res.statusCode.should.equal(200);
-                            res.body.should.have.key("user");
-                            res.body.user.classes.should
+                            log.warn("userInfo", res.body);
+                            res.body.Classes.should
                                 .have.length.above(0);
-                            res.body.user.classes.should
+                            res.body.Classes.should
                                 .include.something({title: classID});
                         });
                 });

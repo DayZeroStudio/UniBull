@@ -91,27 +91,11 @@ module.exports = function(dbModels, routePrefix) {
     router.get("/:userID", function(req, res) {
         log.info("GET - Get user info");
         User.find({
-            where: {username: req.params.userID}
+            where: {username: req.params.userID},
+            include: [{all: true, nested: true}]
         }).then(function(user) {
-            return user.getClasses().then(function(classes) {
-                return classes;
-            }).then(function(classes) {
-                this.classes = classes;
-                return user.getReplies();
-            }).then(function(replies) {
-                this.replies = replies;
-                return user.getThreads();
-            }).then(function(threads) {
-                this.threads = threads;
-            }).then(function() {
-                var fullUser = _(user.get())
-                    .omit("password_hash")
-                    .merge({classes: _.invoke(this.classes, "get")})
-                    .merge({replies: _.invoke(this.replies, "get")})
-                    .merge({threads: _.invoke(this.threads, "get")})
-                    .value();
-                return res.json({user: fullUser});
-            });
+            var fullUser = _.omit(user.get(), "password_hash");
+            return res.json(fullUser);
         }).catch(function(err) {
             return res.status(400).json({
                 error: err.message
