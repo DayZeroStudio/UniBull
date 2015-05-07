@@ -14,31 +14,30 @@
 //     });
 // });
 
-$("#menutitle").append("<h1><center>#CollegName is serving the following today:</center></h1>");
+$("#menutitle").append("<h1><center>#CollegeName is serving the following today:</center></h1>");
 
-function getFood(name) {
+function getFood(name, done) {
     var bundle = require("menu")($);
     var getMenu = bundle.getMenu;
-    return name + " Server not working \n so dummy data";
-    // return getMenu("nine", 0, function(err, data) {
-    //     if (err) {
-    //         return console.log(err);
-    //     }
-    //     console.log(data);
-    // });
+    //return name + " Server not working \n so dummy data";
+    return getMenu(name, 0, done);
 }
 
 function displayFood(data) {
     $( "#menucontent").empty();
-    $( "#menucontent" ).append("<p>" + data + "</p>");
+    $( "#menucontent" ).append("<p>" + JSON.stringify(data) + "</p>");
 }
 
 $( "#menu" ).menu({
       items: "> :not(.ui-widget-header)",
       select: function(event, ui) {
           var name = ui.item.attr("id");
-          var data = getFood(name);
-          displayFood(data);
+          getFood(name, function(err, menu) {
+              if (err) {
+                  console.error(err);
+              }
+              displayFood(menu);
+          });
       }
     });
 
