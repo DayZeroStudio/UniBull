@@ -16,6 +16,7 @@ start-selenium:
 	@ java -jar ${SEL_SERVER}\
 		-log ./logs/selenium.log\
 		2> ./logs/selenium.err &
+	@ echo "Started selenium server"
 
 start-phantomjs:
 	@ #4445 because selenium uses 4444
@@ -23,6 +24,7 @@ start-phantomjs:
 		--webdriver-logfile=./logs/phantomjs-wd.log\
 		> ./logs/phantomjs.log\
 		2> ./logs/phantomjs.err &
+	@ echo "Started phantomjs server"
 
 install:
 	npm prune

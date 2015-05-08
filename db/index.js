@@ -18,14 +18,13 @@ module.exports = function() {
      * NOTE:
      *  - {concurrency: 1} is important to avoid deadlocks
      */
-    var modelsList = ["Class", "Thread", "User", "Reply", "Menu"];
+    var modelsList = ["Class", "Thread", "User", "Reply", "Menu", "ClassesUsers"];
     return Promise.resolve(modelsList).map(function(model) {
         var path = require("path");
         dbModels[model] = db.import(path.join(__dirname, model.toLowerCase()));
         // NOTE: Syncing here is vital when tinkering with db tables & schemas
         return dbModels[model].sync(dbOpts);
     }, {concurrency: 1}).then(function() {
-        dbModels.ClassesUsers = db.define("ClassesUsers", {});
         // Models handle their own associations
         Object.keys(dbModels).forEach(function(modelName) {
             if ("associate" in dbModels[modelName]) {
