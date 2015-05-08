@@ -14,7 +14,34 @@
 //     });
 // });
 
-$("#menutitle").append("<h1><center>#CollegeName is serving the following today:</center></h1>");
+$("#menutitle").append("<h1><center>Click on something</center></h1>");
+
+var menuData;
+
+$( "#menutab").tabs({
+    activate: function( event, ui ) {
+        var i = ui.newTab.index();
+        switch (i) {
+            case 0:
+                var b = menuData.breakfast;
+                $( "#bf-tab").empty();
+                $( "#bf-tab" ).append("<p>" + b + "</p>");
+                break;
+            case 1:
+                var l = menuData.lunch;
+                $( "#lunch-tab").empty();
+                $( "#lunch-tab" ).append("<p>" + l + "</p>");
+                break;
+            case 2:
+                var d = menuData.dinner;
+                $( "#dinner-tab").empty();
+                $( "#dinner-tab" ).append("<p>" + d + "</p>");
+                break;
+            default:
+                break;
+        }
+    }
+});
 
 function getFood(name, done) {
     var bundle = require("menu")($);
@@ -23,10 +50,11 @@ function getFood(name, done) {
     return getMenu(name, 0, done);
 }
 
-function displayFood(data) {
-    $( "#menucontent").empty();
-    $( "#menucontent" ).append("<p>" + JSON.stringify(data) + "</p>");
-}
+// function displayFood(data) {
+//     $( "#menucontent").empty();
+//     console.log(data.lunch);
+//     $( "#menucontent" ).append("<p>" + data + "</p>");
+// }
 
 $( "#menu" ).menu({
       items: "> :not(.ui-widget-header)",
@@ -36,7 +64,7 @@ $( "#menu" ).menu({
               if (err) {
                   console.error(err);
               }
-              displayFood(menu);
+              menuData = menu;
           });
       }
     });
