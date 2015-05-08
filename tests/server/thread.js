@@ -80,11 +80,11 @@ describe("testing thread endpoints", function() {
         });
         context("that you are NOT enrolled in", function() {
             it("should return an error", function() {
-                return utils.thread.submitThread(classID, utils.class.token, thread)
-                .then(function(res) {
+                return utils.thread.submitThread(classID, thread)
+                    .then(function(res) {
                         res.statusCode.should.equal(400);
-                    res.body.should.contain.key("error");
-                });
+                        res.body.should.contain.key("error");
+                    });
             });
         });
     });
