@@ -10,7 +10,7 @@ MOCHA_OPTS	     	:= --recursive --colors -r blanket --reporter mocha-multi
 AUTOTEST_IGNORES 	:= --ignore ./public/ --ignore ./bin/ --ignore ./logs/ --ignore '.[!.]*'
 
 start:
-	nodemon ${AUTOTEST_IGNORES} | ${BUNYAN}
+	nodemon ${AUTOTEST_IGNORES} --ext js,json | ${BUNYAN}
 
 start-selenium:
 	@ java -jar ${SEL_SERVER}\
