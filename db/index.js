@@ -11,7 +11,7 @@ module.exports = function() {
 
     var dbModels = {};
     var dbOpts = {
-        force: !cfg.isProd
+        force: true
     };
 
     /*
