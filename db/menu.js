@@ -23,8 +23,8 @@ module.exports = function(db, DataTypes) {
         dinner: {
             type: DataTypes.ARRAY(DataTypes.STRING)
         },
-        dtdate: {
-            type: DataTypes.INTEGER,
+        date: {
+            type: DataTypes.DATE,
             allowNull: false
         }
     });

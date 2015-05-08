@@ -11,6 +11,7 @@ module.exports = function(dbModels) {
     function append(a, b) {return a+b; }
     var cheerio = require("cheerio");
     var request = Promise.promisifyAll(require("superagent"));
+    require("date-utils");
 
     var cfg = require("../../config");
     var log = cfg.log.makeLogger("menu,dh");
@@ -27,8 +28,9 @@ module.exports = function(dbModels) {
         crown: "20"
     }).mapValues(_.curry(append)(base_UCSC_dh_url+"&locationNum=")).value();
 
-    function getMenuForDh(dhName) {
-        var dhUrl = dhToUrl[dhName];
+    function getMenuForDh(dhName, dtdate) {
+        var date = Date.today().addDays(dtdate);
+        var dhUrl = dhToUrl[dhName] + "&dtdate=" + date.toFormat("M/D/YYYY");
         log.debug("CONNETING TO: ", dhUrl);
         return request.getAsync(dhUrl)
             .then(function(res) {
@@ -60,9 +62,9 @@ module.exports = function(dbModels) {
 
                 var menu = _.reduce(meals, _.merge);
                 menu.title = title;
-                menu.dtdate = 0;
+                menu.date = date;
                 menu.name = dhName;
-                log.debug("meals.keys:", _.keys(menu));
+                log.debug("menu.keys:", _.keys(menu));
 
                 return Menu.create(menu).then(function() {
                     return menu;
@@ -71,13 +73,15 @@ module.exports = function(dbModels) {
     }
 
     router.get("/:dh/:dtdate", function(req, res) {
-        log.info("GET - Menu from %s +T%d", req.params.dh, req.params.dtdate);
+        var dh = req.params.dh;
+        var dtdate = parseInt(req.params.dtdate);
+        log.info("GET - Menu from %s +T%d", dh, dtdate);
         Menu.find({where: {
-            name: req.params.dh,
-            dtdate: req.params.dtdate
+            name: dh,
+            date: Date.today().addDays(dtdate)
         }}, {raw: true}).then(function(dbData) {
             if (!dbData) {
-                return getMenuForDh(req.params.dh).then(function(menu) {
+                return getMenuForDh(dh, dtdate).then(function(menu) {
                     res.json(menu);
                 });
             }
