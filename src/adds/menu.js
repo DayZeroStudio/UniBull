@@ -17,8 +17,13 @@
 $("#menutitle").append("<h1><center>Click on something</center></h1>");
 
 var menuData;
+var menuAllow = false;
+$( ".menutab" ).tabs({ disabled: [0, 1, 2] });
+
+$( "#menutab").hide();
 
 $( "#menutab").tabs({
+    event: "mouseover",
     activate: function( event, ui ) {
         var i = ui.newTab.index();
         switch (i) {
@@ -50,6 +55,27 @@ function getFood(name, done) {
     return getMenu(name, 0, done);
 }
 
+function initialMenuLoad() {
+    var dt = new Date();
+    var t = dt.getHours();
+    console.log("THIS IS THE TIME " + t);
+    if (t >= 0 && t <= 11) {
+        $( "#menutab" ).tabs({ active: 0});
+        var b = menuData.breakfast;
+        $( "#bf-tab").empty();
+        $( "#bf-tab" ).append("<p>" + b + "</p>");
+    } else if (t >= 12 && t <= 17) {
+        $( "#menutab" ).tabs({ active: 1});
+        var l = menuData.lunch;
+        $( "#lunch-tab").empty();
+        $( "#lunch-tab" ).append("<p>" + l + "</p>");
+    } else {
+        $( "#menutab" ).tabs({ active: 2});
+        var d = menuData.dinner;
+        $( "#dinner-tab").empty();
+        $( "#dinner-tab" ).append("<p>" + d + "</p>");
+    }
+}
 // function displayFood(data) {
 //     $( "#menucontent").empty();
 //     console.log(data.lunch);
@@ -59,12 +85,14 @@ function getFood(name, done) {
 $( "#menu" ).menu({
       items: "> :not(.ui-widget-header)",
       select: function(event, ui) {
+          $( "#menutab").show();
           var name = ui.item.attr("id");
           getFood(name, function(err, menu) {
               if (err) {
                   console.error(err);
               }
               menuData = menu;
+              initialMenuLoad();
           });
       }
     });
