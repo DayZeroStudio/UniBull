@@ -52,7 +52,7 @@ module.exports = function(dbModels, routePrefix) {
                 return res.status(401)
                     .json({error: "Failed to Authenticate"});
             }
-            User.isValidUser(user.password_hash, req.body.password)
+            user.isValidUser(req.body.password)
                 .then(function() {
                     return onValidUser(user, res);
                 }).catch(function() {

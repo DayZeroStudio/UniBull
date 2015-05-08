@@ -17,7 +17,12 @@ module.exports = function(db, DataTypes) {
             type: DataTypes.STRING,
             allowNull: false
         },
-        password_hash: {type: DataTypes.STRING},
+        password_hash: {
+            type: DataTypes.STRING,
+            get: function() {
+                return "error: non-db functions cannot access 'password_hash'";
+            }
+        },
         password: {
             type: DataTypes.VIRTUAL,
             set: function(password) {
@@ -38,9 +43,12 @@ module.exports = function(db, DataTypes) {
                 dbModels.User.belongsToMany(dbModels.Class, {through: dbModels.ClassesUsers});
                 dbModels.User.hasMany(dbModels.Thread);
                 dbModels.User.hasMany(dbModels.Reply);
-            },
-            isValidUser: Promise.method(function(password_hash, password) {
-                return verifyPasswords(password, password_hash)
+            }
+        },
+        instanceMethods: {
+            isValidUser: Promise.method(function(maybe_password) {
+                var password_hash = this.getDataValue("password_hash");
+                return verifyPasswords(maybe_password, password_hash)
                     .then(function(isValid) {
                         if (!isValid) {
                             throw Error(cfg.errmsgs.invalidUserInfo);

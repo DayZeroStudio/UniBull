@@ -14,16 +14,13 @@ module.exports = function() {
         force: true
     };
 
-    /*
-     * NOTE:
-     *  - {concurrency: 1} is important to avoid deadlocks
-     */
     var modelsList = ["Class", "Thread", "User", "Reply", "Menu", "ClassesUsers"];
     return Promise.resolve(modelsList).map(function(model) {
         var path = require("path");
         dbModels[model] = db.import(path.join(__dirname, model.toLowerCase()));
         // NOTE: Syncing here is vital when tinkering with db tables & schemas
         return dbModels[model].sync(dbOpts);
+        // NOTE: {concurrency: 1} is important to avoid deadlocks
     }, {concurrency: 1}).then(function() {
         // Models handle their own associations
         Object.keys(dbModels).forEach(function(modelName) {
@@ -34,6 +31,7 @@ module.exports = function() {
     }).return(modelsList).map(function(modelName) {
         // We need to sync after setting all the model associations
         return dbModels[modelName].sync(dbOpts);
+        // NOTE: {concurrency: 1} is important to avoid deadlocks
     }, {concurrency: 1}).bind({}).then(function() {
         // Populate the tables with data from defaults.json
         var fs = require("fs");
