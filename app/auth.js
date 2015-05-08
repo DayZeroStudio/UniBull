@@ -23,24 +23,31 @@ module.exports = (function() {
 
         router.use(expressJwt({
             secret: cfg.jwt.secret,
-            getToken: auth.getTokenFromRequest,
-            isRevoked: function isRevokedCallback(req, payload, done) {
-                var token = auth.getTokenFromRequest(req);
-                jwt.verify(token, cfg.jwt.secret, function(err, decoded) {
-                    if (err) {return done(err); }
-                    return done(null, !decoded);
-                });
-            }}).unless({
+            requestProperty: "jwt",
+            getToken: auth.getTokenFromRequest
+        }).unless({
             path: publicEndpoints
         }));
 
-        router.use(function catchTokenExpirationErrors(err, req, res, next) {
-            if (err.name === "TokenExpiredError") {
-                return res.status(401).json({error: err.name});
-            } else if (err.name === "UnauthorizedError") {
-                return res.status(401).json({error: err.name});
+        router.use(function(req, res, next) {
+            if (req.jwt) {
+                var refreshedToken = jwt.sign(req.jwt, cfg.jwt.secret, cfg.jwt.options);
+                res.cookie("token", "Bearer " + refreshedToken);
             }
-            next();
+            return next();
+        });
+
+        router.use(function(err, req, res, next) {
+            if (err.name === "TokenExpiredError") {
+                return res.status(401).json({
+                    error: cfg.errmsgs.tokenExpired
+                });
+            } else if (err.name === "UnauthorizedError") {
+                return res.status(401).json({
+                    error: cfg.errmsgs.unauthorized
+                });
+            }
+            return next();
         });
     };
 

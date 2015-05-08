@@ -56,11 +56,22 @@ label {
 #forum{
     width: 600px;
 }
+.joinclass{
+    float: right;
+}
+.classroomlink{
+    float: left;
+}
 .submit_wrapper{
     display: none;
     text-align: left;
     border: thin solid;
     padding: 10px 10px;
+}
+.classroom_wrapper{
+    background-color: #F6F6F6;
+    border: 1px solid #f0f0f0;
+    padding: 5px;
 }
 #container {
     background: #999;
@@ -96,4 +107,7 @@ label {
 .ui-layout-pane-south {
     border: 0 !important;
     background: none !important;
+}
+.center {
+    text-align: center;
 }

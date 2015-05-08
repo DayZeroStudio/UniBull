@@ -1,0 +1,22 @@
+"use strict";
+module.exports = function(db, DataTypes) {
+    var Reply = db.define("Reply", {
+        uuid: {
+            type: DataTypes.UUID,
+            defaultValue: DataTypes.UUIDV1,
+            primaryKey: true
+        },
+        content: {
+            type: DataTypes.STRING,
+            allowNull: false
+        }
+    }, {
+        classMethods: {
+            associate: function() {
+                Reply.hasMany(Reply);
+            }
+        }
+    });
+
+    return Reply;
+};

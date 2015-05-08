@@ -1,18 +1,24 @@
+"use strict";
 module.exports = function(CFG) {
-    "use strict";
     var cfg = {};
+    var _ = require("lodash");
 
     var bunyan = require("bunyan");
-    cfg.logger = bunyan.createLogger({
+    var parentLogger = bunyan.createLogger({
         name: "UniBull",
         src: CFG.isDev || CFG.isTest,
-        level: (CFG.isTest ? "warn"
+        level: (CFG.isTest ? (CFG.env.DEBUG ? "info" : "warn")
                 : (CFG.isDev ? "debug" : "info")),
-        serializers: {
-            req: bunyan.stdSerializers.req,
-            res: bunyan.stdSerializers.res
-        }
+        serializers: bunyan.stdSerializers
     });
+    cfg.makeLogger = function(tags) {
+        var logger = parentLogger.child();
+        var debugTags = _.map(tags.split(","), function(elt) {
+            return "unibull:" + elt;
+        }).join(",");
+        logger.debug = require("debug")(debugTags);
+        return logger;
+    };
 
     return cfg;
 };

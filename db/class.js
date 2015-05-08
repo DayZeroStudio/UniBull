@@ -1,6 +1,11 @@
 "use strict";
 module.exports = function(db, DataTypes) {
-    return db.define("Class", {
+    var Class = db.define("Class", {
+        uuid: {
+            type: DataTypes.UUID,
+            defaultValue: DataTypes.UUIDV1,
+            primaryKey: true
+        },
         info: {
             type: DataTypes.STRING,
             allowNull: false
@@ -13,6 +18,14 @@ module.exports = function(db, DataTypes) {
             type: DataTypes.STRING,
             allowNull: false
         }
+    }, {
+        classMethods: {
+            associate: function(dbModels) {
+                Class.hasMany(dbModels.Thread);
+                Class.belongsToMany(dbModels.User, {through: dbModels.ClassesUsers});
+            }
+        }
     });
-    /*Class hasMany Threads*/
+
+    return Class;
 };

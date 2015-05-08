@@ -49,3 +49,10 @@ select {
     width: 400px;
     border: thick solid #000000;
 }
+.center {
+    text-align: center;
+}
+.center-fixed {
+    margin: 0px auto;
+    width: 430px;
+}

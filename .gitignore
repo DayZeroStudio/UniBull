@@ -1,11 +1,9 @@
 node_modules
-.tern-project
-*.log
-*.log.*
-.*rc
-public/js/*-bundle.js
-**/.*
-selenium-server-standalone-*.jar
-phantomjs
-*.err
-tmp/
+coverage.html
+
+#Ignore all hidden files
+.*
+#Except for
+!.gitignore
+!.eslintrc
+!.eslintignore

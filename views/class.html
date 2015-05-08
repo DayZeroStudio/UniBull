@@ -4,7 +4,10 @@
     <head>
         <link href="jqueryui/jquery-ui.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="/css/class.css">
-        <title>UniBull Class</title>
+        <script src="jqueryui/external/jquery/jquery.js"></script>
+        <script src="jqueryui/jquery-ui.js"></script>
+        <script src="jqueryui/jquery.layout-latest.js"></script>
+        <title>UniBull Classes</title>
     </head>
 
     <body>
@@ -14,10 +17,11 @@
                     <button id="toclass">Classrooms</button>
                     <button id="toclubs">Clubs</button>
                     <button id="toevents">Events</button>
+                    <button id="tomenu">Menu</button>
                 </div>
                 <hr>
-                <center><h1>Enrolled Classes</h1></center>
-                <button id="addclass">Add a Class (+)</button><br><br>
+                <h1 class="center">Enrolled Classes</h1>
+                <button id="addclass">Add a new Class (+)</button><br><br>
                 <div class="submit_wrapper" id="submit_wrapper">
                     <form id="submitform" name="submitform" accept-charset="utf-8">
                         <label for="title">Class Title</label><br>
@@ -33,7 +37,20 @@
                 </div>
                 <hr>
                 <div id="classlist">
-                    <a href="class/cs999">CS999</a>
+                    <% classes.forEach(function(klass){ %>
+                        <a href="class/<%=klass.title%>"><%=klass.title%></a><br>
+                    <% }); %>
+
+                </div>
+                <hr><h1 class="center"> Other Classes</h1><hr>
+                <div id="allclasslist">
+                    <% classes.forEach(function(klass){ %>
+                        <div class="classroom_wrapper">
+                            <a class="classroomlink" href="class/<%=klass.title%>"><%=klass.title%></a>
+                            <button data-klass="<%=klass.title%>" class="joinclass">Join this class!</button>
+                            <br>
+                        </div>
+                    <% }); %>
                 </div>
             </div>
             <div class="ui-layout-north">
@@ -45,16 +62,13 @@
                 </p>
                 <p class="alignright">Profile Pic</p>
             </div>
-            <div class="ui-layout-south">
-                <center><button id="logout"> LOGOUT </button></center>
+            <div class="ui-layout-south center">
+                <button class="center" id="logout">LOGOUT</button>
             </div>
-            <div class="pane ui-layout-east">
-                <center><h1>Notification Center</h1></center>
+            <div class="ui-layout-east pane center">
+                <h1>Notification Center</h1>
             </div>
         </div>
-        <script src="jqueryui/external/jquery/jquery.js"></script>
-        <script src="jqueryui/jquery-ui.js"></script>
-        <script src="jqueryui/jquery.layout-latest.js"></script>
         <script src="js/class-bundle.js"></script>
     </body>
 </html>

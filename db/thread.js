@@ -1,7 +1,26 @@
 "use strict";
 module.exports = function(db, DataTypes) {
-    return db.define("Thread", {
-        content: {type: DataTypes.STRING},
-        title: {type: DataTypes.STRING}
+    var Thread = db.define("Thread", {
+        uuid: {
+            type: DataTypes.UUID,
+            defaultValue: DataTypes.UUIDV1,
+            primaryKey: true
+        },
+        title: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        content: {
+            type: DataTypes.STRING,
+            allowNull: false
+        }
+    }, {
+        classMethods: {
+            associate: function(dbModels) {
+                Thread.hasMany(dbModels.Reply);
+            }
+        }
     });
+
+    return Thread;
 };
