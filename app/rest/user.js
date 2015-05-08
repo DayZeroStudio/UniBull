@@ -32,7 +32,7 @@ module.exports = function(dbModels, routePrefix) {
     });
 
     function onValidUser(user, res) {
-        var publicUserInfo = _.pick(user, ["username", "email"]);
+        var publicUserInfo = _.pick(user, ["username", "email", "role"]);
         var token = "Bearer " + jwt.sign(publicUserInfo, cfg.jwt.secret, cfg.jwt.options);
         res.cookie("token", token).set({
             "Authorization": token
@@ -68,6 +68,21 @@ module.exports = function(dbModels, routePrefix) {
             success: true,
             decoded: auth.decodeRequest(req)
         });
+    });
+
+    router.get("/admin", function(req, res) {
+        var user = auth.decodeRequest(req);
+        log.warn("user", user);
+        log.warn("isAuthorizedFor", auth.isAuthorizedFor(user.role, "admin"));
+        if (auth.isAuthorizedFor(user.role, "admin")) {
+            return res.json({
+                success: true
+            });
+        } else {
+            return res.status(401).json({
+                success: false
+            });
+        }
     });
 
     router.post("/signup", function(req, res) {

@@ -36,6 +36,11 @@ module.exports = function(db, DataTypes) {
         email: {
             type: DataTypes.STRING,
             allowNull: false
+        },
+        role: {
+            type: DataTypes.ENUM("student", "ta", "professor", "moderator", "admin", "superuser", "root"),
+            allowNull: false,
+            defaultValue: "student"
         }
     }, {
         classMethods: {
