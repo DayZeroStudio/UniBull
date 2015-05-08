@@ -80,24 +80,32 @@ describe("testing thread endpoints", function() {
         });
         context("that you are NOT enrolled in", function() {
             it("should return an error", function() {
-                return utils.thread.submitThread(classID, utils.class.token, thread)
-                .then(function(res) {
+                return utils.thread.submitThread(classID, thread)
+                    .then(function(res) {
                         res.statusCode.should.equal(400);
-                    res.body.should.contain.key("error");
-                });
+                        res.body.should.contain.key("error");
+                    });
             });
         });
     });
     describe("viewing all threads in a class", function() {
         it("should return a list of all the threads in the class", function() {
-            return request(app)
-                .get("/rest/class/"+ classID +"/all")
-                .expect(function(res) {
-                    res.statusCode.should.equal(200);
-                    res.body.should.contain.key("threads");
-                    res.body.threads.should
-                        .all.contain.keys("title", "content");
-                });
+            return utils.class.joinClass(userID, classID).then(function() {
+                return utils.thread.submitThread(classID, thread);
+            }).then(function(res) {
+                return request(app)
+                    .get("/rest/class/"+ classID +"/all")
+                    .expect(function(res) {
+                        res.statusCode.should.equal(200);
+                        res.body.should.contain.key("threads");
+                        res.body.threads.should.have.length.above(0);
+                        res.body.threads.should
+                            .include.something({title: thread.title})
+                            .all.contain.keys("title", "content", "User");
+                        res.body.threads.should
+                            .include.something({User: {username: userID}});
+                    });
+            });
         });
     });
 });
