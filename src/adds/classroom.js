@@ -3,6 +3,8 @@
 
 var bundle = require("classroom")($);
 
+var loadedReplies = [];
+
 $("#container").layout({
     north: {
     enableCursorHotkey: false,
@@ -56,28 +58,46 @@ function logout() {
     $.cookie("usernameCookie", null);
     $.cookie("token", null);
 }
+function replyLoaded(uuid) {
+    console.log("checking for reply: ", uuid);
+    return $.inArray(uuid, loadedReplies);
+}
 
-function addReply(user, content) {
-    $("div[data-id*=replies_accordion]")
+function addReply(threadID, user, content, uuid) {
+    loadedReplies.push(uuid);
+    $("div[data-thread*='"+threadID+"'][data-id*=replies_accordion]")
         .prepend("<h3>"+user+"</h3><div>"+content+"</div>")
         .accordion().accordion("refresh");
     collapsible();
 }
 
-function getReplies(thread) {
-    //make ajax call to get replies...
-    var replies = [
-        {
-            user: "FirstUser",
-            content: "My first reply!"
-        },
-        {
-            user: "SecondUser",
-            content: "My first reply tooo!"
+function displayReplies(res, threadID) {
+    //console.log("res", res);
+    res.threads.forEach(function(thread) {
+        console.log("threadID: ", thread);
+        console.log("thread title: ", thread.title);
+        if (thread.title === threadID) {
+            thread.Replies.forEach(function(reply) {
+                console.log("loaded replies", loadedReplies);
+                if (replyLoaded(reply.uuid) === (-1)) {
+                    console.log("adding reply!");
+                    addReply(threadID, reply.uuid, reply.content, reply.uuid);
+                } else {
+                    console.log("reply already loaded: ", reply.uuid);
+                }
+            });
         }
-    ];
-    replies.forEach(function(reply) {
-        addReply(reply.user, reply.content);
+    });
+}
+
+function getReplies(threadID) {
+    //make ajax call to get replies...
+    var onViewReplies = bundle.onViewReplies;
+    onViewReplies(classTitle, function(err, res) {
+        if (err) { return console.log(err); }
+        if (res) {
+            displayReplies(res, threadID);
+        }
     });
 }
 
@@ -114,9 +134,12 @@ $("button[data-id=replytothread]").button().click(function(thread) {
 });
 $("button[data-id=viewreplies]").button().click(function(thread) {
     var threadID = $(thread.currentTarget).attr("data-thread");
-    $(".replies[data-thread*='"+threadID+"']").slideToggle(0);
-    var repliesAccordion = $("div[data-thread*='"+threadID+"']");
-    getReplies(repliesAccordion);
+    var replies = $(".replies[data-thread*='"+threadID+"']");
+    if (!replies.is(":visible")) {
+        getReplies(threadID);
+    }
+    replies.slideToggle(0);
+
 });
 $("#cancel").button().click(function() {
     $("#submit_wrapper").slideUp(0);
@@ -133,7 +156,7 @@ $("button[data-id=submitreply]").button().click(function(thread) {
     var threadID = $(thread.currentTarget).attr("data-thread");
     var onSubmitReply = bundle.onSubmitReply;
     var fields = $(".replycontent[data-thread*='"+threadID+"']");
-    var content = fields.val();
+    // var content = fields.val();
     return onSubmitReply(classTitle, threadID, fields, function(err, data) {
         if (err) {
             console.log("data error: ", data.error);
@@ -141,8 +164,7 @@ $("button[data-id=submitreply]").button().click(function(thread) {
         }
         console.log("data", data);
         if (data.action) {
-            var user = $.cookie("usernameCookie");
-            addReply(user, content);
+            // var user = $.cookie("usernameCookie");
             $(".replyformwrapper[data-thread*='"+threadID+"']").slideToggle(0);
             $(".replycontent[data-thread*='"+threadID+"']").val("");
         }

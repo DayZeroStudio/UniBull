@@ -23,9 +23,10 @@ module.exports = function($) {
         ajax.postJSON(restEndpoint, formData, callback);
         return false;
     };
-    exports.onViewReplies = function() {
-        var restEndpoint = "";
-        ajax.getJSON(restEndpoint);
+    exports.onViewReplies = function(classID, callback) {
+        var restEndpoint = "/rest/class/"+classID+"/all";
+        ajax.getJSON(restEndpoint, {}, callback);
+        return false;
     };
     return exports;
 };
