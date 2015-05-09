@@ -14,7 +14,47 @@
 //     });
 // });
 
-$("#menutitle").append("<h1><center>#CollegeName is serving the following today:</center></h1>");
+$("#menutitle").append("<h1><center>Click on a dining hall!</center></h1>");
+
+var menuData;
+var menuAllow = false;
+$( ".menutab" ).tabs({ disabled: [0, 1, 2] });
+
+$( "#menutab").hide();
+
+$( "#selectable" ).selectable();
+
+$( "#menutab").tabs({
+    event: "mouseover",
+    activate: function( event, ui ) {
+        var i = ui.newTab.index();
+        switch (i) {
+            case 0:
+                var b = menuData.breakfast;
+                $( "#bf-tab").empty();
+                $.each(b, function(index, value) {
+                    $( "#bf-tab" ).append("<li class='ui-widget-content'>" + value + "</li>");
+                });
+                break;
+            case 1:
+                var l = menuData.lunch;
+                $( "#lunch-tab").empty();
+                $.each(l, function(index, value) {
+                    $( "#lunch-tab" ).append("<li class='ui-widget-content'>" + value + "</li>");
+                });
+                break;
+            case 2:
+                var d = menuData.dinner;
+                $( "#dinner-tab").empty();
+                $.each(d, function(index, value) {
+                    $( "#dinner-tab" ).append("<li class='ui-widget-content'>" + value + "</li>");
+                });
+                break;
+            default:
+                break;
+        }
+    }
+});
 
 function getFood(name, done) {
     var bundle = require("menu")($);
@@ -23,20 +63,51 @@ function getFood(name, done) {
     return getMenu(name, 0, done);
 }
 
-function displayFood(data) {
-    $( "#menucontent").empty();
-    $( "#menucontent" ).append("<p>" + JSON.stringify(data) + "</p>");
+function initialMenuLoad() {
+    var dt = new Date();
+    var t = dt.getHours();
+    if (t >= 0 && t <= 11) {
+        $( "#menutab" ).tabs({ active: 0});
+        var b = menuData.breakfast;
+        $( "#bf-tab").empty();
+        $.each(b, function(index, value) {
+            $( "#bf-tab" ).append("<li class='ui-widget-content'>" + value + "</li>");
+        });
+    } else if (t >= 12 && t <= 17) {
+        $( "#menutab" ).tabs({ active: 1});
+        var l = menuData.lunch;
+        $( "#lunch-tab").empty();
+        $.each(l, function(index, value) {
+            $( "#lunch-tab" ).append("<li class='ui-widget-content'>" + value + "</li>");
+        });
+    } else {
+        $( "#menutab" ).tabs({ active: 2});
+        var d = menuData.dinner;
+        $( "#dinner-tab").empty();
+        $.each(d, function(index, value) {
+            $( "#dinner-tab" ).append("<li class='ui-widget-content'>" + value + "</li>");
+        });
+    }
 }
+// function displayFood(data) {
+//     $( "#menucontent").empty();
+//     console.log(data.lunch);
+//     $( "#menucontent" ).append("<p>" + data + "</p>");
+// }
 
 $( "#menu" ).menu({
       items: "> :not(.ui-widget-header)",
       select: function(event, ui) {
+          $( "#menutab").show();
           var name = ui.item.attr("id");
+          $("#menutitle").empty();
+          $("#menutitle").append("<h1><center>" + name + "'s Menu</center></h1>");
           getFood(name, function(err, menu) {
               if (err) {
                   console.error(err);
               }
-              displayFood(menu);
+              menuData = menu;
+              initialMenuLoad();
           });
       }
     });

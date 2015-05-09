@@ -12,6 +12,7 @@ module.exports = function(dbModels) {
 
     var Class = dbModels.Class;
     var Thread = dbModels.Thread;
+    //var Reply = dbModels.Reply;
     var User = dbModels.User;
 
     router.get("/:classID/all", function(req, res) {
@@ -20,7 +21,9 @@ module.exports = function(dbModels) {
         Class.find({
             where: {title: classID}
         }).then(function(klass) {
-            return klass.getThreads({include: [{all: true, nested: true}]});
+            return Thread.findAll({
+                where: {ClassUuid: klass.get().uuid}
+            }, {include: [{all: true}]});
         }).then(function(threads) {
             return res.json({
                 threads: threads
@@ -70,6 +73,8 @@ module.exports = function(dbModels) {
             return this.class.addThread(thread);
         }).then(function() {
             return this.user.addThread(this.thread);
+        }).then(function() {
+            return this.thread.setUser(this.user);
         }).then(function() {
             return this.class.getThreads({}, {raw: true});
         }).then(function(threads) {
