@@ -1,0 +1,39 @@
+/*top level container for threads*/
+.thread_container{
+    border: thin solid;
+    padding: 3px 3px 3px 10px;
+}
+/*title container for threads*/
+.thread_title{
+
+}
+/*content container for threads*/
+.thread_content{
+
+}
+/*actions (buttons) container for threads*/
+.thread_actions{
+
+}
+/*replies container for threads*/
+.thread_replies{
+
+}
+/*top level container for replies*/
+.reply_container{
+    border: thin solid;
+    padding: 3px 3px 3px 10px;
+}
+/*content container for replies*/
+.reply_content{
+
+}
+/*actions (buttons) container for replies*/
+.reply_actions{
+
+}
+/*css properties for buttons on threads and replies*/
+.thread_button{
+    background: none;
+    border: none;
+}
