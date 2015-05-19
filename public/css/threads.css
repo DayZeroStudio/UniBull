@@ -2,19 +2,80 @@
 .thread_container{
     border: thin solid;
     padding: 3px 3px 3px 10px;
+    background: #FFF0F5;
+    width: auto;
+    height: auto;
+    margin: 20px;
+    overflow:auto
 }
 /*title container for threads*/
 .thread_title{
+    padding-left: 1%;
+    font-family: Times;
+    font-size: 30px;
+    font-style: normal;
+    font-variant: small-caps;
+    font-weight: bold;
+    line-height: 28px;
 
 }
 /*content container for threads*/
 .thread_content{
+    padding-left: 2.5%;
+    font-family: Georgia;
+    font-size: 14px;
+    font-style: italic;
+    font-variant: normal;
+    font-weight: 400;
+    line-height: 21px;
+}
 
+.thread_author{
+    padding-left: 1%;
+    float: left;
+    width:33.33333%;
+    text-align:left;
+    font-family: Times;
+    font-size: 12px;
+    font-style: normal;
+    font-variant: small-caps;
+    font-weight: bold;
+    line-height: 28px;
+    border-bottom: 1px solid #000;
+}
+
+.thread_postdate{
+    float: left;
+    width:65%;
+    text-align:right;
+    font-family: Times;
+    font-size: 12px;
+    font-style: normal;
+    font-variant: small-caps;
+    font-weight: bold;
+    line-height: 28px;
+    border-bottom: 1px solid #000;
 }
 /*actions (buttons) container for threads*/
-.thread_actions{
-
+.thread_actionsrply{
+    padding-left: 1%;
+    width: auto;
+    display:inline-block;
 }
+
+.thread_actionsspam{
+    padding-left: 1%;
+    float: right;
+    display:inline-block;
+}
+
+.thread_actionsrply, .thread_actionsspam button{
+    background: none;
+    border: none;
+    /*font-family: Times;
+    font-size: 12px;*/
+}
+
 /*replies container for threads*/
 .thread_replies{
 
@@ -24,6 +85,7 @@
     border: thin solid;
     padding: 3px 3px 3px 10px;
 }
+
 /*content container for replies*/
 .reply_content{
 
