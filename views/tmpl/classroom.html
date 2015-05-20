@@ -38,19 +38,29 @@
                     <% threads.forEach(function(thread) { %>
                     <div class="thread_container">
                         <div class="thread_header">
-                            <button data-thread="<%= thread.uuid %>"> [ + ] </button>
+                            <button class="thread_button" data-thread="<%= thread.uuid %>" name="viewcontent"> [+] </button>
                             <p class="thread_title"> <%= thread.title %> </p>
                         </div>
-                        <p class="thread_content"> <%= thread.content %> </p>
-                        <p class="thread_author"> user </p>
-                        <p class="thread_postdate"> some time </p>
-                        <div class="thread_actionsrply">
-                            <button class="thread_button" data-thread="<%= thread.uuid %>"> Reply </button>
-                            <button class="thread_button" data-thread="<%= thread.uuid %>"> View Replies </button>
-                        </div>
-                        <div class="thread_actionsspam">
-                            <button class="thread_button" data-thread="<%= thread.uuid %>"> Delete </button>
-                            <button class="thread_button" data-thread="<%= thread.uuid %>"> Report </button>
+                        <div class="thread_content_wrapper" data-thread="<%= thread.uuid %>">
+                            <p class="thread_content"> <%= thread.content %> </p>
+                            <p class="thread_author"> user </p>
+                            <p class="thread_postdate"> some time </p>
+                            <div class="thread_actionsrply">
+                                <button class="thread_button" data-thread="<%= thread.uuid %>" name="reply"> Reply </button>
+                                <button class="thread_button" data-thread="<%= thread.uuid %>" name="viewreplies"> View Replies </button>
+                            </div>
+                            <div class="thread_actionsspam">
+                                <button class="thread_button" data-thread="<%= thread.uuid %>" name="delete"> Delete </button>
+                                <button class="thread_button" data-thread="<%= thread.uuid %>" name="report"> Report </button>
+                            </div>
+                            <div class="reply_form_wrapper" data-thread="<%= thread.uuid %>">
+                                <form class="reply_form" name="reply_form" accept-charset="utf-8">
+                                    <label for="reply_form_content">Content</label>
+                                    <input class="reply_form_content" data-thread="<%= thread.uuid %>" type="text" name="reply_form_content">
+                                    <button class="thread_button" data-thread="<%= thread.uuid %>" name="cancel_reply">Cancel</button>
+                                    <button class="thread_button" data-thread="<%= thread.uuid %>" data-title="<%= thread.title %>" name="submit_reply">Submit</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                     <% }); %>

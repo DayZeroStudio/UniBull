@@ -29,7 +29,10 @@
 .thread_title:first-letter{
     text-transform: uppercase;
 }
-
+/*wrapper for thread_content, author, date, buttons */
+.thread_content_wrapper{
+    display: none;
+}
 /*content container for threads*/
 .thread_content{
     padding-left: 2.5%;
@@ -86,7 +89,17 @@
     /*font-family: Times;
     font-size: 12px;*/
 }
+/*wrapper/container for reply submission form*/
+.reply_form_wrapper{
+    display: none;
+    text-align: left;
+    border: thin solid black;
+    padding: 10px;
+}
+/*reply form for submitting a reply*/
+.reply_form{
 
+}
 /*replies container for threads*/
 .thread_replies{
 
@@ -109,4 +122,13 @@
 .thread_button{
     background: none;
     border: none;
+    font-family: "Lucida Console", Monaco, monospace;
+    font-size: 12px;
+}
+/*wrapper for thread submission form*/
+.submit_wrapper{
+    display: none;
+    text-align: left;
+    border: thin solid;
+    padding: 10px 10px;
 }

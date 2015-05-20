@@ -128,10 +128,84 @@ $(".rb").button();
 $("#newpost").button().click(function() {
     $("#submit_wrapper").slideToggle(0);
 });
-$("button[data-id=replytothread]").button().click(function(thread) {
+$("button[name=viewcontent]").click(function(thread) {
     var threadID = $(thread.currentTarget).attr("data-thread");
-    $(".replyformwrapper[data-thread*='" + threadID + "']").slideToggle(0);
+    var threadContent = $(".thread_content_wrapper[data-thread*='"+threadID+"']");
+    var viewContentButton = $("button[name=viewcontent][data-thread*='"+threadID+"']");
+    if (threadContent.is(":visible")) {
+        viewContentButton.html("[+]");
+    } else {
+        viewContentButton.html("[-]");
+    }
+    threadContent.slideToggle(0);
 });
+
+$("button[name=reply]").click(function(thread) {
+    var threadID = $(thread.currentTarget).attr("data-thread");
+    // var replyButton = $("button[name=reply][data-thread*="+threadID+"]");
+    var replyForm = $(".reply_form_wrapper[data-thread*='"+threadID+"']");
+    replyForm.slideToggle(0);
+});
+
+$("button[name=cancel_reply]").click(function(thread) {
+    var threadID = $(thread.currentTarget).attr("data-thread");
+    var replyForm = $(".reply_form_wrapper[data-thread*='"+threadID+"']");
+    var replyContent = $(".reply_form_content[data-thread*='"+threadID+"'']");
+    replyForm.slideUp(0);
+    replyContent.val("");
+});
+
+$("button[name=submit_reply]").click(function(thread) {
+    var threadID = $(thread.currentTarget).attr("data-thread");
+    var threadTitle = $(thread.currentTarget).attr("data-title");
+    var onSubmitReply = bundle.onSubmitReply;
+    var replyForm = $(".reply_form_wrapper[data-thread*='"+threadID+"']");
+    var replyContent = $(".reply_form_content[data-thread*='"+threadID+"'']");
+    return onSubmitReply(classTitle, threadTitle, replyContent, function(err, data) {
+        if (err) {
+            return console.log("error: ", err);
+        }
+        if (data.action) {
+            replyForm.slideToggle(0);
+            replyContent.val("");
+        }
+    });
+
+});
+
+// $("button[data-id=submitreply]").button().click(function(thread) {
+//     var threadID = $(thread.currentTarget).attr("data-thread");
+//     var onSubmitReply = bundle.onSubmitReply;
+//     var fields = $(".replycontent[data-thread*='"+threadID+"']");
+//     // var content = fields.val();
+//     return onSubmitReply(classTitle, threadID, fields, function(err, data) {
+//         if (err) {
+//             console.log("data error: ", data.error);
+//             return console.log("error", err);
+//         }
+//         console.log("data", data);
+//         if (data.action) {
+//             // var user = $.cookie("usernameCookie");
+//             $(".replyformwrapper[data-thread*='"+threadID+"']").slideToggle(0);
+//             $(".replycontent[data-thread*='"+threadID+"']").val("");
+//         }
+//     });
+// });
+
+// $("button[name=viewreplies]").click(function(thread) {
+//     var threadID = $(thread.currentTarget).attr("data-thread");
+// });
+
+// $("button[name=delete]").click(function(thread) {
+//     //var threadID = $(thread.currentTarget).attr("data-thread");
+//     //do something with threadID;
+// });
+
+// $("button[name=report]").click(function(thread) {
+//     //var threadID = $(thread.currentTarget).attr("data-thread");
+//     //do something with threadID;
+// });
+
 $("button[data-id=viewreplies]").button().click(function(thread) {
     var threadID = $(thread.currentTarget).attr("data-thread");
     var replies = $(".replies[data-thread*='"+threadID+"']");
@@ -141,35 +215,18 @@ $("button[data-id=viewreplies]").button().click(function(thread) {
     replies.slideToggle(0);
 
 });
+
 $("#cancel").button().click(function() {
     $("#submit_wrapper").slideUp(0);
     $("#title").val("");
     $("#content").val("");
 });
+
 $("button[data-id=cancelreply]").button().click(function(thread) {
     var threadID = $(thread.currentTarget).attr("data-thread");
     $(".replyformwrapper[data-thread*='"+threadID+"']").slideUp(0);
-    $(".replycontent[data-thread*='"+threadID+"'']").val("");
 });
 
-$("button[data-id=submitreply]").button().click(function(thread) {
-    var threadID = $(thread.currentTarget).attr("data-thread");
-    var onSubmitReply = bundle.onSubmitReply;
-    var fields = $(".replycontent[data-thread*='"+threadID+"']");
-    // var content = fields.val();
-    return onSubmitReply(classTitle, threadID, fields, function(err, data) {
-        if (err) {
-            console.log("data error: ", data.error);
-            return console.log("error", err);
-        }
-        console.log("data", data);
-        if (data.action) {
-            // var user = $.cookie("usernameCookie");
-            $(".replyformwrapper[data-thread*='"+threadID+"']").slideToggle(0);
-            $(".replycontent[data-thread*='"+threadID+"']").val("");
-        }
-    });
-});
 $("#submit_post").button().click(function() {
     var onSubmitPost = bundle.onSubmitPost;
     var fields = $("#submitform #content, #submitform #title");

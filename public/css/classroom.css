@@ -56,18 +56,7 @@ label {
 #forum{
     width: 600px;
 }
-.submit_wrapper{
-    display: none;
-    text-align: left;
-    border: thin solid;
-    padding: 10px 10px;
-}
-.replyformwrapper{
-    display: none;
-    text-align: left;
-    border: thin solid black;
-    padding: 10px 10px;
-}
+
 .replies{
     display: none;
 }
