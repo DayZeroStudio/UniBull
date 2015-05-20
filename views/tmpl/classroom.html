@@ -37,8 +37,10 @@
                 <div id="forum">
                     <% threads.forEach(function(thread) { %>
                     <div class="thread_container">
-                        <button class="thread_button" data-thread="<%= thread.uuid %>"> [ + ] </button>
-                        <p class="thread_title"> <%= thread.title %> </p>
+                        <div class="thread_header">
+                            <button data-thread="<%= thread.uuid %>"> [ + ] </button>
+                            <p class="thread_title"> <%= thread.title %> </p>
+                        </div>
                         <p class="thread_content"> <%= thread.content %> </p>
                         <p class="thread_author"> user </p>
                         <p class="thread_postdate"> some time </p>

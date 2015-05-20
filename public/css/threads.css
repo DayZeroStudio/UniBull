@@ -8,17 +8,28 @@
     margin: 20px;
     overflow:auto
 }
+
+.thread_header button{
+     float: left;
+     background: none;
+     border: none;
+     font-size: 12px;
+}
+
 /*title container for threads*/
 .thread_title{
-    padding-left: 1%;
     font-family: Times;
     font-size: 30px;
     font-style: normal;
     font-variant: small-caps;
     font-weight: bold;
-    line-height: 28px;
-
+    line-height: 20px;
 }
+
+.thread_title:first-letter{
+    text-transform: uppercase;
+}
+
 /*content container for threads*/
 .thread_content{
     padding-left: 2.5%;
