@@ -18,12 +18,14 @@
 
 /*title container for threads*/
 .thread_title{
+    margin: 5px;
     font-family: Times;
     font-size: 30px;
     font-style: normal;
     font-variant: small-caps;
     font-weight: bold;
     line-height: 20px;
+    word-wrap: break-word;
 }
 
 .thread_title:first-letter{
@@ -36,12 +38,14 @@
 /*content container for threads*/
 .thread_content{
     padding-left: 2.5%;
+    padding-right: 2.5%;
     font-family: Georgia;
     font-size: 14px;
     font-style: italic;
     font-variant: normal;
     font-weight: 400;
     line-height: 21px;
+    word-wrap: break-word;
 }
 
 .thread_author{
@@ -124,6 +128,11 @@
     border: none;
     font-family: "Lucida Console", Monaco, monospace;
     font-size: 12px;
+    cursor:pointer;
+}
+
+.thread_button:hover {
+    text-decoration:underline;
 }
 /*wrapper for thread submission form*/
 .submit_wrapper{
