@@ -124,6 +124,11 @@
     border: none;
     font-family: "Lucida Console", Monaco, monospace;
     font-size: 12px;
+    cursor:pointer;
+}
+
+.thread_button:hover {
+    text-decoration:underline;
 }
 /*wrapper for thread submission form*/
 .submit_wrapper{
