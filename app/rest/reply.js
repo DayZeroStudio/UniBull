@@ -20,6 +20,7 @@ module.exports = function(dbModels) {
         var threadID = req.params.threadID;
         log.debug("classID", classID);
         log.debug("threadID", threadID);
+        log.warn("BODY", req.body);
         // Verify req body
         // Find the class
         Class.find({where: {title: classID}}).bind({}).then(function(klass) {
@@ -57,6 +58,7 @@ module.exports = function(dbModels) {
                 action: "refresh"
             });
         }).catch(function(err) {
+            console.log("Error  Reply: ", err);
             return res.status(400).json({
                 error: err.message
             });

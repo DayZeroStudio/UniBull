@@ -142,6 +142,7 @@ $("button[name=viewcontent]").click(function(thread) {
 
 $("button[name=reply]").click(function(thread) {
     var threadID = $(thread.currentTarget).attr("data-thread");
+    console.log("Clicked on reply ", threadID);
     // var replyButton = $("button[name=reply][data-thread*="+threadID+"]");
     var replyForm = $(".reply_form_wrapper[data-thread*='"+threadID+"']");
     replyForm.slideToggle(0);
@@ -160,7 +161,8 @@ $("button[name=submit_reply]").click(function(thread) {
     var threadTitle = $(thread.currentTarget).attr("data-title");
     var onSubmitReply = bundle.onSubmitReply;
     var replyForm = $(".reply_form_wrapper[data-thread*='"+threadID+"']");
-    var replyContent = $(".reply_form_content[data-thread*='"+threadID+"'']");
+    //var replyContent = $(".reply_form_content[data-thread*='"+threadID+"'']");
+    var replyContent = $( "input[data-thread*='"+threadID+"']");
     console.log("reply content", replyContent);
     var replyContentCheck = $.trim(replyContent.val());
     if (replyContentCheck.length <= 0) {
