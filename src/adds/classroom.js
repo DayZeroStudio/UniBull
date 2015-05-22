@@ -131,13 +131,15 @@ $("#newpost").button().click(function() {
 $("button[name=viewcontent]").click(function(thread) {
     var threadID = $(thread.currentTarget).attr("data-thread");
     var threadContent = $(".thread_content_wrapper[data-thread*='"+threadID+"']");
+    var threadAuthDate = $(".thread_auth_date[data-thread*='"+threadID+"']");
     var viewContentButton = $("button[name=viewcontent][data-thread*='"+threadID+"']");
-    if (threadContent.is(":visible")) {
+    if (threadContent.is(":visible") && !threadAuthDate.is(":visible")) {
         viewContentButton.html("[+]");
     } else {
         viewContentButton.html("[-]");
     }
     threadContent.slideToggle(0);
+    threadAuthDate.slideToggle(0);
 });
 
 $("button[name=reply]").click(function(thread) {
@@ -231,7 +233,7 @@ $("#cancel").button().click(function() {
     $("#content").val("");
 });
 
-$("#submit_post").button().click(function() {
+function submitPost() {
     var onSubmitPost = bundle.onSubmitPost;
     var fields = $("#submitform #content, #submitform #title");
     return onSubmitPost(classTitle, fields, function(err, data) {
@@ -243,4 +245,11 @@ $("#submit_post").button().click(function() {
             window.location.reload();
         }
     });
+}
+$("#submitform").submit(function(sub) {
+    sub.preventDefault();
+    submitPost();
+});
+$("#submit_post").button().click(function() {
+    submitPost();
 });

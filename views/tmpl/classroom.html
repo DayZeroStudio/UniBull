@@ -28,6 +28,7 @@
                         <input contenteditable="true" id="title" type="text" name="title"><br>
                         <label for="content">Content</label><br>
                         <input contenteditable="true" class="submissioncontent" id="content" type="text" name="content">
+                        <input type="submit" style="display:none">
                     </form>
                     <br>
                     <button id="submit_post">Submit</button>
@@ -61,6 +62,10 @@
                                 <button class="thread_button" data-thread="<%= thread.uuid %>" name="cancel_reply">Cancel</button>
                                 <button class="thread_button" data-thread="<%= thread.uuid %>" data-title="<%= thread.title %>" name="submit_reply">Submit</button>
                             </div>
+                        </div>
+                        <div class="thread_auth_date" data-thread="<%= thread.uuid %>">
+                            <p class="thread_author"> user </p>
+                            <p class="thread_postdate"> some time </p>
                         </div>
                     </div>
                     <% }); %>
