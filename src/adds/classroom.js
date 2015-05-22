@@ -161,6 +161,13 @@ $("button[name=submit_reply]").click(function(thread) {
     var onSubmitReply = bundle.onSubmitReply;
     var replyForm = $(".reply_form_wrapper[data-thread*='"+threadID+"']");
     var replyContent = $(".reply_form_content[data-thread*='"+threadID+"'']");
+    console.log("reply content", replyContent);
+    var replyContentCheck = $.trim(replyContent.val());
+    if (replyContentCheck.length <= 0) {
+        console.log("reply check", replyContentCheck);
+        alert("You cannot submit an empty reply.");
+        return null;
+    }
     return onSubmitReply(classTitle, threadTitle, replyContent, function(err, data) {
         if (err) {
             return console.log("error: ", err);
@@ -220,11 +227,6 @@ $("#cancel").button().click(function() {
     $("#submit_wrapper").slideUp(0);
     $("#title").val("");
     $("#content").val("");
-});
-
-$("button[data-id=cancelreply]").button().click(function(thread) {
-    var threadID = $(thread.currentTarget).attr("data-thread");
-    $(".replyformwrapper[data-thread*='"+threadID+"']").slideUp(0);
 });
 
 $("#submit_post").button().click(function() {

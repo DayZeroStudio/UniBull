@@ -25,9 +25,9 @@
                 <div class="submit_wrapper" id="submit_wrapper">
                     <form id="submitform" name="submitform" accept-charset="utf-8">
                         <label for="title">Title</label><br>
-                        <input id="title" type="text" name="title"><br>
+                        <input contenteditable="true" id="title" type="text" name="title"><br>
                         <label for="content">Content</label><br>
-                        <input class="submissioncontent" id="content" type="text" name="content">
+                        <input contenteditable="true" class="submissioncontent" id="content" type="text" name="content">
                     </form>
                     <br>
                     <button id="submit_post">Submit</button>
@@ -57,9 +57,9 @@
                                 <form class="reply_form" name="reply_form" accept-charset="utf-8">
                                     <label for="reply_form_content">Content</label>
                                     <input class="reply_form_content" data-thread="<%= thread.uuid %>" type="text" name="reply_form_content">
-                                    <button class="thread_button" data-thread="<%= thread.uuid %>" name="cancel_reply">Cancel</button>
-                                    <button class="thread_button" data-thread="<%= thread.uuid %>" data-title="<%= thread.title %>" name="submit_reply">Submit</button>
                                 </form>
+                                <button class="thread_button" data-thread="<%= thread.uuid %>" name="cancel_reply">Cancel</button>
+                                <button class="thread_button" data-thread="<%= thread.uuid %>" data-title="<%= thread.title %>" name="submit_reply">Submit</button>
                             </div>
                         </div>
                     </div>
