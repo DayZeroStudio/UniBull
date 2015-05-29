@@ -22,37 +22,37 @@ $("#container").layout({
   }
 });
 
-function collapsible() {
-    $(".accordion").accordion({
-        active: false,
-        collapsible: true,
-        heightStyle: "content",
-        beforeActivate: function(event, ui) {
-            var currHeader;
-            var currContent;
-             // The accordion believes a panel is being opened
-            if (ui.newHeader[0]) {
-                currHeader = ui.newHeader;
-                currContent = currHeader.next(".ui-accordion-content");
-             // The accordion believes a panel is being closed
-            } else {
-                currHeader = ui.oldHeader;
-                currContent = currHeader.next(".ui-accordion-content");
-            }
-             // Since we"ve changed the default behavior, this detects the actual status
-            var isPanelSelected = currHeader.attr("aria-selected") === "true";
-             // Toggle the panel"s header
-            currHeader.toggleClass("ui-corner-all", isPanelSelected).toggleClass("accordion-header-active ui-state-active ui-corner-top", !isPanelSelected).attr("aria-selected", ((!isPanelSelected).toString()));
-            // Toggle the panel"s icon
-            currHeader.children(".ui-icon").toggleClass("ui-icon-triangle-1-e", isPanelSelected).toggleClass("ui-icon-triangle-1-s", !isPanelSelected);
-             // Toggle the panel"s content
-            currContent.toggleClass("accordion-content-active", !isPanelSelected);
-            if (isPanelSelected) { currContent.slideUp(0); } else { currContent.slideDown(0); }
-            return false; // Cancels the default action
-        }
-    });
-}
-collapsible();
+// function collapsible() {
+//     $(".accordion").accordion({
+//         active: false,
+//         collapsible: true,
+//         heightStyle: "content",
+//         beforeActivate: function(event, ui) {
+//             var currHeader;
+//             var currContent;
+//              // The accordion believes a panel is being opened
+//             if (ui.newHeader[0]) {
+//                 currHeader = ui.newHeader;
+//                 currContent = currHeader.next(".ui-accordion-content");
+//              // The accordion believes a panel is being closed
+//             } else {
+//                 currHeader = ui.oldHeader;
+//                 currContent = currHeader.next(".ui-accordion-content");
+//             }
+//              // Since we"ve changed the default behavior, this detects the actual status
+//             var isPanelSelected = currHeader.attr("aria-selected") === "true";
+//              // Toggle the panel"s header
+//             currHeader.toggleClass("ui-corner-all", isPanelSelected).toggleClass("accordion-header-active ui-state-active ui-corner-top", !isPanelSelected).attr("aria-selected", ((!isPanelSelected).toString()));
+//             // Toggle the panel"s icon
+//             currHeader.children(".ui-icon").toggleClass("ui-icon-triangle-1-e", isPanelSelected).toggleClass("ui-icon-triangle-1-s", !isPanelSelected);
+//              // Toggle the panel"s content
+//             currContent.toggleClass("accordion-content-active", !isPanelSelected);
+//             if (isPanelSelected) { currContent.slideUp(0); } else { currContent.slideDown(0); }
+//             return false; // Cancels the default action
+//         }
+//     });
+// }
+// collapsible();
 
 function logout() {
     $.cookie("usernameCookie", null);
@@ -63,25 +63,48 @@ function replyLoaded(uuid) {
     return $.inArray(uuid, loadedReplies);
 }
 
-function addReply(threadID, user, content, uuid) {
+function convertDate(d) {
+    var date = new Date(d);
+
+    var m_array = [ "January", "February", "March", "April", "May", "June",
+                   "July", "August", "September", "October", "November", "December" ];
+
+    var month = m_array[(date.getMonth()+1) > 9 ? (date.getMonth()+1) : "0" + (date.getMonth()+1) - 1];
+    var day = (date.getDate()+1) > 9 ? (date.getDate()+1) : "0" + (date.getDate()+1);
+    var hours = (date.getHours()) > 9 ? (date.getHours()) : "0" + (date.getHours());
+    var minutes = (date.getMinutes()) > 9 ? (date.getMinutes()) : "0" + (date.getMinutes());
+    var seconds = (date.getSeconds()) > 9 ? (date.getSeconds()) : "0" + (date.getSeconds());
+
+    var dateString = month + "/" + day + "/" + date.getFullYear() + " " + hours + ":" + minutes + ":" +
+        seconds;
+
+    return dateString;
+}
+function addReply(threadID, user, content, uuid, date) {
     loadedReplies.push(uuid);
-    $("div[data-thread*='"+threadID+"'][data-id*=replies_accordion]")
-        .prepend("<h3>"+user+"</h3><div>"+content+"</div>")
-        .accordion().accordion("refresh");
-    collapsible();
+    console.log(date);
+    $("div[data-thread*='"+threadID+"'][name*=thread_container]")
+        .append("<div class='reply_container' data-thread='"+threadID+"' name='reply_container'>"
+        + "<p class='reply_content'>"+ content + "</p>"
+        + "<p class='reply_author'>"+ user + "</p>"
+        + "<p class='reply_postdate'>"+ date + "</p>"
+        + "</div>");
 }
 
 function displayReplies(res, threadID) {
-    //console.log("res", res);
+    // console.log("res", res);
+    // console.log("thredID", threadID);
+    var uname;
     res.threads.forEach(function(thread) {
         console.log("threadID: ", thread);
-        console.log("thread title: ", thread.title);
-        if (thread.title === threadID) {
+        uname = thread.User.username;
+        //console.log("thread title: ", thread.title);
+        if (thread.uuid === threadID) {
             thread.Replies.forEach(function(reply) {
-                console.log("loaded replies", loadedReplies);
+                console.log("I get here");
                 if (replyLoaded(reply.uuid) === (-1)) {
-                    console.log("adding reply!");
-                    addReply(threadID, reply.uuid, reply.content, reply.uuid);
+                    var date = convertDate(reply.createdAt);
+                    addReply(threadID, uname, reply.content, reply.uuid, date);
                 } else {
                     console.log("reply already loaded: ", reply.uuid);
                 }
@@ -205,6 +228,7 @@ $("button[name=submit_reply]").click(function(thread) {
 
 // $("button[name=viewreplies]").click(function(thread) {
 //     var threadID = $(thread.currentTarget).attr("data-thread");
+//     console.log(threadID);
 // });
 
 // $("button[name=delete]").click(function(thread) {
@@ -217,7 +241,7 @@ $("button[name=submit_reply]").click(function(thread) {
 //     //do something with threadID;
 // });
 
-$("button[data-id=viewreplies]").button().click(function(thread) {
+$("button[name=viewreplies]").button().click(function(thread) {
     var threadID = $(thread.currentTarget).attr("data-thread");
     var replies = $(".replies[data-thread*='"+threadID+"']");
     if (!replies.is(":visible")) {

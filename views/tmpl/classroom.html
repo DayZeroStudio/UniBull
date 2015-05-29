@@ -37,7 +37,7 @@
                 <hr>
                 <div id="forum">
                     <% threads.forEach(function(thread) { %>
-                    <div class="thread_container">
+                    <div class="thread_container" data-thread="<%= thread.uuid %>" name="thread_container">
                         <div class="thread_header">
                             <button class="thread_button" data-thread="<%= thread.uuid %>" name="viewcontent"> [+] </button>
                             <p class="thread_title"> <%= thread.title %> </p>

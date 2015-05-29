@@ -48,7 +48,7 @@
     word-wrap: break-word;
 }
 .thread_auth_date{
-    
+
 }
 .thread_author{
     padding-left: 1%;
@@ -114,11 +114,20 @@
 .reply_container{
     border: thin solid;
     padding: 3px 3px 3px 10px;
+    margin: 10px;
 }
 
 /*content container for replies*/
 .reply_content{
 
+}
+
+.reply_author {
+
+}
+
+.reply_date {
+    
 }
 /*actions (buttons) container for replies*/
 .reply_actions{
