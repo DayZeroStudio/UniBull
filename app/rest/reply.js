@@ -11,8 +11,20 @@ module.exports = function(dbModels) {
     var log = cfg.log.makeLogger("rest,reply");
 
     var User = dbModels.User;
+    var Thread = dbModels.Thread;
     var Class = dbModels.Class;
     var Reply = dbModels.Reply;
+
+    router.get("/:classID/thread/:threadID/all", function(req, res) {
+        log.info("GET - Get all replies under a thread");
+        var threadID = req.params.threadID;
+        return Thread.find({
+            where: {title: threadID}
+        }, {include: [{all: true, nested: true}]
+        }).then(function(thread) {
+            return res.json({replies: thread.Replies});
+        });
+    });
 
     router.post("/:classID/thread/:threadID/reply", function(req, res) {
         log.info("POST - Reply to a thread");
@@ -20,7 +32,7 @@ module.exports = function(dbModels) {
         var threadID = req.params.threadID;
         log.debug("classID", classID);
         log.debug("threadID", threadID);
-        log.warn("BODY", req.body);
+        log.debug("newReply", req.body);
         // Verify req body
         // Find the class
         Class.find({where: {title: classID}}).bind({}).then(function(klass) {
@@ -84,7 +96,10 @@ module.exports = function(dbModels) {
             var thread = threads[0];
             this.thread = thread;
             // Find the reply
-            return thread.getReplies({where: {uuid: replyID}});
+            return this.thread.getReplies({
+                where: {uuid: replyID},
+                include: [{all: true, nested: true}]
+            });
         }).then(function(replies) {
             this.replies = replies;
             var replyTo = replies[0];
@@ -92,16 +107,22 @@ module.exports = function(dbModels) {
             // Add the reply to replyTo
             return Reply.create({
                 content: req.body.content
+            }).bind(this).then(function(reply) {
+                return this.thread.addReply(reply);
             }).then(function(reply) {
                 return replyTo.addReply(reply);
             });
         }).then(function(reply) {
             this.reply = reply;
+            return this.replyTo.getReplies().bind(this).then(function(replies) {
+                return replies;
+            });
+        }).then(function() {
             // Find the user, add the reply to his list
             var userID = auth.decodeRequest(req).username;
             return User.find({where: {username: userID}}).bind(this).then(function(user) {
                 this.user = user;
-                return user.addReply(reply);
+                return user.addReply(this.reply);
             });
         }).then(function() {
             return Reply.find({

@@ -23,7 +23,7 @@ module.exports = function(dbModels) {
         }).then(function(klass) {
             return Thread.findAll({
                 where: {ClassUuid: klass.get().uuid}
-            }, {include: [{all: true}]});
+            }, {include: [{all: true, nested: true}]});
         }).then(function(threads) {
             return res.json({
                 threads: threads
