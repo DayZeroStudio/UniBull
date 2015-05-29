@@ -108,4 +108,30 @@ describe("testing thread endpoints", function() {
             });
         });
     });
+    describe("edting a thread in a class", function() {
+        var threadID;
+        beforeEach(function() {
+            return utils.class.joinClass(userID, classID).then(function() {
+                return utils.thread.submitThread(classID, thread);
+            }).then(function(res) {
+                threadID = res.body.threads[0].uuid;
+            });
+        });
+        context("that you created", function() {
+            it("should update the title and content of that thread", function() {
+                return utils.thread.editThread(classID, threadID, "somebullshitstring", "somebullshittitle").then(function(res) {
+                    res.statusCode.should.equal(200);
+                });
+            });
+        });
+        context("that you did not create", function() {
+            it("should return an error", function() {
+                return utils.user.loginToApp(utils.user.validUser).then(function() {
+                    return utils.thread.editThread(classID, threadID, "cc", "tt");
+                }).then(function(res) {
+                    res.statusCode.should.equal(400);
+                });
+            });
+        });
+    });
 });
