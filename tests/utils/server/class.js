@@ -11,9 +11,9 @@ module.exports = function(UTILS, agent) {
     utils.makeNewClass = function() {
         var id = _.uniqueId();
         return {
-            info: "info_"+id,
-            school: "school_"+id,
-            title: "title_"+id
+            info: "class_info_"+id,
+            school: "class_school_"+id,
+            title: "class_title_"+id
         };
     };
 

@@ -60,8 +60,8 @@ describe("testing reply endpoints", function() {
                                 res.body.should.contain.key("Replies");
                                 res.body.Replies.should
                                     .have.length(1);
-                                res.body.Replies.should
-                                    .include.something({content: reply.content});
+                                res.body.Replies.should.include
+                                    .something.containSubset([{content: reply.content}]);
                             });
                     });
                 });
@@ -81,18 +81,90 @@ describe("testing reply endpoints", function() {
             context("with required info", function() {
                 it("should add the reply to the reply's replies", function() {
                     var reply = utils.reply.makeNewReply();
+                    var nestedReply = utils.reply.makeNewReply();
                     return utils.reply.replyToThread(classID, threadID, reply).then(function(res) {
                         var replyID = res.body.reply.uuid;
-                        var nestedReply = utils.reply.makeNewReply();
-                        return utils.reply.replyToReply(classID, threadID, replyID, nestedReply).then(function(res) {
-                            res.statusCode.should.equal(200);
-                            res.body.reply.should.containSubset(nestedReply);
-                            res.body.topReply.should.contain(reply);
-                            res.body.topReply.Replies.should.include.something
-                                .containSubset([nestedReply]);
-                        });
+                        return utils.reply.replyToReply(classID, threadID, replyID, nestedReply);
+                    }).then(function(res) {
+                        res.statusCode.should.equal(200);
+                        res.body.reply.should.containSubset(nestedReply);
+                        res.body.topReply.should.contain(reply);
+                        res.body.topReply.Replies.should.include.something
+                            .containSubset([nestedReply]);
                     });
                 });
+                it("should add it to the user's replies", function() {
+                    var reply = utils.reply.makeNewReply();
+                    var nestedReply = utils.reply.makeNewReply();
+                    return utils.reply.replyToThread(classID, threadID, reply).then(function(res) {
+                        var replyID = res.body.reply.uuid;
+                        return utils.reply.replyToReply(classID, threadID, replyID, nestedReply);
+                    }).then(function(res) {
+                        return utils.user.getUserInfo(userID);
+                    }).then(function(res) {
+                        res.body.should.contain.key("Replies");
+                        res.body.Replies.should
+                            .have.length(2);
+                        res.body.Replies.should.include
+                            .something.containSubset([{content: nestedReply.content}]);
+                    });
+                });
+            });
+        });
+    });
+    describe("replying to a nested reply", function() {
+        context("given you are enrolled", function() {
+            context("with required info", function() {
+                it("should add the reply to the reply's replies", function() {
+                    var reply = utils.reply.makeNewReply();
+                    var nestedReply = utils.reply.makeNewReply();
+                    var nestedReply2 = utils.reply.makeNewReply();
+                    return utils.reply.replyToThread(classID, threadID, reply).then(function(res) {
+                        var replyID = res.body.reply.uuid;
+                        return utils.reply.replyToReply(classID, threadID, replyID, nestedReply);
+                    }).then(function(res) {
+                        var replyID = res.body.reply.uuid;
+                        return utils.reply.replyToReply(classID, threadID, replyID, nestedReply2);
+                    }).then(function(res) {
+                        return utils.user.getUserInfo(userID);
+                    }).then(function(res) {
+                        res.body.should.contain.key("Replies");
+                        res.body.Replies.should
+                            .have.length(3);
+                        res.body.Replies.should.include
+                            .something.containSubset([{content: nestedReply.content}]);
+                    });
+                });
+                it("should be visible when getting all replies under a thread", function() {
+                    var reply = utils.reply.makeNewReply();
+                    var nestedReply = utils.reply.makeNewReply();
+                    var nestedReply2 = utils.reply.makeNewReply();
+                    return utils.reply.replyToThread(classID, threadID, reply).then(function(res) {
+                        var replyID = res.body.reply.uuid;
+                        return utils.reply.replyToReply(classID, threadID, replyID, nestedReply);
+                    }).then(function(res) {
+                        var replyID = res.body.reply.uuid;
+                        return utils.reply.replyToReply(classID, threadID, replyID, nestedReply2);
+                    }).then(function(res) {
+                        return agent.get("/rest/class/"+classID+"/all")
+                            .toPromise();
+                    }).then(function(res) {
+                        res.body.should.contain.key("threads");
+                        log.warn("BODY", res.body);
+                    });
+                });
+            });
+        });
+    });
+    describe("getting all replies under a thread", function() {
+        it("should return a list of all the replies", function() {
+            var reply = utils.reply.makeNewReply();
+            return utils.reply.replyToThread(classID, threadID, reply).then(function(res) {
+                return agent.get("/rest/class/"+classID+"/thread/"+threadID+"/all")
+                    .toPromise();
+            }).then(function(res) {
+                log.warn("body", require("util").inspect(res.body, {depth: 3}));
+                res.body.should.contain.key("replies");
             });
         });
     });

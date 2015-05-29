@@ -11,7 +11,7 @@ module.exports = function(UTILS, agent) {
     utils.makeNewReply = function() {
         var id = _.uniqueId();
         return {
-            content: "content_"+id
+            content: "reply_content_"+id
         };
     };
 

@@ -23,7 +23,7 @@ module.exports = function(dbModels) {
         }).then(function(klass) {
             return Thread.findAll({
                 where: {ClassUuid: klass.get().uuid}
-            }, {include: [{all: true}]});
+            }, {include: [{all: true, nested: true}]});
         }).then(function(threads) {
             return res.json({
                 threads: threads
@@ -81,6 +81,51 @@ module.exports = function(dbModels) {
             return res.json({
                 threads: threads,
                 action: "refresh"
+            });
+        }).catch(function(err) {
+            return res.status(400).json({
+                error: err.message,
+                stack: err.stack
+            });
+        });
+    });
+
+    router.post("/:classID/thread/:threadID/edit", function(req, res) {
+        log.info("POST - editing a thread");
+        var content = req.body.content;
+        var title = req.body.title;
+        var classID = req.params.classID;
+        var threadID = req.params.threadID;
+        Class.find({
+            where: {title: classID}
+        }).bind({}).then(function(klass) {
+            this.class = klass;
+        }).then(function() {
+            var decoded = auth.decodeRequest(req);
+            var username = decoded.username;
+            return User.find({
+                where: {username: username}
+            });
+        }).then(function(user) {
+            if (!user) {
+                throw Error(cfg.errmsgs.invalidUserInfo);
+            }
+            this.user = user;
+        }).then(function() {
+            return this.class.getThreads({
+                where: {uuid: threadID}
+            });
+        }).then(function(threads) {
+            var thread = threads[0];
+            if (this.user.uuid !== thread.UserUuid) {
+                throw Error(cfg.errmsgs.naughtyUser);
+            }
+            thread.content = content;
+            thread.title = title;
+            return thread.save();
+        }).then(function(thread) {
+            return res.json({
+                thread: thread
             });
         }).catch(function(err) {
             return res.status(400).json({
