@@ -23,5 +23,14 @@ module.exports = function(UTILS, agent) {
             .toPromise();
     };
 
+    utils.editThread = function(classID, threadID, content, title) {
+        return agent
+            .post("/rest/class/"+classID+"/thread/"+threadID+"/edit")
+            .send({
+                title: title,
+                content: content
+            }).toPromise();
+    };
+
     return utils;
 };
