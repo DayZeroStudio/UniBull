@@ -134,4 +134,19 @@ describe("testing thread endpoints", function() {
             });
         });
     });
+    describe("deleting a thread from a class", function() {
+        var threadID;
+        beforeEach(function() {
+            return utils.class.joinClass(userID, classID).then(function() {
+                return utils.thread.submitThread(classID, thread);
+            }).then(function(res) {
+                threadID = res.body.threads[0].uuid;
+            });
+        });
+        context("that you created", function() {
+            it("should remove that thread from that class", function() {
+                //cry... TODO check thread doesn't exist anymore
+            });
+        });
+    });
 });

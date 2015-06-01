@@ -135,5 +135,45 @@ module.exports = function(dbModels) {
         });
     });
 
+    router.post("/:classID/thread/threadID/delete", function(req, res) {
+        log.info("POST - deleting a thread");
+        var classID = req.params.classID;
+        var threadID = req.params.threadID;
+        Class.find({
+            where: {title: classID}
+        }).bind({}).then(function(klass) {
+            this.class = klass;
+        }).then(function() {
+            var decoded = auth.decodeRequest(req);
+            var username = decoded.username;
+            return User.find({
+                where: {username: username}
+            });
+        }).then(function(user) {
+            if (!user) {
+                throw Error(cfg.errmsgs.invalidUserInfo);
+            }
+            this.user = user;
+        }).then(function() {
+            return this.class.getThreads({
+                where: {uuid: threadID}
+            });
+        }).then(function(threads) {
+            var thread = threads[0];
+            if (this.user.uuid !== threads.UserUuid) {
+                throw Error(cfg.errmsgs.naughtyUser);
+            }
+            return thread.destroy();
+        }).then(function() {
+            return res.json({
+            });
+        }).catch(function(err) {
+            return res.status(400).json({
+                error: err.message,
+                stack: err.stack
+            });
+        });
+    });
+
     return Promise.resolve(router);
 };

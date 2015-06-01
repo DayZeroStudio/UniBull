@@ -32,5 +32,11 @@ module.exports = function(UTILS, agent) {
             }).toPromise();
     };
 
+    utils.deleteThread = function(classID, threadID) {
+        return agent
+            .post("rest/class/"+classID+"/thread/"+threadID+"/delete")
+            .toPromise();
+    };
+
     return utils;
 };
