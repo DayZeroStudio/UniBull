@@ -185,5 +185,47 @@ module.exports = function(dbModels) {
         }).catch(cfg.handleErr(res));
     });
 
+    router.delete("/:classID/thread/:threadID/reply/:replyID/delete", function(req, res) {
+        log.info("DELETE - deleting a reply");
+        var classID = req.params.classID;
+        var threadID = req.params.threadID;
+        var replyID = req.params.replyID;
+        Class.find({
+            where: {title: classID}
+        }).bind({}).then(function(klass) {
+            this.class = klass;
+        }).then(function() {
+            var decoded = auth.decodeRequest(req);
+            var username = decoded.username;
+            return User.find({
+                where: {username: username}
+            });
+        }).then(function(user) {
+            if (!user) {
+                throw Error(cfg.errmsgs.invalidUserInfo);
+            }
+            this.user = user;
+        }).then(function() {
+            return this.class.getThreads({
+                where: {title: threadID}
+            });
+        }).then(function(threads) {
+            this.thread = threads[0];
+            return this.thread.getReplies({
+                where: {uuid: replyID}
+            });
+        }).then(function(replies) {
+            var reply = replies[0];
+            if (this.user.uuid !== reply.UserUuid) {
+                throw Error(cfg.errmsgs.naughtyUser);
+            }
+            return reply.destroy();
+        }).then(function() {
+            return res.json({
+                success: true
+            });
+        }).catch(cfg.handleErr(res));
+    });
+
     return Promise.resolve(router);
 };

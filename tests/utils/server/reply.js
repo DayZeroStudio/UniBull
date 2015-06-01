@@ -15,6 +15,12 @@ module.exports = function(UTILS, agent) {
         };
     };
 
+    utils.getReplies = function(classID, threadID) {
+        return agent
+            .get("/rest/class/"+classID+"/thread/"+threadID+"/all")
+            .toPromise();
+    };
+
     utils.replyToThread = function(classID, threadID, reply) {
         return agent
             .post("/rest/class/"+classID+"/thread/"+threadID+"/reply")
@@ -33,6 +39,12 @@ module.exports = function(UTILS, agent) {
         return agent
             .put("/rest/class/"+classID+"/thread/"+threadID+"/reply/"+replyID+"/edit")
             .send(reply)
+            .toPromise();
+    };
+
+    utils.deleteReply = function(classID, threadID, replyID) {
+        return agent
+            .delete("/rest/class/"+classID+"/thread/"+threadID+"/reply/"+replyID+"/delete")
             .toPromise();
     };
 

@@ -168,12 +168,7 @@ module.exports = function(dbModels) {
             return res.json({
                 success: true
             });
-        }).catch(function(err) {
-            return res.status(400).json({
-                error: err.message,
-                stack: err.stack
-            });
-        });
+        }).catch(cfg.handleErr(res));
     });
 
     return Promise.resolve(router);

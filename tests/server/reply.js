@@ -196,4 +196,33 @@ describe("testing reply endpoints", function() {
             });
         });
     });
+    describe("deleting a reply", function() {
+        var replyID;
+        beforeEach(function() {
+            var reply = utils.reply.makeNewReply();
+            return utils.reply.replyToThread(classID, threadID, reply).then(function(res) {
+                replyID = res.body.reply.uuid;
+            });
+        });
+        context("that you created", function() {
+            it("should delete the reply", function() {
+                return utils.reply.deleteReply(classID, threadID, replyID).then(function() {
+                    return utils.reply.getReplies(classID, threadID).then(function(res) {
+                        res.statusCode.should.equal(200);
+                        res.body.replies.should.not.contain({uuid: replyID});
+                    });
+                });
+            });
+        });
+        context("that you did not create", function() {
+            it("should return an error", function() {
+                return utils.user.loginToApp(utils.user.validUser).then(function() {
+                    return utils.reply.deleteReply(classID, threadID, replyID);
+                }).then(function(res) {
+                    res.statusCode.should.equal(400);
+                    res.body.error.should.equal(cfg.errmsgs.naughtyUser);
+                });
+            });
+        });
+    });
 });
