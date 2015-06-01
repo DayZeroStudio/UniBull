@@ -29,5 +29,12 @@ module.exports = function(UTILS, agent) {
             .toPromise();
     };
 
+    utils.editReply = function(classID, threadID, replyID, reply) {
+        return agent
+            .put("/rest/class/"+classID+"/thread/"+threadID+"/reply/"+replyID+"/edit")
+            .send(reply)
+            .toPromise();
+    };
+
     return utils;
 };

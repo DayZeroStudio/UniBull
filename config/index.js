@@ -22,6 +22,28 @@ module.exports = (function() {
     cfg.jwt = require("./jsonwebtoken.js")(frozenCFG);
     cfg.db = require("./database.js")(frozenCFG, cfg.log.makeLogger("db"));
 
+    cfg.handleErr = function(res) {
+        return function(err) {
+            if (cfg.isDev) {
+                var log = cfg.log.makeLogger("error");
+                log.error(err);
+                return res.status(400).json({
+                    error: err.message,
+                    stack: err.stack
+                });
+            } else if (cfg.isTest) {
+                return res.status(400).json({
+                    error: err.message,
+                    stack: err.stack
+                });
+            } else {
+                return res.status(400).json({
+                    error: err.message
+                });
+            }
+        };
+    };
+
     cfg.webdriver = require("./webdriver.js")(frozenCFG);
     cfg.screenshot = {};
     cfg.screenshot.at = function(name) {

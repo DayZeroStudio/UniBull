@@ -107,8 +107,6 @@ module.exports = function(dbModels) {
             // Add the reply to replyTo
             return Reply.create({
                 content: req.body.content
-            }).bind(this).then(function(reply) {
-                return this.thread.addReply(reply);
             }).then(function(reply) {
                 return replyTo.addReply(reply);
             });
@@ -141,6 +139,50 @@ module.exports = function(dbModels) {
                 stack: err.stack
             });
         });
+    });
+
+    router.put("/:classID/thread/:threadID/reply/:replyID/edit", function(req, res) {
+        log.info("PUT - editing a reply");
+        var classID = req.params.classID;
+        var threadID = req.params.threadID;
+        var replyID = req.params.replyID;
+        var content = req.body.content;
+        Class.find({
+            where: {title: classID}
+        }).bind({}).then(function(klass) {
+            this.class = klass;
+        }).then(function() {
+            var decoded = auth.decodeRequest(req);
+            var username = decoded.username;
+            return User.find({
+                where: {username: username}
+            });
+        }).then(function(user) {
+            if (!user) {
+                throw Error(cfg.errmsgs.invalidUserInfo);
+            }
+            this.user = user;
+        }).then(function() {
+            return this.class.getThreads({
+                where: {title: threadID}
+            });
+        }).then(function(threads) {
+            this.thread = threads[0];
+            return this.thread.getReplies({
+                where: {uuid: replyID}
+            });
+        }).then(function(replies) {
+            var reply = replies[0];
+            if (this.user.uuid !== reply.UserUuid) {
+                throw Error(cfg.errmsgs.naughtyUser);
+            }
+            reply.content = content;
+            return reply.save();
+        }).then(function(reply) {
+            return res.json({
+                reply: reply
+            });
+        }).catch(cfg.handleErr(res));
     });
 
     return Promise.resolve(router);

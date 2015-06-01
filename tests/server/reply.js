@@ -115,7 +115,7 @@ describe("testing reply endpoints", function() {
     describe("replying to a nested reply", function() {
         context("given you are enrolled", function() {
             context("with required info", function() {
-                it("should add the reply to the reply's replies", function() {
+                it.skip("should add the reply to the reply's replies", function() {
                     var reply = utils.reply.makeNewReply();
                     var nestedReply = utils.reply.makeNewReply();
                     var nestedReply2 = utils.reply.makeNewReply();
@@ -150,7 +150,7 @@ describe("testing reply endpoints", function() {
                             .toPromise();
                     }).then(function(res) {
                         res.body.should.contain.key("threads");
-                        log.warn("BODY", res.body);
+                        // log.warn("BODY", require("util").inspect(res.body, {depth: null}));
                     });
                 });
             });
@@ -163,8 +163,36 @@ describe("testing reply endpoints", function() {
                 return agent.get("/rest/class/"+classID+"/thread/"+threadID+"/all")
                     .toPromise();
             }).then(function(res) {
-                log.warn("body", require("util").inspect(res.body, {depth: 3}));
+                // log.warn("body", require("util").inspect(res.body, {depth: 3}));
                 res.body.should.contain.key("replies");
+            });
+        });
+    });
+    describe("editing a reply", function() {
+        var replyID;
+        beforeEach(function() {
+            var reply = utils.reply.makeNewReply();
+            return utils.reply.replyToThread(classID, threadID, reply).then(function(res) {
+                replyID = res.body.reply.uuid;
+            });
+        });
+        context("that you created", function() {
+            it("should edit the reply", function() {
+                var content = {content: "some bs reply"};
+                return utils.reply.editReply(classID, threadID, replyID, content).then(function(res) {
+                    res.statusCode.should.equal(200);
+                    res.body.reply.content.should.equal(content.content);
+                });
+            });
+        });
+        context("that you did not create", function() {
+            it("should return an error", function() {
+                return utils.user.loginToApp(utils.user.validUser).then(function() {
+                    return utils.reply.editReply(classID, threadID, replyID, {content: "cntnt"});
+                }).then(function(res) {
+                    res.statusCode.should.equal(400);
+                    res.body.error.should.equal(cfg.errmsgs.naughtyUser);
+                });
             });
         });
     });
