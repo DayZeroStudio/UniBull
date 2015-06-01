@@ -31,7 +31,7 @@ module.exports = function(UTILS, agent) {
 
     utils.editThread = function(classID, threadID, content, title) {
         return agent
-            .post("/rest/class/"+classID+"/thread/"+threadID+"/edit")
+            .put("/rest/class/"+classID+"/thread/"+threadID+"/edit")
             .send({
                 title: title,
                 content: content
@@ -40,8 +40,7 @@ module.exports = function(UTILS, agent) {
 
     utils.deleteThread = function(classID, threadID) {
         return agent
-            .post("/rest/class/"+classID+"/thread/"+threadID+"/delete")
-            .send({})
+            .delete("/rest/class/"+classID+"/thread/"+threadID+"/delete")
             .toPromise();
     };
 

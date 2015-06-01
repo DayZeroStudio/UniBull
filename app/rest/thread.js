@@ -90,8 +90,8 @@ module.exports = function(dbModels) {
         });
     });
 
-    router.post("/:classID/thread/:threadID/edit", function(req, res) {
-        log.info("POST - editing a thread");
+    router.put("/:classID/thread/:threadID/edit", function(req, res) {
+        log.info("PUT - editing a thread");
         var content = req.body.content;
         var title = req.body.title;
         var classID = req.params.classID;
@@ -135,8 +135,8 @@ module.exports = function(dbModels) {
         });
     });
 
-    router.post("/:classID/thread/:threadID/delete", function(req, res) {
-        log.info("POST - deleting a thread");
+    router.delete("/:classID/thread/:threadID/delete", function(req, res) {
+        log.info("DELETE - deleting a thread");
         var classID = req.params.classID;
         var threadID = req.params.threadID;
         Class.find({
