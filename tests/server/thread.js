@@ -130,6 +130,7 @@ describe("testing thread endpoints", function() {
                     return utils.thread.editThread(classID, threadID, "cc", "tt");
                 }).then(function(res) {
                     res.statusCode.should.equal(400);
+                    res.body.error.should.equal(cfg.errmsgs.naughtyUser);
                 });
             });
         });
@@ -145,7 +146,21 @@ describe("testing thread endpoints", function() {
         });
         context("that you created", function() {
             it("should remove that thread from that class", function() {
-                //cry... TODO check thread doesn't exist anymore
+                return utils.thread.deleteThread(classID, threadID).then(function() {
+                    return utils.thread.getThreads(classID).then(function(res) {
+                        res.body.threads.should.not.contain({uuid: threadID});
+                    });
+                });
+            });
+        });
+        context("that you did not create", function() {
+            it("should return an error", function() {
+                return utils.user.loginToApp(utils.user.validUser).then(function() {
+                    return utils.thread.deleteThread(classID, threadID);
+                }).then(function(res) {
+                    res.statusCode.should.equal(400);
+                    res.body.error.should.equal(cfg.errmsgs.naughtyUser);
+                });
             });
         });
     });

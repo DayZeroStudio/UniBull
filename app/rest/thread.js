@@ -135,7 +135,7 @@ module.exports = function(dbModels) {
         });
     });
 
-    router.post("/:classID/thread/threadID/delete", function(req, res) {
+    router.post("/:classID/thread/:threadID/delete", function(req, res) {
         log.info("POST - deleting a thread");
         var classID = req.params.classID;
         var threadID = req.params.threadID;
@@ -166,6 +166,7 @@ module.exports = function(dbModels) {
             return thread.destroy();
         }).then(function() {
             return res.json({
+                success: true
             });
         }).catch(function(err) {
             return res.status(400).json({
