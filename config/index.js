@@ -1,4 +1,15 @@
 "use strict";
+
+/*eslint no-extend-native:0, consistent-this:0*/
+String.prototype.format = function(placeholders) {
+    var self = this;
+    for (var prop in placeholders) {
+        var re = new RegExp("#{" + prop + "}", "gm");
+        self = self.replace(re, placeholders[prop]);
+    }
+    return self;
+};
+
 module.exports = (function() {
     var _ = require("lodash");
     var cfg = {};
@@ -66,6 +77,10 @@ module.exports = (function() {
             + name + "__"
             + "+T" + _.now()
             + ".png";
+    };
+
+    cfg.inspect = function(x, d) {
+        require("util").inspect(x, {depth: (d || null)});
     };
 
     return cfg;
