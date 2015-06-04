@@ -17,7 +17,6 @@
 $("#menutitle").append("<h1><center>Click on a dining hall!</center></h1>");
 
 var menuData;
-var menuAllow = false;
 $( ".menutab" ).tabs({ disabled: [0, 1, 2] });
 
 $( "#menutab").hide();

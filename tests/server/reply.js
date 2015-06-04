@@ -99,7 +99,7 @@ describe("testing reply endpoints", function() {
                     return utils.reply.replyToThread(classID, threadID, reply).then(function(res) {
                         var replyID = res.body.reply.uuid;
                         return utils.reply.replyToReply(classID, threadID, replyID, nestedReply);
-                    }).then(function(res) {
+                    }).then(function() {
                         return utils.user.getUserInfo(userID);
                     }).then(function(res) {
                         res.body.should.contain.key("Replies");
@@ -125,7 +125,7 @@ describe("testing reply endpoints", function() {
                     }).then(function(res) {
                         var replyID = res.body.reply.uuid;
                         return utils.reply.replyToReply(classID, threadID, replyID, nestedReply2);
-                    }).then(function(res) {
+                    }).then(function() {
                         return utils.user.getUserInfo(userID);
                     }).then(function(res) {
                         res.body.should.contain.key("Replies");
@@ -159,7 +159,7 @@ describe("testing reply endpoints", function() {
     describe("getting all replies under a thread", function() {
         it("should return a list of all the replies", function() {
             var reply = utils.reply.makeNewReply();
-            return utils.reply.replyToThread(classID, threadID, reply).then(function(res) {
+            return utils.reply.replyToThread(classID, threadID, reply).then(function() {
                 return agent.get("/rest/class/"+classID+"/thread/"+threadID+"/all")
                     .toPromise();
             }).then(function(res) {

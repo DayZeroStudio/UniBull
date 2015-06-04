@@ -9,7 +9,7 @@ var app = require("express")();
 var agent = request.agent(app);
 var utils = require("../utils").server(agent);
 var cfg = require("../../config");
-var log = cfg.log.makeLogger("tests,server,class");
+//var log = cfg.log.makeLogger("tests,server,class");
 
 cfg.coverage();
 describe("testing class endpoints", function() {

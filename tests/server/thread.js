@@ -92,7 +92,7 @@ describe("testing thread endpoints", function() {
         it("should return a list of all the threads in the class", function() {
             return utils.class.joinClass(userID, classID).then(function() {
                 return utils.thread.submitThread(classID, thread);
-            }).then(function(res) {
+            }).then(function() {
                 return request(app)
                     .get("/rest/class/"+ classID +"/all")
                     .expect(function(res) {
