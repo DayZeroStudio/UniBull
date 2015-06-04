@@ -6,6 +6,8 @@ module.exports = function(dbModels) {
     var bodyParser = require("body-parser");
     router.use(bodyParser.json());
 
+    var _ = require("lodash");
+
     var auth = require("../auth.js");
     var cfg = require("../../config");
     var log = cfg.log.makeLogger("rest,reply");
@@ -15,14 +17,34 @@ module.exports = function(dbModels) {
     var Class = dbModels.Class;
     var Reply = dbModels.Reply;
 
+    function processReplies(replies) {
+        var topLevelReplies = _.filter(replies, {ReplyUuid: null});
+        function findAllWithParent(parentUuid) {
+            return _.filter(replies, {ReplyUuid: parentUuid});
+        }
+        function getNextLevel(currentLevel) {
+            return _.map(currentLevel, function(topReply) {
+                topReply.Replies = findAllWithParent(topReply.uuid);
+                getNextLevel(topReply.Replies);
+                return topReply;
+            });
+        }
+        return getNextLevel(topLevelReplies);
+    }
     router.get("/:classID/thread/:threadID/all", function(req, res) {
         log.info("GET - Get all replies under a thread");
         var threadID = req.params.threadID;
-        return Thread.find({
-            where: {title: threadID}
-        }, {include: [{all: true, nested: true}]
-        }).then(function(thread) {
-            return res.json({replies: thread.Replies});
+        return Reply.findAll({
+            where: {ThreadUuid: threadID},
+            raw: true
+        }).then(function(replies) {
+            return res.json({replies: processReplies(replies)});
+        }).catch(function(err) {
+            log.error(err);
+            return res.status(400).json({
+                message: err.message,
+                stack: err.stack
+            });
         });
     });
 
@@ -84,25 +106,12 @@ module.exports = function(dbModels) {
         var replyID = req.params.replyID;
         log.debug("classID", classID);
         log.debug("threadID", threadID);
-        log.debug("replyID", replyID);
 
-        // Verify req body
-        // Find the class
-        Class.find({where: {title: classID}}).bind({}).then(function(klass) {
-            // Find the thread
-            this.class = klass;
-            return klass.getThreads({where: {title: threadID}});
-        }).then(function(threads) {
-            var thread = threads[0];
-            this.thread = thread;
-            // Find the reply
-            return this.thread.getReplies({
-                where: {uuid: replyID},
-                include: [{all: true, nested: true}]
-            });
-        }).then(function(replies) {
-            this.replies = replies;
-            var replyTo = replies[0];
+        Reply.find({
+            where: {uuid: replyID}
+        }, {
+            include: [{model: Reply}]
+        }).bind({}).then(function(replyTo) {
             this.replyTo = replyTo;
             // Add the reply to replyTo
             return Reply.create({
@@ -112,8 +121,10 @@ module.exports = function(dbModels) {
             });
         }).then(function(reply) {
             this.reply = reply;
-            return this.replyTo.getReplies().bind(this).then(function(replies) {
-                return replies;
+            return Thread.find({
+                where: {title: threadID}
+            }).then(function(thread) {
+                return thread.addReply(reply);
             });
         }).then(function() {
             // Find the user, add the reply to his list
@@ -134,6 +145,7 @@ module.exports = function(dbModels) {
                 topReply: replyTo
             });
         }).catch(function(err) {
+            log.error("err", err);
             return res.status(400).json({
                 error: err.message,
                 stack: err.stack

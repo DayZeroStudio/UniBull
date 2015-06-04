@@ -80,6 +80,7 @@ module.exports = function(dbModels) {
         }).then(function(threads) {
             return res.json({
                 threads: threads,
+                thread: this.thread,
                 action: "refresh"
             });
         }).catch(function(err) {

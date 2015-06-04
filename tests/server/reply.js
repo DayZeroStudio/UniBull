@@ -12,7 +12,7 @@ app.use(require("cookie-parser")());
 var agent = request.agent(app);
 var utils = require("../utils").server(agent);
 var cfg = require("../../config");
-var log = cfg.log.makeLogger("tests,server,reply");
+//var log = cfg.log.makeLogger("tests,server,reply");
 
 cfg.coverage();
 describe("testing reply endpoints", function() {
@@ -25,7 +25,8 @@ describe("testing reply endpoints", function() {
     });
     var klass, classID,
     thread, threadID,
-        user, userID;
+        user, userID,
+        threadUuid;
     beforeEach(function() {
         klass = utils.class.makeNewClass();
         thread = utils.thread.makeNewThread();
@@ -39,6 +40,8 @@ describe("testing reply endpoints", function() {
             return utils.class.joinClass(userID, classID);
         }).then(function() {
             return utils.thread.submitThread(classID, thread);
+        }).then(function(res) {
+            threadUuid = res.body.thread.uuid;
         });
     });
     describe("replying to a thread", function() {
@@ -145,12 +148,14 @@ describe("testing reply endpoints", function() {
                     }).then(function(res) {
                         var replyID = res.body.reply.uuid;
                         return utils.reply.replyToReply(classID, threadID, replyID, nestedReply2);
-                    }).then(function(res) {
-                        return agent.get("/rest/class/"+classID+"/all")
+                    }).then(function() {
+                        return agent.get("/rest/class/"+classID+"/thread/"+threadUuid+"/all")
                             .toPromise();
                     }).then(function(res) {
-                        res.body.should.contain.key("threads");
-                        // log.warn("BODY", require("util").inspect(res.body, {depth: null}));
+                        res.body.should.contain.key("replies");
+                        res.body.replies.should.have.length(1);
+                        res.body.replies[0].Replies.should.have.length(1);
+                        res.body.replies[0].Replies[0].Replies.should.have.length(1);
                     });
                 });
             });
@@ -160,7 +165,7 @@ describe("testing reply endpoints", function() {
         it("should return a list of all the replies", function() {
             var reply = utils.reply.makeNewReply();
             return utils.reply.replyToThread(classID, threadID, reply).then(function() {
-                return agent.get("/rest/class/"+classID+"/thread/"+threadID+"/all")
+                return agent.get("/rest/class/"+classID+"/thread/"+threadUuid+"/all")
                     .toPromise();
             }).then(function(res) {
                 // log.warn("body", require("util").inspect(res.body, {depth: 3}));
@@ -207,7 +212,7 @@ describe("testing reply endpoints", function() {
         context("that you created", function() {
             it("should delete the reply", function() {
                 return utils.reply.deleteReply(classID, threadID, replyID).then(function() {
-                    return utils.reply.getReplies(classID, threadID).then(function(res) {
+                    return utils.reply.getReplies(classID, threadUuid).then(function(res) {
                         res.statusCode.should.equal(200);
                         res.body.replies.should.not.contain({uuid: replyID});
                     });
