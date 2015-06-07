@@ -71,9 +71,9 @@ _test-server: lint
 
 lint: noTodosOrFixmes
 	@ ${LINTER} ./index.js ./config/*.js\
-		./tests/server/*.js ./tests/web*/*.js\
 		./app/*.js ./app/**/*.js ./db/*.js\
-		./src/**/*.js
+		./src/**/*.js\
+		./tests/server/*.js ./tests/web*/*.js #needs to be last...
 noTodosOrFixmes:
 	-@ git grep -n 'TODO\|FIXME' --\
 		`git ls-files | grep -v '^Makefile\|^public/\|^lib/'`\

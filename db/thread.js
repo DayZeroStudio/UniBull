@@ -18,6 +18,7 @@ module.exports = function(db, DataTypes) {
         classMethods: {
             associate: function(dbModels) {
                 Thread.hasMany(dbModels.Reply);
+                Thread.hasOne(dbModels.User);
             }
         }
     });

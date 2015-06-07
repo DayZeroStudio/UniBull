@@ -23,5 +23,26 @@ module.exports = function(UTILS, agent) {
             .toPromise();
     };
 
+    utils.getThreads = function(classID) {
+        return agent
+            .get("/rest/class/"+classID+"/all")
+            .toPromise();
+    };
+
+    utils.editThread = function(classID, threadID, content, title) {
+        return agent
+            .put("/rest/class/"+classID+"/thread/"+threadID+"/edit")
+            .send({
+                title: title,
+                content: content
+            }).toPromise();
+    };
+
+    utils.deleteThread = function(classID, threadID) {
+        return agent
+            .delete("/rest/class/"+classID+"/thread/"+threadID+"/delete")
+            .toPromise();
+    };
+
     return utils;
 };

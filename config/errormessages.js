@@ -8,6 +8,7 @@ module.exports = (function() {
     errmsgs.userNotEnrolled = "That user is not enrolled in that class.";
     errmsgs.missingDbEnvVars = "Missing DB_NAME and/or DB_USERNAME. Put them in your ~/.bashrc";
     errmsgs.invalidUserInfo = "Invalid User credentials, please try again.";
+    errmsgs.naughtyUser = "User does not have permission to modify";
     errmsgs.userAlreadyEnrolled = function(klass) {
         return "That User is already enrolled in '"+klass+"'.";
     };

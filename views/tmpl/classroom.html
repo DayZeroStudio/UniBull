@@ -5,6 +5,7 @@
         <title>UniBull Class</title>
         <link href="/jqueryui/jquery-ui.css" rel="stylesheet">
         <link href="/css/classroom.css" rel="stylesheet" type="text/css">
+        <link href="/css/threads.css" rel="stylesheet" type="text/css">
         <script src="/jqueryui/external/jquery/jquery.js"></script>
         <script src="/jqueryui/jquery-ui.js"></script>
         <script src="/jqueryui/jquery.layout-latest.js"></script>
@@ -24,9 +25,10 @@
                 <div class="submit_wrapper" id="submit_wrapper">
                     <form id="submitform" name="submitform" accept-charset="utf-8">
                         <label for="title">Title</label><br>
-                        <input id="title" type="text" name="title"><br>
+                        <input contenteditable="true" id="title" type="text" name="title"><br>
                         <label for="content">Content</label><br>
-                        <input class="submissioncontent" id="content" type="text" name="content">
+                        <input contenteditable="true" class="submissioncontent" id="content" type="text" name="content">
+                        <input type="submit" style="display:none">
                     </form>
                     <br>
                     <button id="submit_post">Submit</button>
@@ -34,9 +36,42 @@
                 </div>
                 <hr>
                 <div id="forum">
-                    <div id="accordion" class="accordion">
+                    <% threads.forEach(function(thread) { %>
+                    <div class="thread_container" data-thread="<%= thread.uuid %>" name="thread_container">
+                        <div class="thread_header">
+                            <button class="thread_button" data-thread="<%= thread.uuid %>" name="viewcontent"> [+] </button>
+                            <p class="thread_title"> <%= thread.title %> </p>
+                        </div>
+                        <div class="thread_content_wrapper" data-thread="<%= thread.uuid %>">
+                            <p class="thread_content"> <%= thread.content %> </p>
+                            <p class="thread_author"> user </p>
+                            <p class="thread_postdate"> some time </p>
+                            <div class="thread_actionsrply">
+                                <button class="thread_button" data-thread="<%= thread.uuid %>" name="reply"> Reply </button>
+                                <button class="thread_button" data-thread="<%= thread.uuid %>" name="viewreplies"> View Replies </button>
+                            </div>
+                            <div class="thread_actionsspam">
+                                <button class="thread_button" data-thread="<%= thread.uuid %>" name="delete"> Delete </button>
+                                <button class="thread_button" data-thread="<%= thread.uuid %>" name="report"> Report </button>
+                            </div>
+                            <div class="reply_form_wrapper" data-thread="<%= thread.uuid %>">
+                                <form class="reply_form" name="reply_form" accept-charset="utf-8">
+                                    <label for="reply_form_content">Content</label>
+                                    <input class="reply_form_content" data-thread="<%= thread.uuid %>" type="text" name="content">
+                                </form>
+                                <button class="thread_button" data-thread="<%= thread.uuid %>" name="cancel_reply">Cancel</button>
+                                <button class="thread_button" data-thread="<%= thread.uuid %>" data-title="<%= thread.title %>" name="submit_reply">Submit</button>
+                            </div>
+                        </div>
+                        <div class="thread_auth_date" data-thread="<%= thread.uuid %>">
+                            <p class="thread_author"> user </p>
+                            <p class="thread_postdate"> some time </p>
+                        </div>
+                    </div>
+                    <% }); %>
+                    <!-- <div id="accordion" class="accordion">
                         <% threads.forEach(function(thread){ %>
-                            <h3><%= thread.title %></h3>
+                            <h3> <%= thread.title %> </h3>
                             <div>
                                 <%= thread.content %>
                                 <br><br>
@@ -62,7 +97,7 @@
                         <% }); %>
                         <h3>First Post</h3>
                         <div>Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.</div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             <div class="ui-layout-north">

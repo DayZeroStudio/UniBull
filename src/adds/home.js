@@ -41,6 +41,7 @@ $("#container").layout({
 });
 
 for (var i = 0; i < 50; i++) {
+    //[252,756]
     if ((i % 2) === 0) {
         $( "#feedcontainers" ).append("<div id='feedcontainer'><a id='title'>Neeraj got a job at Costco!)</a>"
         + "<p id='content'>So I was walking down the block with my old watch and realized that it was a good time to eat pizza."
@@ -52,8 +53,9 @@ for (var i = 0; i < 50; i++) {
         + " This is why life is tough!</p>"
         + "<p id='author'>Author_"+ i + "</p>"
         + "<p id='postdate'>May 7th 2015 Mon 4:22 PM</p>"
-        + "<p id='report'><img src='jqueryui/images/report.png' align='right' width='15' height='20'></p>"
-        + "<p id='hashtags'>@1stWorldProblems @Costco @Noni</p>"
+        // + "<p id='report'><img src='jqueryui/images/report.png' align='right' width='15' height='20'></p>"
+        + "<div id='buttons1'><button>REPLY</button><button>VIEW REPLIES</button></div>"
+        + "<div id='buttons2'><button>DELETE</button><button>REPORT</button><div>"
         + "</div>");
     } else {
         $( "#feedcontainers" ).append("<div id='feedcontainer'>"

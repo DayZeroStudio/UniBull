@@ -80,24 +80,88 @@ describe("testing thread endpoints", function() {
         });
         context("that you are NOT enrolled in", function() {
             it("should return an error", function() {
-                return utils.thread.submitThread(classID, utils.class.token, thread)
-                .then(function(res) {
+                return utils.thread.submitThread(classID, thread)
+                    .then(function(res) {
                         res.statusCode.should.equal(400);
-                    res.body.should.contain.key("error");
-                });
+                        res.body.should.contain.key("error");
+                    });
             });
         });
     });
     describe("viewing all threads in a class", function() {
         it("should return a list of all the threads in the class", function() {
-            return request(app)
-                .get("/rest/class/"+ classID +"/all")
-                .expect(function(res) {
+            return utils.class.joinClass(userID, classID).then(function() {
+                return utils.thread.submitThread(classID, thread);
+            }).then(function() {
+                return request(app)
+                    .get("/rest/class/"+ classID +"/all")
+                    .expect(function(res) {
+                        res.statusCode.should.equal(200);
+                        res.body.should.contain.key("threads");
+                        res.body.threads.should.have.length.above(0);
+                        res.body.threads.should
+                            .include.something({title: thread.title})
+                            .all.contain.keys("title", "content", "User");
+                        res.body.threads.should
+                            .include.something({User: {username: userID}});
+                    });
+            });
+        });
+    });
+    describe("edting a thread in a class", function() {
+        var threadID;
+        beforeEach(function() {
+            return utils.class.joinClass(userID, classID).then(function() {
+                return utils.thread.submitThread(classID, thread);
+            }).then(function(res) {
+                threadID = res.body.threads[0].uuid;
+            });
+        });
+        context("that you created", function() {
+            it("should update the title and content of that thread", function() {
+                return utils.thread.editThread(classID, threadID, "somebullshitstring", "somebullshittitle").then(function(res) {
                     res.statusCode.should.equal(200);
-                    res.body.should.contain.key("threads");
-                    res.body.threads.should
-                        .all.contain.keys("title", "content");
                 });
+            });
+        });
+        context("that you did not create", function() {
+            it("should return an error", function() {
+                return utils.user.loginToApp(utils.user.validUser).then(function() {
+                    return utils.thread.editThread(classID, threadID, "cc", "tt");
+                }).then(function(res) {
+                    res.statusCode.should.equal(400);
+                    res.body.error.should.equal(cfg.errmsgs.naughtyUser);
+                });
+            });
+        });
+    });
+    describe("deleting a thread from a class", function() {
+        var threadID;
+        beforeEach(function() {
+            return utils.class.joinClass(userID, classID).then(function() {
+                return utils.thread.submitThread(classID, thread);
+            }).then(function(res) {
+                threadID = res.body.threads[0].uuid;
+            });
+        });
+        context("that you created", function() {
+            it("should remove that thread from that class", function() {
+                return utils.thread.deleteThread(classID, threadID).then(function() {
+                    return utils.thread.getThreads(classID).then(function(res) {
+                        res.body.threads.should.not.contain({uuid: threadID});
+                    });
+                });
+            });
+        });
+        context("that you did not create", function() {
+            it("should return an error", function() {
+                return utils.user.loginToApp(utils.user.validUser).then(function() {
+                    return utils.thread.deleteThread(classID, threadID);
+                }).then(function(res) {
+                    res.statusCode.should.equal(400);
+                    res.body.error.should.equal(cfg.errmsgs.naughtyUser);
+                });
+            });
         });
     });
 });
