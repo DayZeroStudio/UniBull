@@ -104,7 +104,7 @@ describe("testing class endpoints", function() {
             userID = user.username;
             return utils.user.signupNewUser(user).then(function() {
                 return utils.class.createClass(newClass).then(function(res) {
-                    classID = res.body.class.title;
+                    classID = res.body.class.uuid;
                 });
             });
         });
@@ -125,7 +125,7 @@ describe("testing class endpoints", function() {
                             res.body.Classes.should
                                 .have.length.above(0);
                             res.body.Classes.should
-                                .include.something({title: classID});
+                                .include.something({uuid: classID});
                         });
                 });
             });
