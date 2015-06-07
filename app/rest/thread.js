@@ -91,10 +91,13 @@ module.exports = function(dbModels) {
         });
     });
 
+    //takes in thread uuid, and class title
     router.put("/:classID/thread/:threadID/edit", function(req, res) {
         log.info("PUT - editing a thread");
+        console.log(req.body);
         var content = req.body.content;
         var title = req.body.title;
+        //var title = req.params.classID;
         var classID = req.params.classID;
         var threadID = req.params.threadID;
         Class.find({
@@ -129,6 +132,7 @@ module.exports = function(dbModels) {
                 thread: thread
             });
         }).catch(function(err) {
+            console.log(err);
             return res.status(400).json({
                 error: err.message,
                 stack: err.stack

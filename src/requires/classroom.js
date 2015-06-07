@@ -28,5 +28,16 @@ module.exports = function($) {
         ajax.getJSON(restEndpoint, {}, callback);
         return false;
     };
+    exports.onSubmitPostEdit = function(classID, threadID, fields, callback) {
+        var formData = {};
+        fields.each(function(i, v) {
+            var name = $(v).attr("name");
+            formData[name] = $(v).val();
+            console.log("req = ", $(v).val());
+        });
+        var restEndpoint = "/rest/class/"+classID+"/thread/"+threadID+"/edit";
+        ajax.putJSON(restEndpoint, formData, callback);
+        return false;
+    };
     return exports;
 };

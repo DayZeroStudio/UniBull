@@ -40,10 +40,10 @@
                     <div class="thread_container" data-thread="<%= thread.uuid %>" name="thread_container">
                         <div class="thread_header">
                             <button class="thread_button" data-thread="<%= thread.uuid %>" name="viewcontent"> [+] </button>
-                            <p class="thread_title"> <%= thread.title %> </p>
+                            <p class="thread_title" data-thread="<%= thread.uuid %>" name="postcontent"> <%= thread.title %> </p>
                         </div>
                         <div class="thread_content_wrapper" data-thread="<%= thread.uuid %>">
-                            <p class="thread_content"> <%= thread.content %> </p>
+                            <p class="thread_content"  data-thread="<%= thread.uuid %>"> <%= thread.content %> </p>
                             <p class="thread_author"> user </p>
                             <p class="thread_postdate"> some time </p>
                             <div class="thread_actionsrply">
@@ -66,7 +66,8 @@
                             </div>
                             <div class="edit_form_wrapper" data-thread="<%= thread.uuid %>">
                                 <form class="edit_form" name="edit_form" accept-charset="utf-8">
-                                    <label for="edit_form_content">Edit Post</label><br>
+                                    <label for="edit_form_content">Edit Post</label><br><br>
+                                    <input class="edit_form_content" type="editPost" data-thread="<%= thread.uuid %>" type="text" name="title"> <br><br>
                                     <!-- <input class="edit_form_content" type="editPost" data-thread="<%= thread.uuid %>" type="text" name="content"> -->
                                     <textarea class="edit_form_content" src="editPost" data-thread="<%= thread.uuid %>" type="text" name="content" cols="65" rows="5"></textarea>
                                 </form>

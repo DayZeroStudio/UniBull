@@ -23,6 +23,7 @@ module.exports = function($) {
 
     exports.postJSON = _.partial(exports.makeJSON, "POST");
     exports.getJSON = _.partial(exports.makeJSON, "GET");
+    exports.putJSON = _.partial(exports.makeJSON, "PUT");
 
     return exports;
 };

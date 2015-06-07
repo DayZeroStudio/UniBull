@@ -195,6 +195,7 @@ $("button[name=cancel_reply]").click(function(thread) {
 $("button[name=submit_reply]").click(function(thread) {
     var threadID = $(thread.currentTarget).attr("data-thread");
     var threadTitle = $(thread.currentTarget).attr("data-title");
+    console.log("title, ", threadTitle);
     var onSubmitReply = bundle.onSubmitReply;
     var replyForm = $(".reply_form_wrapper[data-thread*='"+threadID+"']");
     //var replyContent = $(".reply_form_content[data-thread*='"+threadID+"'']");
@@ -208,6 +209,7 @@ $("button[name=submit_reply]").click(function(thread) {
         return null;
     }
     return onSubmitReply(classTitle, threadTitle, replyContent, function(err, data) {
+        console.log("LALALALALA ", data);
         if (err) {
             clickedReply = false;
             return console.log("error: ", err);
@@ -232,6 +234,12 @@ $("button[name=edit]").click(function(thread) {
     }
     var editForm = $(".edit_form_wrapper[data-thread*='"+threadID+"']");
     editForm.slideToggle(0);
+    var prevEditcontent = $(".thread_content[data-thread*='"+threadID+"']").text();
+    var prevEdittitle = $(".thread_title[data-thread*='"+threadID+"']").text();
+
+    $( "textarea[data-thread*='"+threadID+"'][src=editPost]").val(prevEditcontent);
+    $( "input[data-thread*='"+threadID+"']").val(prevEdittitle);
+
 });
 
 $("button[name=cancel_postEdit]").click(function(thread) {
@@ -241,6 +249,39 @@ $("button[name=cancel_postEdit]").click(function(thread) {
     editForm.slideUp(0);
     editContent.val("");
     clickedEditPost = false;
+});
+
+$("button[name=submit_postEdit]").click(function(thread) {
+    var threadID = $(thread.currentTarget).attr("data-thread");
+    //var threadTitle = $(thread.currentTarget).attr("data-title");
+    var onSubmitPostEdit = bundle.onSubmitPostEdit;
+    var editForm = $(".edit_form_wrapper[data-thread*='"+threadID+"']");
+    //var replyContent = $(".reply_form_content[data-thread*='"+threadID+"'']");
+    var editContent = $( "textarea[data-thread*='"+threadID+"'][src=editPost]");
+    var fields = $( "textarea[data-thread*='"+threadID+"'][src=editPost], input[data-thread*='"+threadID+"']");
+    console.log("fields = ", fields);
+    console.log("reply content", editContent);
+    var editContentCheck = $.trim(editContent.val());
+    if (editContentCheck.length <= 0) {
+        console.log("reply check", editContentCheck);
+        alert("You cannot submit an empty reply.");
+        clickedEditPost = false;
+        return null;
+    }
+    return onSubmitPostEdit(classTitle, threadID, fields, function(err, data) {
+        if (err) {
+            clickedEditPost = false;
+            return console.log("error: ", err);
+        }
+        clickedEditPost = false;
+        var postContent = $(".thread_content[data-thread*='"+threadID+"']");
+        var postTitle = $(".thread_title[data-thread*='"+threadID+"']");
+        postContent.text(data.thread.content);
+        postTitle.text(data.thread.title);
+        editForm.slideToggle(0);
+        editContent.val("");
+    });
+
 });
 
 // $("button[data-id=submitreply]").button().click(function(thread) {
