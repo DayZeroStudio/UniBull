@@ -1,5 +1,4 @@
 "use strict";
-
 module.exports = function(dbModels, routePrefix) {
     var Promise = require("bluebird");
 
@@ -22,6 +21,7 @@ module.exports = function(dbModels, routePrefix) {
 
     var Class = dbModels.Class;
     var User = dbModels.User;
+    var SecretCodes = dbModels.SignupCodes;
 
     router.get("/", function(req, res) {
         log.info("GET - Get all users");
@@ -85,22 +85,80 @@ module.exports = function(dbModels, routePrefix) {
         }
     });
 
+    var confirmEmail = function(suffix) {
+        return "unibulletin" + (suffix?"+"+suffix:"") + "@gmail.com";
+    };
+    var mailer = require("nodemailer");
+    var transporter = Promise.promisifyAll(mailer.createTransport({
+        service: "Gmail",
+        auth: {
+            user: confirmEmail(),
+            pass: "unibull2000"
+        }
+    }));
     router.post("/signup", function(req, res) {
+        log.info("POST - Signup user");
+        log.warn("BODY:", req.body);
+        var username = req.body.username;
+        var password = req.body.password;
+        var email = req.body.email;
+        var role = req.body.role;
         User.findOrCreate({where: {
-            username: req.body.username
+            username: username
         }, defaults: {
-            password: req.body.password,
-            email: req.body.email
-        }}).spread(function(user, created) {
+            password: password,
+            email: email
+        }}).bind({}).spread(function(user, created) {
             if (!created) {// ie: username taken
                 throw Error(cfg.errmsgs.userAlreadyTaken);
             }
-            return onValidUser(user, res);
-        }).catch(function(err) {
-            return res.status(400).json({
-                error: err.message
+            this.user = user;
+            if (role === "professor") {
+                var crypto = Promise.promisifyAll(require("crypto"));
+                return crypto.randomBytesAsync(48).then(function(buf) {
+                    return buf.toString("base64").replace(/\//g, "_").replace(/\+/g, "-");
+                }).then(function(secretCode) {
+                    return SecretCodes.create({code: secretCode});
+                }).get("code").then(function(secretCode) {
+                    return transporter.sendMail({
+                        from: confirmEmail(),
+                        to: confirmEmail("signup.prof"),
+                        subject: "Please confirm '"+email+"' as a prof",
+                        html: email+"<br><a href='http://localhost:8080/rest/user/auth?code="+secretCode+"&role=professor'>Click when ready to confirm</a>"
+                    });
+                });
+            }
+        }).then(function() {
+            return onValidUser(this.user, res);
+        }).catch(cfg.handleErr(res));
+    });
+
+    router.get("/auth", function(req, res) {
+        log.info("Auth user as req.query.role");
+        var code = req.query.code;
+        var role = req.query.role;
+        SecretCodes.find({
+            where: {code: code}
+        }).then(function(foundCode) {
+            if (!foundCode) {
+                throw Error("how the fuck?");
+            }
+            //Delete code
+            return foundCode.destroy();
+        }).then(function() {
+            //Update user as role
+            var user = auth.decodeRequest(req);
+            return User.find({where: {
+                username: user.username
+            }}).then(function(user) {
+                user.role = role;
+                return user.save();
             });
-        });
+        }).then(function() {
+            return res.json({
+                fuck: "yeah"
+            });
+        }).catch(cfg.handleErr(res));
     });
 
     router.get("/:userID", function(req, res) {
@@ -111,11 +169,7 @@ module.exports = function(dbModels, routePrefix) {
         }).then(function(user) {
             var fullUser = _.omit(user.get(), "password_hash");
             return res.json(fullUser);
-        }).catch(function(err) {
-            return res.status(400).json({
-                error: err.message
-            });
-        });
+        }).catch(cfg.handleErr(res));
     });
 
     router.post("/:userID/joinClass", function(req, res) {
@@ -145,11 +199,7 @@ module.exports = function(dbModels, routePrefix) {
                 redirect: "/class/"+classID,
                 classes: classes
             });
-        }).catch(function(err) {
-            return res.status(400).json({
-                error: err.message
-            });
-        });
+        }).catch(cfg.handleErr(res));
     });
 
     return Promise.resolve(router);
