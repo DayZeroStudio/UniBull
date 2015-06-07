@@ -119,7 +119,6 @@ function displayReplies(res, threadID) {
 function getReplies(threadID) {
     //make ajax call to get replies...
     var onViewReplies = bundle.onViewReplies;
-    console.log("122");
     onViewReplies(classID, function(err, res) {
         if (err) { return console.log(err); }
         if (res) {
@@ -209,7 +208,6 @@ $("button[name=submit_reply]").click(function(thread) {
         clickedReply = false;
         return null;
     }
-    console.log("212");
     return onSubmitReply(classID, threadID, replyContent, function(err, data) {
         console.log("LALALALALA ", data);
         if (err) {
@@ -340,8 +338,6 @@ $("#cancel").button().click(function() {
 function submitPost() {
     var onSubmitPost = bundle.onSubmitPost;
     var fields = $("#submitform #content, #submitform #title");
-    console.log("343");
-    console.log(classID);
     return onSubmitPost(classID, fields, function(err, data) {
         if (err) { return console.log(err); }
         if (data.action) {
