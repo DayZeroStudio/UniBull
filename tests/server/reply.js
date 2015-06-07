@@ -118,7 +118,7 @@ describe("testing reply endpoints", function() {
     describe("replying to a nested reply", function() {
         context("given you are enrolled", function() {
             context("with required info", function() {
-                it.skip("should add the reply to the reply's replies", function() {
+                it("should add the reply to the reply's replies", function() {
                     var reply = utils.reply.makeNewReply();
                     var nestedReply = utils.reply.makeNewReply();
                     var nestedReply2 = utils.reply.makeNewReply();

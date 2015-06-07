@@ -7,26 +7,26 @@ var driver = require("webdriverio");
 var Promise = require("bluebird");
 
 var cfg = require("../../config");
-var log = cfg.log.makeLogger("comma,tags");
+//var log = cfg.log.makeLogger("comma,tags");
 
 require("blanket")();
 describe("testing front end class page", function() {
-  this.timeout(cfg.webdriver.timeout);
-  var client = {};
-  var utils = {};
-  var PORT = 9093;// Make sure is unique
-  var baseUrl = "http://localhost:" + PORT;
-  before(function() {
-      return require("../../index.js")(PORT).then(function() {
-          client = driver.remote(cfg.webdriver.options);
-          utils = require("../utils").wd(baseUrl).user(client);
-          Promise.promisifyAll(client, {suffix: "_async"});
-          return client.init_async();
-      });
-  });
-  after(function() {
-      return client.end();
-  });
+    this.timeout(cfg.webdriver.timeout);
+    var client = {};
+    var utils = {};
+    var PORT = 9093;// Make sure is unique
+    var baseUrl = "http://localhost:" + PORT;
+    before(function() {
+        return require("../../index.js")(PORT).then(function() {
+            client = driver.remote(cfg.webdriver.options);
+            utils = require("../utils").wd(baseUrl).user(client);
+            Promise.promisifyAll(client, {suffix: "_async"});
+            return client.init_async();
+        });
+    });
+    after(function() {
+        return client.end();
+    });
     context("given that you're logged in", function() {
         beforeEach(function() {
             utils.loginWithUser(utils.validUser);
