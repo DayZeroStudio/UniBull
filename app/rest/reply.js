@@ -239,5 +239,38 @@ module.exports = function(dbModels) {
         }).catch(cfg.handleErr(res));
     });
 
+    router.post("/:classID/thread/:threadID/reply/:replyID/flag", function(req, res) {
+        log.info("POST - flagging a reply");
+        var classID = req.params.classID;
+        var threadID = req.params.threadID;
+        var replyID = req.params.replyID;
+        var reason = req.body.reason;
+        Class.find({
+            where: {uuid: classID}
+        }).bind({}).then(function(klass) {
+            this.class = klass;
+        }).then(function() {
+            return this.class.getThreads({
+                where: {uuid: threadID}
+            });
+        }).then(function(threads) {
+            return threads[0];
+        }).then(function(thread) {
+            return thread.getReplies({
+                where: {uuid: replyID}
+            });
+        }).then(function(replies) {
+            var reply = replies[0];
+            if (!reply.flagged) {
+                reply.flagged = [];
+            }
+            reply.flagged.push(reason);
+            return reply.save();
+        }).then(function(reply) {
+            return res.json({
+                reply: reply
+            });
+        });
+    });
     return Promise.resolve(router);
 };

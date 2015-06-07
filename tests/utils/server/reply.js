@@ -48,5 +48,12 @@ module.exports = function(UTILS, agent) {
             .toPromise();
     };
 
+    utils.flagReply = function(classID, threadID, replyID, reason) {
+        return agent
+            .post("/rest/class/"+classID+"/thread/"+threadID+"/reply/"+replyID+"/flag")
+            .send(reason)
+            .toPromise();
+    };
+
     return utils;
 };
