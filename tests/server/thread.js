@@ -108,6 +108,22 @@ describe("testing thread endpoints", function() {
             });
         });
     });
+    describe("viewing a single thread in a class", function() {
+        it("should return a single thread in the class", function() {
+            return utils.class.joinClass(userID, classID).then(function() {
+                return utils.thread.submitThread(classID, thread);
+            }).then(function(res) {
+                return res.body.threads[0];
+            }).then(function(thread) {
+                var threadID = thread.title;
+                return utils.thread.getThread(classID, threadID).then(function(res) {
+                    console.log("RES BODY: ", res.body);
+                    res.statusCode.should.equal(200);
+                    res.body.thread.should.contain.key("title");
+                });
+            });
+        });
+    });
     describe("edting a thread in a class", function() {
         var threadID;
         beforeEach(function() {
@@ -160,6 +176,25 @@ describe("testing thread endpoints", function() {
                 }).then(function(res) {
                     res.statusCode.should.equal(400);
                     res.body.error.should.equal(cfg.errmsgs.naughtyUser);
+                });
+            });
+        });
+    });
+    describe("flagging a thread in a class", function() {
+        var threadID;
+        beforeEach(function() {
+            return utils.class.joinClass(userID, classID).then(function() {
+                return utils.thread.submitThread(classID, thread);
+            }).then(function(res) {
+                threadID = res.body.threads[0].title;
+            });
+        });
+        context("that you are enrolled in", function() {
+            it("should add to the list of reasons why that post should be flagged", function() {
+                return utils.thread.flagThread(classID, threadID, {reason: "inappropriate"}).then(function() {
+                    return utils.thread.getThread(classID, threadID).then(function(res) {
+                        res.body.thread.flagged.should.have.length.above(0);
+                    });
                 });
             });
         });

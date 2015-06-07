@@ -21,6 +21,7 @@ module.exports = function($) {
         });
         var restEndpoint = "/rest/class/"+classID+"/thread/"+threadID+"/reply";
         ajax.postJSON(restEndpoint, formData, callback);
+        console.log("onSubmitReply");
         return false;
     };
     exports.onViewReplies = function(classID, callback) {
