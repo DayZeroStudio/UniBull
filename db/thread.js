@@ -13,6 +13,10 @@ module.exports = function(db, DataTypes) {
         content: {
             type: DataTypes.STRING,
             allowNull: false
+        },
+        flagged: {
+            type: DataTypes.ARRAY(DataTypes.STRING),
+            allowNull: true
         }
     }, {
         classMethods: {
