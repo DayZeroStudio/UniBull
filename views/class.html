@@ -38,7 +38,7 @@
                 <hr>
                 <div id="classlist">
                     <% classes.forEach(function(klass){ %>
-                        <a href="class/<%=klass.title%>"><%=klass.title%></a><br>
+                        <a href="class/<%=klass.uuid%>"><%=klass.title%></a><br>
                     <% }); %>
 
                 </div>
@@ -46,8 +46,8 @@
                 <div id="allclasslist">
                     <% classes.forEach(function(klass){ %>
                         <div class="classroom_wrapper">
-                            <a class="classroomlink" href="class/<%=klass.title%>"><%=klass.title%></a>
-                            <button data-klass="<%=klass.title%>" class="joinclass">Join this class!</button>
+                            <a class="classroomlink" href="class/<%=klass.uuid%>"><%=klass.title%></a>
+                            <button data-klass="<%=klass.uuid%>" class="joinclass">Join this class!</button>
                             <br>
                         </div>
                     <% }); %>

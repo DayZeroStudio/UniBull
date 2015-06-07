@@ -12,7 +12,7 @@ app.use(require("cookie-parser")());
 var agent = request.agent(app);
 var utils = require("../utils").server(agent);
 var cfg = require("../../config");
-//var log = cfg.log.makeLogger("tests,server,reply");
+// var log = cfg.log.makeLogger("tests,server,reply");
 
 cfg.coverage();
 describe("testing reply endpoints", function() {
@@ -25,23 +25,22 @@ describe("testing reply endpoints", function() {
     });
     var klass, classID,
     thread, threadID,
-        user, userID,
-        threadUuid;
+        user, userID;
     beforeEach(function() {
         klass = utils.class.makeNewClass();
         thread = utils.thread.makeNewThread();
         user = utils.user.makeNewUser();
         userID = user.username;
-        classID = klass.title;
-        threadID = thread.title;
         return utils.user.signupNewUser(user).then(function() {
             return utils.class.createClass(klass);
+        }).then(function(res) {
+            classID = res.body.class.uuid;
         }).then(function() {
             return utils.class.joinClass(userID, classID);
         }).then(function() {
             return utils.thread.submitThread(classID, thread);
         }).then(function(res) {
-            threadUuid = res.body.thread.uuid;
+            threadID = res.body.thread.uuid;
         });
     });
     describe("replying to a thread", function() {
@@ -149,7 +148,7 @@ describe("testing reply endpoints", function() {
                         var replyID = res.body.reply.uuid;
                         return utils.reply.replyToReply(classID, threadID, replyID, nestedReply2);
                     }).then(function() {
-                        return agent.get("/rest/class/"+classID+"/thread/"+threadUuid+"/all")
+                        return agent.get("/rest/class/"+classID+"/thread/"+threadID+"/all")
                             .toPromise();
                     }).then(function(res) {
                         res.body.should.contain.key("replies");
@@ -165,7 +164,7 @@ describe("testing reply endpoints", function() {
         it("should return a list of all the replies", function() {
             var reply = utils.reply.makeNewReply();
             return utils.reply.replyToThread(classID, threadID, reply).then(function() {
-                return agent.get("/rest/class/"+classID+"/thread/"+threadUuid+"/all")
+                return agent.get("/rest/class/"+classID+"/thread/"+threadID+"/all")
                     .toPromise();
             }).then(function(res) {
                 // log.warn("body", require("util").inspect(res.body, {depth: 3}));
@@ -212,7 +211,7 @@ describe("testing reply endpoints", function() {
         context("that you created", function() {
             it("should delete the reply", function() {
                 return utils.reply.deleteReply(classID, threadID, replyID).then(function() {
-                    return utils.reply.getReplies(classID, threadUuid).then(function(res) {
+                    return utils.reply.getReplies(classID, threadID).then(function(res) {
                         res.statusCode.should.equal(200);
                         res.body.replies.should.not.contain({uuid: replyID});
                     });
@@ -230,4 +229,22 @@ describe("testing reply endpoints", function() {
             });
         });
     });
+describe("flagging a reply", function() {
+    var replyID;
+    beforeEach(function() {
+        var reply = utils.reply.makeNewReply();
+        return utils.reply.replyToThread(classID, threadID, reply).then(function(res) {
+            replyID = res.body.reply.uuid;
+        });
+    });
+    it("should add to the list of reasons why that reply should be flagged", function() {
+        return utils.reply.flagReply(classID, threadID, replyID, {reason: "inappropriate"}).then(function() {
+            return utils.reply.getReplies(classID, threadID).then(function(res) {
+                var reply = res.body.replies[0];
+                reply.flagged.should.have.length.above(0);
+            });
+        });
+    });
+});
+
 });

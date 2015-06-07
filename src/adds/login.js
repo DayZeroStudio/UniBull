@@ -1,8 +1,8 @@
 "use strict";
 
 function logout() {
-    $.cookie("usernameCookie", null);
-    $.cookie("token", null);
+    $.removeCookie("usernameCookie", { expires: 1, path: "/" });
+    $.removeCookie("token", { expires: 1, path: "/" });
 }
 
 $( "#loginButton" ).button();

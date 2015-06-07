@@ -20,7 +20,7 @@
                     <button id="toevents">Events</button>
                 </div>
                 <hr>
-                <h1 class="center" id="classID"><%= classID %></h1>
+                <h1 class="center" id="classID"><%= classTitle %></h1>
                 <button id="newpost"> Submit a post </button><br>
                 <div class="submit_wrapper" id="submit_wrapper">
                     <form id="submitform" name="submitform" accept-charset="utf-8">
@@ -81,35 +81,6 @@
                         </div>
                     </div>
                     <% }); %>
-                    <!-- <div id="accordion" class="accordion">
-                        <% threads.forEach(function(thread){ %>
-                            <h3> <%= thread.title %> </h3>
-                            <div>
-                                <%= thread.content %>
-                                <br><br>
-                                <button data-thread="<%= thread.title %>" class="rb" data-id="viewreplies">View Replies</button>
-                                <button data-thread="<%= thread.title %>" class="rb" data-id="replytothread">Reply</button>
-                                <br><br>
-                                <div class="replywrapper">
-                                    <div data-thread="<%= thread.title %>" class="replyformwrapper">
-                                        <form id="replyform" name="replyform" accept-charset="utf-8">
-                                            <label for="replycontent">Content</label><br>
-                                            <input data-thread="<%= thread.title %>" class="replycontent" type="text" name="content">
-                                        </form>
-                                        <br>
-                                        <button data-thread="<%= thread.title %>" class="rb" data-id="submitreply">Submit</button>
-                                        <button data-thread="<%= thread.title %>" class="rb" data-id="cancelreply">Cancel</button>
-                                    </div>
-                                    <div data-thread="<%= thread.title %>" class="replies">
-                                        <div data-thread="<%=thread.title%>" data-id="replies_accordion" id="accordion" class="accordion">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        <% }); %>
-                        <h3>First Post</h3>
-                        <div>Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.</div>
-                    </div> -->
                 </div>
             </div>
             <div class="ui-layout-north">
@@ -130,7 +101,8 @@
         </div>
 
         <script>
-            var classTitle = "<%= classID %>";
+var classTitle = "<%= classTitle %>";
+var classID = "<%= classID %>";
         </script>
         <script src="/js/classroom-bundle.js"></script>
     </body>

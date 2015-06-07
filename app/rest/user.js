@@ -114,7 +114,7 @@ module.exports = function(dbModels, routePrefix) {
                 throw Error(cfg.errmsgs.invalidUserInfo);
             }
             this.user = user;
-            return Class.find({where: {title: classID}});
+            return Class.find({where: {uuid: classID}});
         }).then(function(klass) {
             this.class = klass;
             return this.user.hasClass(klass);

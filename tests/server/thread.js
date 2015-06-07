@@ -23,11 +23,12 @@ describe("testing thread endpoints", function() {
     beforeEach(function() {
         thread = utils.thread.makeNewThread();
         var newClass = utils.class.makeNewClass();
-        classID = newClass.title;
         var user = utils.user.makeNewUser();
         userID = user.username;
         return utils.user.signupNewUser(user).then(function() {
             return utils.class.createClass(newClass);
+        }).then(function(res) {
+            classID = res.body.class.uuid;
         });
     });
     describe("creating a thread in a class", function() {
@@ -115,9 +116,8 @@ describe("testing thread endpoints", function() {
             }).then(function(res) {
                 return res.body.threads[0];
             }).then(function(thread) {
-                var threadID = thread.title;
+                var threadID = thread.uuid;
                 return utils.thread.getThread(classID, threadID).then(function(res) {
-                    console.log("RES BODY: ", res.body);
                     res.statusCode.should.equal(200);
                     res.body.thread.should.contain.key("title");
                 });
@@ -186,7 +186,7 @@ describe("testing thread endpoints", function() {
             return utils.class.joinClass(userID, classID).then(function() {
                 return utils.thread.submitThread(classID, thread);
             }).then(function(res) {
-                threadID = res.body.threads[0].title;
+                threadID = res.body.threads[0].uuid;
             });
         });
         context("that you are enrolled in", function() {

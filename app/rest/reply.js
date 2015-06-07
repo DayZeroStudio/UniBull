@@ -57,9 +57,9 @@ module.exports = function(dbModels) {
         log.debug("newReply", req.body);
         // Verify req body
         // Find the class
-        Class.find({where: {title: classID}}).bind({}).then(function(klass) {
+        Class.find({where: {uuid: classID}}).bind({}).then(function(klass) {
             // Find the thread
-            return klass.getThreads({where: {title: threadID}});
+            return klass.getThreads({where: {uuid: threadID}});
         }).then(function(threads) {
             var thread = threads[0];
             this.thread = thread;
@@ -122,7 +122,7 @@ module.exports = function(dbModels) {
         }).then(function(reply) {
             this.reply = reply;
             return Thread.find({
-                where: {title: threadID}
+                where: {uuid: threadID}
             }).then(function(thread) {
                 return thread.addReply(reply);
             });
@@ -160,7 +160,7 @@ module.exports = function(dbModels) {
         var replyID = req.params.replyID;
         var content = req.body.content;
         Class.find({
-            where: {title: classID}
+            where: {uuid: classID}
         }).bind({}).then(function(klass) {
             this.class = klass;
         }).then(function() {
@@ -176,7 +176,7 @@ module.exports = function(dbModels) {
             this.user = user;
         }).then(function() {
             return this.class.getThreads({
-                where: {title: threadID}
+                where: {uuid: threadID}
             });
         }).then(function(threads) {
             this.thread = threads[0];
@@ -203,7 +203,7 @@ module.exports = function(dbModels) {
         var threadID = req.params.threadID;
         var replyID = req.params.replyID;
         Class.find({
-            where: {title: classID}
+            where: {uuid: classID}
         }).bind({}).then(function(klass) {
             this.class = klass;
         }).then(function() {
@@ -219,7 +219,7 @@ module.exports = function(dbModels) {
             this.user = user;
         }).then(function() {
             return this.class.getThreads({
-                where: {title: threadID}
+                where: {uuid: threadID}
             });
         }).then(function(threads) {
             this.thread = threads[0];
@@ -239,5 +239,38 @@ module.exports = function(dbModels) {
         }).catch(cfg.handleErr(res));
     });
 
+    router.post("/:classID/thread/:threadID/reply/:replyID/flag", function(req, res) {
+        log.info("POST - flagging a reply");
+        var classID = req.params.classID;
+        var threadID = req.params.threadID;
+        var replyID = req.params.replyID;
+        var reason = req.body.reason;
+        Class.find({
+            where: {uuid: classID}
+        }).bind({}).then(function(klass) {
+            this.class = klass;
+        }).then(function() {
+            return this.class.getThreads({
+                where: {uuid: threadID}
+            });
+        }).then(function(threads) {
+            return threads[0];
+        }).then(function(thread) {
+            return thread.getReplies({
+                where: {uuid: replyID}
+            });
+        }).then(function(replies) {
+            var reply = replies[0];
+            if (!reply.flagged) {
+                reply.flagged = [];
+            }
+            reply.flagged.push(reason);
+            return reply.save();
+        }).then(function(reply) {
+            return res.json({
+                reply: reply
+            });
+        });
+    });
     return Promise.resolve(router);
 };

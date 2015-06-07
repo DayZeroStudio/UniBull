@@ -77,8 +77,8 @@ $("#feedcontainers").jscroll({
 //$( "#feedcontainers" ).load( "/jqueryui/external/jquery/jquery.js");
 
 function logout() {
-    $.cookie("usernameCookie", null);
-    $.cookie("token", null);
+    $.removeCookie("usernameCookie", { expires: 1, path: "/" });
+    $.removeCookie("token", { expires: 1, path: "/" });
 }
 
 $("#logout").button().click(function() {

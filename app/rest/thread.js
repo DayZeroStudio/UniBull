@@ -19,7 +19,7 @@ module.exports = function(dbModels) {
         log.info("GET - Get all threads");
         var classID = req.params.classID;
         Class.find({
-            where: {title: classID}
+            where: {uuid: classID}
         }).then(function(klass) {
             return Thread.findAll({
                 where: {ClassUuid: klass.get().uuid}
@@ -35,10 +35,10 @@ module.exports = function(dbModels) {
         var classID = req.params.classID;
         var threadID = req.params.threadID;
         Class.find({
-            where: {title: classID}
+            where: {uuid: classID}
         }).then(function(klass) {
             return klass.getThreads({
-                where: {title: threadID}
+                where: {uuid: threadID}
             });
         }).then(function(threads) {
                 return threads[0];
@@ -54,7 +54,7 @@ module.exports = function(dbModels) {
         var content = req.body.content;
         var classID = req.params.classID;
         Class.find({
-            where: {title: classID}
+            where: {uuid: classID}
         }).bind({}).then(function(klass) {
             if (!content || !title) {
                 throw Error(cfg.errmsgs.missingReqInfo);
@@ -74,7 +74,7 @@ module.exports = function(dbModels) {
                 throw Error(cfg.errmsgs.invalidUserInfo);
             }
             this.user = user;
-            return user.getClasses({where: {title: classID}});
+            return user.getClasses({where: {uuid: classID}});
         }).then(function(klass) {
             // Verify user is enrolled
             if (klass.length === 0) {
@@ -100,12 +100,7 @@ module.exports = function(dbModels) {
                 thread: this.thread,
                 action: "refresh"
             });
-        }).catch(function(err) {
-            return res.status(400).json({
-                error: err.message,
-                stack: err.stack
-            });
-        });
+        }).catch(cfg.handleErr(res));
     });
 
     //takes in thread uuid, and class title
@@ -118,7 +113,7 @@ module.exports = function(dbModels) {
         var classID = req.params.classID;
         var threadID = req.params.threadID;
         Class.find({
-            where: {title: classID}
+            where: {uuid: classID}
         }).bind({}).then(function(klass) {
             this.class = klass;
         }).then(function() {
@@ -162,7 +157,7 @@ module.exports = function(dbModels) {
         var classID = req.params.classID;
         var threadID = req.params.threadID;
         Class.find({
-            where: {title: classID}
+            where: {uuid: classID}
         }).bind({}).then(function(klass) {
             this.class = klass;
         }).then(function() {
@@ -199,12 +194,12 @@ module.exports = function(dbModels) {
         var threadID = req.params.threadID;
         var reason = req.body.reason;
         Class.find({
-            where: {title: classID}
+            where: {uuid: classID}
         }).bind({}).then(function(klass) {
             this.class = klass;
         }).then(function() {
             return this.class.getThreads({
-                where: {title: threadID}
+                where: {uuid: threadID}
             });
         }).then(function(threads) {
             var thread = threads[0];
