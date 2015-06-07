@@ -95,21 +95,21 @@ function initialMenuLoad() {
 // }
 
 $( "#menu" ).menu({
-      items: "> :not(.ui-widget-header)",
-      select: function(event, ui) {
-          $( "#menutab").show();
-          var name = ui.item.attr("id");
-          $("#menutitle").empty();
-          $("#menutitle").append("<h1><center>" + name + "'s Menu</center></h1>");
-          getFood(name, function(err, menu) {
-              if (err) {
-                  console.error(err);
-              }
-              menuData = menu;
-              initialMenuLoad();
-          });
-      }
-    });
+    items: "> :not(.ui-widget-header)",
+    select: function(event, ui) {
+        $( "#menutab").show();
+        var name = ui.item.attr("id");
+        $("#menutitle").empty();
+        $("#menutitle").append("<h1><center>" + name + "'s Menu</center></h1>");
+        getFood(name, function(err, menu) {
+            if (err) {
+                console.error(err);
+            }
+            menuData = menu;
+            initialMenuLoad();
+        });
+    }
+});
 
 $("#home").button().click(function() {
     window.location.href = "/home";
@@ -132,39 +132,39 @@ $("#tomenu").button().click(function() {
 });
 
 $("#container").layout({
-  north: {
-    enableCursorHotkey: false,
-    closable: false,
-    resizable: false,
-    spacing_open: 0,
-    spacing_closed: 0
-  },
-  south: {
-    enableCursorHotkey: false,
-    closable: false,
-    resizable: false,
-    spacing_open: 0,
-    spacing_closed: 0
-  },
-  west: {
-    enableCursorHotkey: false,
-    closable: false,
-    resizable: false,
-    spacing_open: 0,
-    spacing_closed: 0
-  }
+    north: {
+        enableCursorHotkey: false,
+        closable: false,
+        resizable: false,
+        spacing_open: 0,
+        spacing_closed: 0
+    },
+    south: {
+        enableCursorHotkey: false,
+        closable: false,
+        resizable: false,
+        spacing_open: 0,
+        spacing_closed: 0
+    },
+    west: {
+        enableCursorHotkey: false,
+        closable: false,
+        resizable: false,
+        spacing_open: 0,
+        spacing_closed: 0
+    }
 });
 
 $( "#places" ).accordion({
-     collapsible: true
-   });
+    collapsible: true
+});
 
-function logout(name) {
-		$.cookie("usernameCookie", null);
-    document.cookie = name+"=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+function logout() {
+    $.removeCookie("usernameCookie", { expires: 1, path: "/" });
+    $.removeCookie("token", { expires: 1, path: "/" });
 }
 
 $("#logout").button().click(function() {
-    logout("token");
+    logout();
     window.location.href = "/login";
 });

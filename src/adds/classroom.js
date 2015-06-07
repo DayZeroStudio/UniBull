@@ -1,4 +1,4 @@
-/*globals classTitle*/
+/*globals classID*/
 "use strict";
 
 var bundle = require("classroom")($);
@@ -58,8 +58,8 @@ $("#container").layout({
 // collapsible();
 
 function logout() {
-    $.cookie("usernameCookie", null);
-    $.cookie("token", null);
+    $.removeCookie("usernameCookie", { expires: 1, path: "/" });
+    $.removeCookie("token", { expires: 1, path: "/" });
 }
 function replyLoaded(uuid) {
     console.log("checking for reply: ", uuid);
@@ -119,7 +119,8 @@ function displayReplies(res, threadID) {
 function getReplies(threadID) {
     //make ajax call to get replies...
     var onViewReplies = bundle.onViewReplies;
-    onViewReplies(classTitle, function(err, res) {
+    console.log("122");
+    onViewReplies(classID, function(err, res) {
         if (err) { return console.log(err); }
         if (res) {
             displayReplies(res, threadID);
@@ -208,7 +209,8 @@ $("button[name=submit_reply]").click(function(thread) {
         clickedReply = false;
         return null;
     }
-    return onSubmitReply(classTitle, threadTitle, replyContent, function(err, data) {
+    console.log("212");
+    return onSubmitReply(classID, threadID, replyContent, function(err, data) {
         console.log("LALALALALA ", data);
         if (err) {
             clickedReply = false;
@@ -268,7 +270,8 @@ $("button[name=submit_postEdit]").click(function(thread) {
         clickedEditPost = false;
         return null;
     }
-    return onSubmitPostEdit(classTitle, threadID, fields, function(err, data) {
+    console.log("273");
+    return onSubmitPostEdit(classID, threadID, fields, function(err, data) {
         if (err) {
             clickedEditPost = false;
             return console.log("error: ", err);
@@ -289,7 +292,7 @@ $("button[name=submit_postEdit]").click(function(thread) {
 //     var onSubmitReply = bundle.onSubmitReply;
 //     var fields = $(".replycontent[data-thread*='"+threadID+"']");
 //     // var content = fields.val();
-//     return onSubmitReply(classTitle, threadID, fields, function(err, data) {
+//     return onSubmitReply(classID, threadID, fields, function(err, data) {
 //         if (err) {
 //             console.log("data error: ", data.error);
 //             return console.log("error", err);
@@ -337,7 +340,9 @@ $("#cancel").button().click(function() {
 function submitPost() {
     var onSubmitPost = bundle.onSubmitPost;
     var fields = $("#submitform #content, #submitform #title");
-    return onSubmitPost(classTitle, fields, function(err, data) {
+    console.log("343");
+    console.log(classID);
+    return onSubmitPost(classID, fields, function(err, data) {
         if (err) { return console.log(err); }
         if (data.action) {
             $("#submit_wrapper").slideUp(0);

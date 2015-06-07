@@ -87,11 +87,12 @@ module.exports = function setupHtmlPages(dbModels) {
     (function(router) {
         router.get("/:classID", function(req, res) {
             var classID = req.params.classID;
-            log.warn("classID:", classID);
-            res.locals.classID = classID;
+            log.warn("RENDER - " + classID);
+            res.locals.classID = req.params.classID;
             Class.find({
-                where: { title: classID }
+                where: {uuid: classID}
             }).then(function(klass) {
+                res.locals.classTitle = klass.title;
                 return klass.getThreads({raw: true});
             }).then(function(threads) {
                 res.locals.threads = threads;
