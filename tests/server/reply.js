@@ -229,22 +229,22 @@ describe("testing reply endpoints", function() {
             });
         });
     });
-// describe("flagging a reply", function() {
-//     var replyID;
-//     beforeEach(function() {
-//         var reply = utils.reply.makeNewReply();
-//         return utils.reply.replyToThread(classID, threadID, reply).then(function(res) {
-//             replyID = res.body.reply.uuid;
-//         });
-//     });
-//     it("should add to the list of reasons why that reply should be flagged", function() {
-//         return utils.reply.flagReply(classID, thread.uuid, replyID, {reason: "inappropriate"}).then(function() {
-//             return utils.reply.getReplies(classID, thread.uuid).then(function(res) {
-//                 console.log("replies:", res.body);
-//                 // var reply = res.body.replies[0];
-//                 // reply.should...
-//             });
-//         });
-//     });
-// });
+describe("flagging a reply", function() {
+    var replyID;
+    beforeEach(function() {
+        var reply = utils.reply.makeNewReply();
+        return utils.reply.replyToThread(classID, threadID, reply).then(function(res) {
+            replyID = res.body.reply.uuid;
+        });
+    });
+    it("should add to the list of reasons why that reply should be flagged", function() {
+        return utils.reply.flagReply(classID, threadID, replyID, {reason: "inappropriate"}).then(function() {
+            return utils.reply.getReplies(classID, threadID).then(function(res) {
+                var reply = res.body.replies[0];
+                reply.flagged.should.have.length.above(0);
+            });
+        });
+    });
+});
+
 });
