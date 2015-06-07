@@ -102,6 +102,7 @@
     border: thin solid black;
     padding: 10px;
 }
+
 /*reply form for submitting a reply*/
 .reply_form{
 
@@ -127,12 +128,26 @@
 }
 
 .reply_date {
-    
+
 }
 /*actions (buttons) container for replies*/
 .reply_actions{
 
 }
+
+.edit_form_wrapper{
+    display: none;
+    text-align: left;
+    border: thin solid black;
+    padding: 10px;
+}
+
+.edit_container{
+    border: thin solid;
+    padding: 3px 3px 3px 10px;
+    margin: 10px;
+}
+
 /*css properties for buttons on threads and replies*/
 .thread_button{
     background: none;

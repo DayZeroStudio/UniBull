@@ -5,6 +5,9 @@ var bundle = require("classroom")($);
 
 var loadedReplies = [];
 
+var clickedReply = false;
+var clickedEditPost = false;
+
 $("#container").layout({
     north: {
     enableCursorHotkey: false,
@@ -166,14 +169,22 @@ $("button[name=viewcontent]").click(function(thread) {
 });
 
 $("button[name=reply]").click(function(thread) {
+    clickedReply = true;
     var threadID = $(thread.currentTarget).attr("data-thread");
-    console.log("Clicked on reply ", threadID);
+    // console.log("Clicked on reply ", threadID);
     // var replyButton = $("button[name=reply][data-thread*="+threadID+"]");
+    if (clickedEditPost) {
+        var editForm = $(".edit_form_wrapper[data-thread*='"+threadID+"']");
+        var editContent = $(".edit_form_content[data-thread*='"+threadID+"'']");
+        editForm.slideUp(0);
+        editContent.val("");
+    }
     var replyForm = $(".reply_form_wrapper[data-thread*='"+threadID+"']");
     replyForm.slideToggle(0);
 });
 
 $("button[name=cancel_reply]").click(function(thread) {
+    clickedReply = false;
     var threadID = $(thread.currentTarget).attr("data-thread");
     var replyForm = $(".reply_form_wrapper[data-thread*='"+threadID+"']");
     var replyContent = $(".reply_form_content[data-thread*='"+threadID+"'']");
@@ -187,24 +198,49 @@ $("button[name=submit_reply]").click(function(thread) {
     var onSubmitReply = bundle.onSubmitReply;
     var replyForm = $(".reply_form_wrapper[data-thread*='"+threadID+"']");
     //var replyContent = $(".reply_form_content[data-thread*='"+threadID+"'']");
-    var replyContent = $( "input[data-thread*='"+threadID+"']");
+    var replyContent = $( "textarea[data-thread*='"+threadID+"'][src=reply]");
     console.log("reply content", replyContent);
     var replyContentCheck = $.trim(replyContent.val());
     if (replyContentCheck.length <= 0) {
         console.log("reply check", replyContentCheck);
         alert("You cannot submit an empty reply.");
+        clickedReply = false;
         return null;
     }
     return onSubmitReply(classTitle, threadTitle, replyContent, function(err, data) {
         if (err) {
+            clickedReply = false;
             return console.log("error: ", err);
         }
         if (data.action) {
+            clickedReply = false;
             replyForm.slideToggle(0);
             replyContent.val("");
         }
     });
 
+});
+
+$("button[name=edit]").click(function(thread) {
+    clickedEditPost = true;
+    var threadID = $(thread.currentTarget).attr("data-thread");
+    if (clickedReply) {
+        var replyForm = $(".reply_form_wrapper[data-thread*='"+threadID+"']");
+        var replyContent = $(".reply_form_content[data-thread*='"+threadID+"'']");
+        replyForm.slideUp(0);
+        replyContent.val("");
+    }
+    var editForm = $(".edit_form_wrapper[data-thread*='"+threadID+"']");
+    editForm.slideToggle(0);
+});
+
+$("button[name=cancel_postEdit]").click(function(thread) {
+    var threadID = $(thread.currentTarget).attr("data-thread");
+    var editForm = $(".edit_form_wrapper[data-thread*='"+threadID+"']");
+    var editContent = $(".edit_form_content[data-thread*='"+threadID+"'']");
+    editForm.slideUp(0);
+    editContent.val("");
+    clickedEditPost = false;
 });
 
 // $("button[data-id=submitreply]").button().click(function(thread) {
