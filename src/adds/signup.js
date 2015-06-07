@@ -9,7 +9,7 @@ $("#submit").button();
 $("#submit").click(function() {
     var bundle = require("signup")($);
     var onSignUp = bundle.onSignUp;
-    var fields = $("#myForm #username, #myForm #email, #myForm #password, #myForm #passwordconfirm");
+    var fields = $("#signup #username, #signup #email, #signup #password, #signup #passwordconfirm, #signup input[name=role]:checked");
     return onSignUp(fields, function(err, data) {
         if (err) {
             return console.log(err);

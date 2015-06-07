@@ -18,6 +18,12 @@
             "classes": ["WebDev101"]
         },
         {
+            "username": "root",
+            "password": "root",
+            "email": "root@email.com",
+            "role": "root"
+        },
+        {
             "username": "SecondUser",
             "password": "mypasswd",
             "email": "second.user@email.com",

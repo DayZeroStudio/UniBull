@@ -14,7 +14,7 @@
         <div class="center-fixed">
             <div class="formBox">
                 <section class="signupform">
-                    <form id="myForm" name="signup" accept-charset="utf-8">
+                    <form id="signup" name="signup" accept-charset="utf-8" action="">
                         <label for="username">Username</label>
                         <input id="username" type="text" name="username" placeholder="Username" >
                         <label for="email">Email</label>
@@ -23,6 +23,11 @@
                         <input id="password" type="password" name="password" placeholder="Password" >
                         <label for="password">Confirm Password</label>
                         <input id="confirmpassword" type="password" name="password" placeholder="Password" >
+                        <br><br>
+                        <div class="center">
+                            <input type="radio" name="role" value="student" checked="checked">Student
+                            <input type="radio" name="role" value="professor">Professor<br>
+                        </div>
                     </form>
                 </section>
                 <br>

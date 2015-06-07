@@ -14,7 +14,7 @@ module.exports = function() {
         force: true
     };
 
-    var modelsList = ["Class", "Thread", "User", "Reply", "Menu", "ClassesUsers"];
+    var modelsList = ["Class", "Thread", "User", "Reply", "Menu", "ClassesUsers", "SignupCodes"];
     return Promise.resolve(modelsList).map(function(model) {
         var path = require("path");
         dbModels[model] = db.import(path.join(__dirname, model.toLowerCase()));

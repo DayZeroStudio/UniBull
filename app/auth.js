@@ -57,5 +57,18 @@ module.exports = (function() {
         return jwt.decode(token);
     };
 
+    auth.isAuthorizedFor = function(userRole, superRole) {
+        var roles = {
+            "student": 0,
+            "ta": 1,
+            "professor": 2,
+            "moderator": 3,
+            "admin": 4,
+            "superuser": 5,
+            "root": 6
+        };
+        return roles[userRole] >= roles[superRole];
+    };
+
     return auth;
 })();
