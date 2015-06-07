@@ -40,5 +40,15 @@ module.exports = function($) {
         ajax.putJSON(restEndpoint, formData, callback);
         return false;
     };
+    exports.onDelThread = function(classID, threadID, fields, callback) {
+        var formData = {};
+        fields.each(function(i, v) {
+            var name = $(v).attr("name");
+            formData[name] = $(v).val();
+        });
+        var restEndpoint = "/rest/class/"+classID+"/thread/"+threadID+"/delete";
+        ajax.delJSON(restEndpoint, formData, callback);
+        return false;
+    };
     return exports;
 };

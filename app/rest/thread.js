@@ -182,7 +182,7 @@ module.exports = function(dbModels) {
             });
         }).then(function(threads) {
             var thread = threads[0];
-            if (this.user.uuid !== threads.UserUuid) {
+            if (this.user.uuid !== thread.UserUuid) {
                 throw Error(cfg.errmsgs.naughtyUser);
             }
             return thread.destroy();

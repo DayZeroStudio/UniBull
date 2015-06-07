@@ -284,6 +284,25 @@ $("button[name=submit_postEdit]").click(function(thread) {
 
 });
 
+$("button[name=delete]").click(function(thread) {
+    var threadID = $(thread.currentTarget).attr("data-thread");
+    var threadTitle = $(".thread_title[data-thread*='"+threadID+"']").text();
+    var onDelThread = bundle.onDelThread;
+    var fields = $( "textarea[data-thread*='"+threadID+"'][src=editPost], input[data-thread*='"+threadID+"']");
+    if (confirm("Are you sure you want to delete the thread '" + threadTitle +"'?")) {
+        return onDelThread(classTitle, threadID, fields, function(err, data) {
+            if (err) {
+                return console.log("error: ", err);
+            }
+            if (data) {
+                $(".thread_container[data-thread*='"+threadID+"']").remove();
+            }
+        });
+    } else {
+        return false;
+    }
+ });
+
 // $("button[data-id=submitreply]").button().click(function(thread) {
 //     var threadID = $(thread.currentTarget).attr("data-thread");
 //     var onSubmitReply = bundle.onSubmitReply;
