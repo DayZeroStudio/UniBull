@@ -7,6 +7,7 @@ module.exports = function(UTILS, agent) {
     var _ = require("lodash");
 
     utils.validUser = UTILS.validUser;
+    utils.validInstructor = UTILS.validInstructor;
 
     utils.makeNewUser = function() {
         var name = _.uniqueId("newuser_");
@@ -14,6 +15,16 @@ module.exports = function(UTILS, agent) {
             username: name,
             password: "password",
             email: name + "@email.com"
+        };
+    };
+
+    utils.makeInstructor = function() {
+        var name = _.uniqueId("newInstructor_");
+        return {
+            username: name,
+            password: "password",
+            email: name + "@email.com",
+            role: "professor"
         };
     };
 

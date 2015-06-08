@@ -18,6 +18,13 @@
             "classes": ["WebDev101"]
         },
         {
+            "username": "FirstInstructor",
+            "password": "mypasswd",
+            "email" : "first.instructor@email.com",
+            "role": "professor",
+            "classes": ["WebDev101"]
+        },
+        {
             "username": "root",
             "password": "root",
             "email": "root@email.com",

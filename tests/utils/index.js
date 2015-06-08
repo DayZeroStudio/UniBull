@@ -8,6 +8,11 @@ module.exports = (function() {
         username: "FirstUser",
         password: "mypasswd"
     };
+    UTILS.validInstructor = {
+        username: "FirstInstructor",
+        password: "mypasswd"
+    };
+
     Object.freeze(UTILS);
 
     var utils = {};
