@@ -211,12 +211,29 @@ describe("testing thread endpoints", function() {
     //     context("that you have joined", function() {
     //         context("as an instructor", function() {
     //             it("should endorse the thread", function() {
-    //
+    //                 return utils.user.loginToApp(utils.user.validInstructor).then(function() {
+    //                     return utils.class.joinClass(utils.user.validInstructor.username, classID).then(function() {
+    //                         utils.thread.endorseThread(classID, threadID, {reason: "well written"}).then(function() {
+    //                             return utils.thread.getThread(classID, threadID).then(function(res) {
+    //                                 console.log("res body: ", res.body);
+    //                                 res.body.thread.endorsed.should.have.length.above(0);
+    //                             });
+    //                         });
+    //                     });
+    //                 });
     //             });
     //         });
     //         context("as a student", function() {
     //             it("should return an error", function() {
-    //
+    //                 return utils.user.loginToApp(utils.user.validUser).then(function() {
+    //                     return utils.class.joinClass(utils.user.validUser.username, classID).then(function() {
+    //                         return utils.thread.endorseThread(classID, threadID, {reason: "good stuff"}).then(function() {
+    //                             return utils.thread.getThread(classID, threadID).then(function(res) {
+    //                                 res.statusCode.should.equal(400);
+    //                             });
+    //                         });
+    //                     });
+    //                 });
     //             });
     //         });
     //     });
