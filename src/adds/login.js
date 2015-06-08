@@ -9,7 +9,7 @@ $( "#loginButton" ).button();
 $( "#loginButton" ).click(function() {
     var bundle = require("login")($);
     var onLogin = bundle.onLogin;
-    var fields = $("#signup #username, #signup #password");
+    var fields = $("#login #username, #login #password");
     return onLogin(fields, function(err, data) {
         if (err) {
             return console.log(err);

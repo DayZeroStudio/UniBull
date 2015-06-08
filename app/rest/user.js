@@ -98,7 +98,6 @@ module.exports = function(dbModels, routePrefix) {
     }));
     router.post("/signup", function(req, res) {
         log.info("POST - Signup user");
-        log.warn("BODY:", req.body);
         var username = req.body.username;
         var password = req.body.password;
         var email = req.body.email;
