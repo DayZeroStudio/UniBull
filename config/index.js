@@ -43,8 +43,6 @@ module.exports = (function() {
                     stack: err.stack
                 });
             } else if (cfg.isTest) {
-                console.log(err.message);
-                console.log(err.stack);
                 return res.status(400).json({
                     error: err.message,
                     stack: err.stack
