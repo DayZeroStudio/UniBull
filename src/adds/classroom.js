@@ -1,4 +1,4 @@
-/*globals classID*/
+/*globals classTitle, classID*/
 "use strict";
 
 var bundle = require("classroom")($);

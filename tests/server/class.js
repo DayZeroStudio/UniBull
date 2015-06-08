@@ -137,7 +137,8 @@ describe("testing class endpoints", function() {
                 }).then(function() {
                     return utils.class.joinClass(userID, classID).then(function(res) {
                         res.statusCode.should.equal(400);
-                        res.body.should.have.key("error");
+                        console.warn(res.body);
+                        res.body.error.should.exist;
                     });
                 });
             });
