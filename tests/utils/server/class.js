@@ -1,5 +1,4 @@
 "use strict";
-
 module.exports = function(UTILS, agent) {
     var utils = {};
     var chai = require("chai");

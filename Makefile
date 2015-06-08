@@ -63,9 +63,9 @@ test-coverage: lint
 		${MOCHA_ARGS} ./tests/web* | tee logs/mocha-coverage.out | ${BUNYAN}
 
 autotest:
-	@ nodemon ${AUTOTEST_IGNORES} --exec "make _test-server"
-_test-server: lint
-	-@ set -o pipefail && NODE_ENV=test\
+	@ nodemon ${AUTOTEST_IGNORES} --exec "clear; make _test-server"
+_test-server:
+	-@ make lint && set -o pipefail && NODE_ENV=test\
 		${MOCHA} ${MOCHA_OPTS}\
 		${MOCHA_ARGS} ./tests/server | tee logs/mocha-autotest.out | ${BUNYAN}
 

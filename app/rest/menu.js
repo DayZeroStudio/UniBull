@@ -1,7 +1,7 @@
 "use strict";
 var Promise = require("bluebird");
 
-module.exports = function(dbModels) {
+module.exports = function(dbModels, routePrefix) {
     var express = require("express");
     var router = express.Router();
     var bodyParser = require("body-parser");
@@ -16,7 +16,14 @@ module.exports = function(dbModels) {
     var cfg = require("../../config");
     var log = cfg.log.makeLogger("menu,dh");
 
+    var auth = require("../auth.js");
+    var publicEndpoints = _.map(["", "/"],
+            _.partial(append, routePrefix))
+            .concat([/menu$/, /getRating$/]);
+    auth.setupAuth(router, publicEndpoints);
+
     var Menu = dbModels.Menu;
+    var MenuRatings = dbModels.MenuRatings;
 
     var base_UCSC_dh_url = "http://nutrition.sa.ucsc.edu/"
         + "menuSamp.asp?myaction=read";
@@ -61,6 +68,7 @@ module.exports = function(dbModels) {
                 log.debug("meals:", meals);
 
                 var menu = _.reduce(meals, _.merge);
+                log.warn(menu);
                 menu.title = title;
                 menu.date = date;
                 menu.name = dhName;
@@ -72,7 +80,7 @@ module.exports = function(dbModels) {
             });
     }
 
-    router.get("/:dh/:dtdate", function(req, res) {
+    router.get("/:dh/:dtdate/menu", function(req, res) {
         var dh = req.params.dh;
         var dtdate = parseInt(req.params.dtdate);
         log.info("GET - Menu from %s +T%d", dh, dtdate);
@@ -83,10 +91,60 @@ module.exports = function(dbModels) {
             if (!dbData) {
                 return getMenuForDh(dh, dtdate).then(function(menu) {
                     res.json(menu);
-                });
+                }).catch(cfg.handleErr(res));
             }
             return res.json(dbData);
         });
+    });
+
+    router.get("/:dh/:menuItem/getRating", function(req, res) {
+        MenuRatings.find({
+            where: {
+                dh: req.params.dh,
+                item: req.params.menuItem
+            }
+        }).then(function(menuItem) {
+            return res.json({
+                avg: parseFloat(menuItem.avg).toFixed(1)
+            });
+        });
+    });
+
+    router.put("/:dh/:menuItem/rating", function(req, res) {
+        var decoded = require("../auth").decodeRequest(req);
+        var username = decoded.username;
+        var rating = req.body.rating;
+        var dfltUserRatings = {};
+        dfltUserRatings[username] = rating;
+        MenuRatings.findOrCreate({
+            where: {
+                dh: req.params.dh,
+                item: req.params.menuItem
+            }, defaults: {
+                len: 1,
+                avg: rating,
+                userRatings: dfltUserRatings
+            }
+        }).spread(function(menuItem, created) {
+            if (!created) {
+                var len = menuItem.len;
+                var avg = menuItem.avg;
+                if (menuItem.userRatings.hasOwnProperty(username)) {
+                    menuItem.avg = avg + (rating / len)
+                        - (menuItem.userRatings[username] / len);
+                    menuItem.userRatings[username] = rating;
+                } else {
+                    var newLen = len + 1;
+                    menuItem.avg = (avg * len / newLen) + (rating / newLen);
+                    menuItem.len = newLen;
+                }
+            }
+            return menuItem.save();
+        }).then(function(menuItem) {
+            return res.json({
+                avg: parseFloat(menuItem.avg).toFixed(1)
+            });
+        }).catch(cfg.handleErr(res));
     });
 
     return Promise.resolve(router);

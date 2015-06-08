@@ -4,7 +4,7 @@ module.exports = function($) {
     var exports = {};
 
     exports.getMenu = function(dh, dtdate, callback) {
-        ajax.getJSON("/rest/menu/"+dh+"/"+dtdate, {}, callback);
+        ajax.getJSON("/rest/menu/"+dh+"/"+dtdate+"/menu", {}, callback);
         return false;
     };
 
