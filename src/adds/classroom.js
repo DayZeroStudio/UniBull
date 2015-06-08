@@ -7,6 +7,7 @@ var loadedReplies = [];
 
 var clickedReply = false;
 var clickedEditPost = false;
+var clickedReportPost = false;
 
 $("#container").layout({
     north: {
@@ -60,6 +61,7 @@ $("#container").layout({
 function logout() {
     $.removeCookie("usernameCookie", { expires: 1, path: "/" });
     $.removeCookie("token", { expires: 1, path: "/" });
+    console.log(classTitle);
 }
 function replyLoaded(uuid) {
     console.log("checking for reply: ", uuid);
@@ -179,6 +181,12 @@ $("button[name=reply]").click(function(thread) {
         editForm.slideUp(0);
         editContent.val("");
     }
+
+    if (clickedReportPost) {
+        var reportForm = $(".report_form_wrapper[data-thread*='"+threadID+"']");
+        reportForm.slideUp(0);
+    }
+
     var replyForm = $(".reply_form_wrapper[data-thread*='"+threadID+"']");
     replyForm.slideToggle(0);
 });
@@ -231,6 +239,11 @@ $("button[name=edit]").click(function(thread) {
         var replyContent = $(".reply_form_content[data-thread*='"+threadID+"'']");
         replyForm.slideUp(0);
         replyContent.val("");
+    }
+
+    if (clickedReportPost) {
+        var reportForm = $(".report_form_wrapper[data-thread*='"+threadID+"']");
+        reportForm.slideUp(0);
     }
     var editForm = $(".edit_form_wrapper[data-thread*='"+threadID+"']");
     editForm.slideToggle(0);
@@ -291,7 +304,7 @@ $("button[name=delete]").click(function(thread) {
     var onDelThread = bundle.onDelThread;
     var fields = $( "textarea[data-thread*='"+threadID+"'][src=editPost], input[data-thread*='"+threadID+"']");
     if (confirm("Are you sure you want to delete the thread '" + threadTitle +"'?")) {
-        return onDelThread(classTitle, threadID, fields, function(err, data) {
+        return onDelThread(classID, threadID, fields, function(err, data) {
             if (err) {
                 return console.log("error: ", err);
             }
@@ -303,6 +316,86 @@ $("button[name=delete]").click(function(thread) {
         return false;
     }
  });
+
+ $("button[name=report]").click(function(thread) {
+     var threadID = $(thread.currentTarget).attr("data-thread");
+     clickedReportPost = true;
+
+     if (clickedReply) {
+         var replyForm = $(".reply_form_wrapper[data-thread*='"+threadID+"']");
+         var replyContent = $(".reply_form_content[data-thread*='"+threadID+"'']");
+         replyForm.slideUp(0);
+         replyContent.val("");
+     }
+
+     if (clickedEditPost) {
+         var editForm = $(".edit_form_wrapper[data-thread*='"+threadID+"']");
+         var editContent = $(".edit_form_content[data-thread*='"+threadID+"'']");
+         editForm.slideUp(0);
+         editContent.val("");
+     }
+
+     //var threadTitle = $(".thread_title[data-thread*='"+threadID+"']").text();
+     $( ".report_reason_list[data-thread*='"+threadID+"']").hide();
+     var reportForm = $(".report_form_wrapper[data-thread*='"+threadID+"']");
+     reportForm.slideToggle(0);
+ });
+
+var otherClicked = false;
+var usr_input;
+$("button[name=report_reason]").click(function(thread) {
+     var threadID = $(thread.currentTarget).attr("data-thread");
+     $( ".report_reason_list[data-thread*='"+threadID+"']").menu({
+         select: function(event, ui) {
+             var usrinput = ui.item.attr("sel");
+             if (usrinput === "other") {
+                 otherClicked = true;
+                 $(".report_other_reason[data-thread*='"+threadID+"']").show();
+             } else {
+                otherClicked = false;
+                usr_input = usrinput;
+             }
+             if (!otherClicked) {
+                 $(".report_other_reason[data-thread*='"+threadID+"']").hide();
+             }
+            $("input[data-thread*='"+threadID+"'][src=reportPost]").val(usr_input);
+             $( ".report_reason_list[data-thread*='"+threadID+"']").hide();
+         }
+     });
+     $( ".report_reason_list[data-thread*='"+threadID+"']").show();
+});
+
+$("button[name=cancel_reportThread]").click(function(thread) {
+    var threadID = $(thread.currentTarget).attr("data-thread");
+    $("input[data-thread*='"+threadID+"'][src=reportPost]").val("");
+    var reportForm = $(".report_form_wrapper[data-thread*='"+threadID+"']");
+    reportForm.slideUp(0);
+    otherClicked = false;
+});
+
+$("button[name=submit_reportThread]").click(function(thread) {
+    var threadID = $(thread.currentTarget).attr("data-thread");
+    var dataToSend;
+    if (otherClicked) {
+        dataToSend = $("textarea[data-thread*='"+threadID+"'][src=reportPost]");
+    } else {
+        dataToSend = $("input[data-thread*='"+threadID+"'][src=reportPost]");
+    }
+    console.log(dataToSend.val());
+    var onReportThread = bundle.onReportThread;
+    return onReportThread(classID, threadID, dataToSend, function(err, data) {
+        if (err) {
+            return console.log("error: ", err);
+        }
+        if (data) {
+            var reportForm = $(".report_form_wrapper[data-thread*='"+threadID+"']");
+            reportForm.slideUp(0);
+            otherClicked = false;
+            alert("Thanks! We'll look into it!");
+            return console.log(data);
+        }
+    });
+});
 
 // $("button[data-id=submitreply]").button().click(function(thread) {
 //     var threadID = $(thread.currentTarget).attr("data-thread");
