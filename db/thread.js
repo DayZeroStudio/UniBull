@@ -17,6 +17,10 @@ module.exports = function(db, DataTypes) {
         flagged: {
             type: DataTypes.ARRAY(DataTypes.STRING),
             allowNull: true
+        },
+        endorsed: {
+            type: DataTypes.ARRAY(DataTypes.STRING),
+            allowNull: true
         }
     }, {
         classMethods: {

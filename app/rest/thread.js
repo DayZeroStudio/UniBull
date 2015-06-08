@@ -143,13 +143,7 @@ module.exports = function(dbModels) {
             return res.json({
                 thread: thread
             });
-        }).catch(function(err) {
-            console.log(err);
-            return res.status(400).json({
-                error: err.message,
-                stack: err.stack
-            });
-        });
+        }).catch(cfg.handleErr(res));
     });
 
     router.delete("/:classID/thread/:threadID/delete", function(req, res) {
@@ -213,6 +207,54 @@ module.exports = function(dbModels) {
                 thread: thread
             });
         });
+    });
+
+    router.post("/:classID/thread/:threadID/endorse", function(req, res) {
+        log.info("POST - endorsing a thread");
+        var classID = req.params.classID;
+        var threadID = req.params.threadID;
+        var reason = req.body.reason;
+        Class.find({
+            where: {uuid: classID}
+        }).bind({}).then(function(klass) {
+            this.class = klass;
+        }).then(function() {
+            var decoded = auth.decodeRequest(req);
+            var username = decoded.username;
+            var instructorRoles = {
+                "ta": 1,
+                "professor": 2
+            };
+            if (instructorRoles.indexOf(decoded.role) < 0) {
+                throw Error(cfg.errmsgs.naughtyUser);
+            }
+            return User.find({
+                where: {username: username}
+            });
+        }).then(function(user) {
+            if (!user) {
+                throw Error(cfg.errmsgs.invalidUserInfo);
+            }
+            this.user = user;
+        }).then(function() {
+            return this.class.getThreads({
+                where: {uuid: threadID}
+            });
+        }).then(function(threads) {
+            var thread = threads[0];
+            if (this.user.uuid === thread.UserUuid) {
+                throw Error(cfg.errmsgs.sillyUser);
+            }
+            if (!thread.endorsed) {
+                thread.endorsed = [];
+            }
+            thread.endorsed.push(reason);
+            return thread.save();
+        }).then(function(thread) {
+            return res.json({
+                thread: thread
+            });
+        }).catch(cfg.handleErr(res));
     });
 
     return Promise.resolve(router);

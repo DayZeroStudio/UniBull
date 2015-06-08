@@ -55,5 +55,11 @@ module.exports = function(UTILS, agent) {
             .toPromise();
     };
 
+    utils.endorseReply = function(classID, threadID, replyID, reason) {
+        return agent
+            .post("/rest/class/"+classID+"/thread/"+threadID+"/reply/"+replyID+"/endorse")
+            .send(reason)
+            .toPromise();
+    };
     return utils;
 };
