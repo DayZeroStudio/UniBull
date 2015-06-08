@@ -9,7 +9,7 @@ var Promise = require("bluebird");
 var cfg = require("../../config");
 //var log = cfg.log.makeLogger("comma,tags");
 
-require("blanket")();
+cfg.coverage();
 describe("testing front end class page", function() {
     this.timeout(cfg.webdriver.timeout);
     var client = {};

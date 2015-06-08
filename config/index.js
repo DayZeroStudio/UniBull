@@ -24,7 +24,7 @@ module.exports = (function() {
 
     cfg.coverage = function() {
         if (!cfg.isProd && cfg.env.COVERAGE === "y") {
-            require("blanket")();
+            require("blanket");
         }
     };
 
