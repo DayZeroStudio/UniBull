@@ -24,8 +24,8 @@ module.exports = function($) {
         console.log("onSubmitReply");
         return false;
     };
-    exports.onViewReplies = function(classID, callback) {
-        var restEndpoint = "/rest/class/"+classID+"/all";
+    exports.onViewReplies = function(classID, threadID, callback) {
+        var restEndpoint = "/rest/class/"+classID+"/thread/"+threadID+"/all";
         ajax.getJSON(restEndpoint, {}, callback);
         return false;
     };
