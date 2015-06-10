@@ -1,9 +1,9 @@
-/*globals classTitle, classID*/
+/*globals classID*/
 "use strict";
 
 var bundle = require("classroom")($);
 
-var loadedReplies = [];
+var loadedReplies = {};
 
 var clickedReply = false;
 var clickedEditPost = false;
@@ -61,11 +61,9 @@ $("#container").layout({
 function logout() {
     $.removeCookie("usernameCookie", { expires: 1, path: "/" });
     $.removeCookie("token", { expires: 1, path: "/" });
-    console.log(classTitle);
 }
-function replyLoaded(uuid) {
-    console.log("checking for reply: ", uuid);
-    return $.inArray(uuid, loadedReplies);
+function replyLoaded(threadID, replyID) {
+    return $.inArray(replyID, loadedReplies[threadID]);
 }
 
 function convertDate(d) {
@@ -85,35 +83,77 @@ function convertDate(d) {
 
     return dateString;
 }
-function addReply(threadID, user, content, uuid, date) {
-    loadedReplies.push(uuid);
-    console.log(date);
-    $("div[data-thread*='"+threadID+"'][name*=thread_container]")
-        .append("<div class='reply_container' data-thread='"+threadID+"' name='reply_container'>"
-        + "<p class='reply_content'>"+ content + "</p>"
-        + "<p class='reply_author'>"+ user + "</p>"
-        + "<p class='reply_postdate'>"+ date + "</p>"
-        + "</div>");
+
+function composeReply(threadID, user, content, replyUuid, date) {
+    return "<div class=\"reply_container\" data-thread=\""+threadID+"\" data-parent=\""+replyUuid+"\" data-self=\""+replyUuid+"\" name=\"reply_container\">"
+     +"            <button class=\"reply_button\" data-thread=\""+threadID+"\" data-self=\""+replyUuid+"\" name=\"view_reply_children\"> [+] </button>"
+     +"            <div class=\"reply_auth_date\" data-self\""+replyUuid+"\">"
+     +"                <p class=\"reply_author\">"+user+"</p>"
+     +"                <p class=\"reply_postdate\">"+date+"</p>"
+     +"             </div>"
+     +"            <div class=\"reply_content_wrapper\" data-thread=\""+threadID+"\" data-self=\""+replyUuid+"\">"
+     +"                <p class=\"reply_content\">"+content+"</p>"
+     +"                <p class=\"reply_author\">"+user+"</p>"
+     +"                <p class=\"reply_postdate\">"+date+"</p>"
+     +"                <div class =\"reply_actionsrply\">"
+     +"                    <button class=\"reply_button\" data-self=\""+replyUuid+"\" name=\"replyToReply\"> Reply </button>"
+     +"                </div>"
+     +"                <div class=\"reply_actionsspam\">"
+     +"                    <button class=\"reply_button\" data-self=\""+replyUuid+"\" name=\"editReply\"> Edit </button>"
+     +"                    <button class=\"reply_button\" data-self=\""+replyUuid+"\" name=\"deleteReply\"> Delete </button>"
+     +"                    <button class=\"reply_button\" data-self=\""+replyUuid+"\" name=\"flagReply\"> Report </button>"
+     +"                </div>"
+     +"                <div class=\"reply_form_wrapper\" data-self=\""+replyUuid+"\">"
+     +"                    <form class=\"reply_form\" name=\"replyToReply_form\" accept-charset=\"utf-8\">"
+     +"                        <label for=\"reply_form_content\">Content</label><br>"
+     +"                        <textarea class=\"reply_form_content\" src=\"replyToReply\" data-thread=\""+threadID+"\" data-self=\""+replyUuid+"\" type=\"text\" name=\"replyToReplyFormContent\" cols=\"60\" rows=\"3\"></textarea>"
+     +"                    </form>"
+     +"                    <button class=\"reply_button\" data-thread=\""+threadID+"\" data-self="+replyUuid+" name=\"cancel_reply\">Cancel</button>"
+     +"                    <button class=\"reply_button\" data-thread=\""+threadID+"\" data-title=\"thread.title\" name=\"submit_reply\">Submit</button>"
+     +"                </div>"
+     +"                <div class=\"replyEdit_form_wrapper\" data-thread=\""+threadID+"\">"
+     +"                    <form class=\"replyEdit_form\" name=\"edit_form\" accept-charset=\"utf-8\">"
+     +"                        <label for=\"replyEdit_form_content\">Edit Post</label><br><br>"
+     +"                        <textarea class=\"replyEdit_form_content\" src=\"replyEditPost\" data-thread=\" "+threadID+" \" type=\"text\" name=\"content\" cols=\"65\" rows=\"5\"></textarea>"
+     +"                    </form>"
+     +"                    <button class=\"reply_button\" data-thread=\""+threadID+"\" data-self="+replyUuid+" name=\"cancel_postEdit\">Cancel</button>"
+     +"                    <button class=\"reply_button\" data-thread=\""+threadID+"\" data-self="+replyUuid+" name=\"submit_postEdit\">Submit</button>"
+     +"                </div>"
+     +"            </div>"
+     +"        </div>";
 }
 
-function displayReplies(res, threadID) {
-    // console.log("res", res);
-    // console.log("thredID", threadID);
-    var uname;
-    res.threads.forEach(function(thread) {
-        console.log("threadID: ", thread);
-        uname = thread.User.username;
-        //console.log("thread title: ", thread.title);
-        if (thread.uuid === threadID) {
-            thread.Replies.forEach(function(reply) {
-                console.log("I get here");
-                if (replyLoaded(reply.uuid) === (-1)) {
-                    var date = convertDate(reply.createdAt);
-                    addReply(threadID, uname, reply.content, reply.uuid, date);
-                } else {
-                    console.log("reply already loaded: ", reply.uuid);
-                }
-            });
+function viewReplyChildren(replyID) {
+    $("button[name=view_reply_children][data-self*='"+replyID+"']").click(function(reply) {
+        console.log("stop clicking me!");
+        var replyID = $(reply.currentTarget).attr("data-self");
+        var replyContent = $(".reply_content_wrapper[data-self*='"+replyID+"']");
+        var replyAuthDate = $(".reply_auth_date[data-self*='"+replyID+"']");
+        var viewContentButton = $("button[name=viewcontent][data-self*='"+replyID+"']");
+        if (replyContent.is(":visible") && !replyAuthDate.is(":visible")) {
+            viewContentButton.html("[+]");
+        } else {
+            viewContentButton.html("[-]");
+        }
+        replyContent.slideToggle(0);
+        replyAuthDate.slideToggle(0);
+    });
+}
+
+function addReply(threadID, user, content, replyID, date) {
+    loadedReplies[threadID].push(replyID);
+    $("div[data-thread*='"+threadID+"'][name*=thread_replies]")
+        .append(composeReply(threadID, user, content, replyID, date));
+    viewReplyChildren(replyID);
+}
+
+function loadReplies(res, threadID) {
+    res.replies.forEach(function(reply) {
+        if (reply.ThreadUuid === threadID) {
+            if (replyLoaded(threadID, reply.uuid) === (-1)) {
+                var date = convertDate(reply.createdAt);
+                addReply(threadID, reply.username, reply.content, reply.uuid, date);
+            }
         }
     });
 }
@@ -121,10 +161,10 @@ function displayReplies(res, threadID) {
 function getReplies(threadID) {
     //make ajax call to get replies...
     var onViewReplies = bundle.onViewReplies;
-    onViewReplies(classID, function(err, res) {
+    onViewReplies(classID, threadID, function(err, res) {
         if (err) { return console.log(err); }
         if (res) {
-            displayReplies(res, threadID);
+            loadReplies(res, threadID);
         }
     });
 }
@@ -153,6 +193,7 @@ $("#tomenu").button().click(function() {
     window.location.href = "/menu";
 });
 $(".rb").button();
+
 $("#newpost").button().click(function() {
     $("#submit_wrapper").slideToggle(0);
 });
@@ -160,9 +201,13 @@ $("button[name=viewcontent]").click(function(thread) {
     var threadID = $(thread.currentTarget).attr("data-thread");
     var threadContent = $(".thread_content_wrapper[data-thread*='"+threadID+"']");
     var threadAuthDate = $(".thread_auth_date[data-thread*='"+threadID+"']");
+    var replies = $("div[data-thread*='"+threadID+"'][name*=thread_replies]");
     var viewContentButton = $("button[name=viewcontent][data-thread*='"+threadID+"']");
     if (threadContent.is(":visible") && !threadAuthDate.is(":visible")) {
         viewContentButton.html("[+]");
+        if (replies.is(":visible")) {
+            replies.slideToggle(0);
+        }
     } else {
         viewContentButton.html("[-]");
     }
@@ -206,7 +251,6 @@ $("button[name=submit_reply]").click(function(thread) {
     console.log("title, ", threadTitle);
     var onSubmitReply = bundle.onSubmitReply;
     var replyForm = $(".reply_form_wrapper[data-thread*='"+threadID+"']");
-    //var replyContent = $(".reply_form_content[data-thread*='"+threadID+"'']");
     var replyContent = $( "textarea[data-thread*='"+threadID+"'][src=reply]");
     console.log("reply content", replyContent);
     var replyContentCheck = $.trim(replyContent.val());
@@ -228,7 +272,6 @@ $("button[name=submit_reply]").click(function(thread) {
             replyContent.val("");
         }
     });
-
 });
 
 $("button[name=edit]").click(function(thread) {
@@ -272,16 +315,12 @@ $("button[name=submit_postEdit]").click(function(thread) {
     //var replyContent = $(".reply_form_content[data-thread*='"+threadID+"'']");
     var editContent = $( "textarea[data-thread*='"+threadID+"'][src=editPost]");
     var fields = $( "textarea[data-thread*='"+threadID+"'][src=editPost], input[data-thread*='"+threadID+"']");
-    console.log("fields = ", fields);
-    console.log("reply content", editContent);
     var editContentCheck = $.trim(editContent.val());
     if (editContentCheck.length <= 0) {
-        console.log("reply check", editContentCheck);
         alert("You cannot submit an empty reply.");
         clickedEditPost = false;
         return null;
     }
-    console.log("273");
     return onSubmitPostEdit(classID, threadID, fields, function(err, data) {
         if (err) {
             clickedEditPost = false;
@@ -431,14 +470,21 @@ $("button[name=submit_reportThread]").click(function(thread) {
 //     //do something with threadID;
 // });
 
-$("button[name=viewreplies]").button().click(function(thread) {
+$("button[name=viewreplies]").click(function(thread) {
     var threadID = $(thread.currentTarget).attr("data-thread");
-    var replies = $(".replies[data-thread*='"+threadID+"']");
-    if (!replies.is(":visible")) {
-        getReplies(threadID);
+    var viewChildrenButton = $("button[name=viewreplies][data-thread*='"+threadID+"']");
+    var replies = $("div[data-thread*='"+threadID+"'][name*=thread_replies]");
+    if (!loadedReplies[threadID]) {
+        loadedReplies[threadID] = [];
+    } else {
+        if (!replies.is(":visible")) {
+            getReplies(threadID);
+            viewChildrenButton.html("Hide Replies");
+        } else {
+            viewChildrenButton.html("Show Replies");
+        }
     }
     replies.slideToggle(0);
-
 });
 
 $("#cancel").button().click(function() {

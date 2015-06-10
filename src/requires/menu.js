@@ -8,5 +8,10 @@ module.exports = function($) {
         return false;
     };
 
+    exports.getRatings = function(dh, menuitem, callback) {
+        ajax.getJSON("/rest/menu/"+dh+"/"+menuitem + "/getRating", {}, callback);
+        return false;
+    };
+
     return exports;
 };

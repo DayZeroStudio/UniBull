@@ -48,7 +48,7 @@
                             <p class="thread_postdate"> some time </p>
                             <div class="thread_actionsrply">
                                 <button class="thread_button" data-thread="<%= thread.uuid %>" name="reply"> Reply </button>
-                                <button class="thread_button" data-thread="<%= thread.uuid %>" name="viewreplies"> View Replies </button>
+                                <button class="thread_button" data-thread="<%= thread.uuid %>" name="viewreplies"> Show Replies </button>
                             </div>
                             <div class="thread_actionsspam">
                                 <button class="thread_button" data-thread="<%= thread.uuid %>" name="edit"> Edit </button>
@@ -58,7 +58,6 @@
                             <div class="reply_form_wrapper" data-thread="<%= thread.uuid %>">
                                 <form class="reply_form" name="reply_form" accept-charset="utf-8">
                                     <label for="reply_form_content">Content</label><br>
-                                    <!-- <input class="reply_form_content" src="reply" data-thread="<%= thread.uuid %>" type="text" name="content"> -->
                                     <textarea class="reply_form_content" src="reply" data-thread="<%= thread.uuid %>" type="text" name="content" cols="60" rows="3"></textarea>
                                 </form>
                                 <button class="thread_button" data-thread="<%= thread.uuid %>" name="cancel_reply">Cancel</button>
@@ -68,11 +67,10 @@
                                 <form class="edit_form" name="edit_form" accept-charset="utf-8">
                                     <label for="edit_form_content">Edit Post</label><br><br>
                                     <input class="edit_form_content" type="editPost" data-thread="<%= thread.uuid %>" type="text" name="title"> <br><br>
-                                    <!-- <input class="edit_form_content" type="editPost" data-thread="<%= thread.uuid %>" type="text" name="content"> -->
                                     <textarea class="edit_form_content" src="editPost" data-thread="<%= thread.uuid %>" type="text" name="content" cols="65" rows="5"></textarea>
                                 </form>
                                 <button class="thread_button" data-thread="<%= thread.uuid %>" name="cancel_postEdit">Cancel</button>
-                                <button class="thread_button" data-thread="<%= thread.uuid %>" data-title="<%= thread.title %>" name="submit_postEdit">Submit</button>
+                                <button class="thread_button" data-thread="<%= thread.uuid %>" name="submit_postEdit">Submit</button>
                             </div>
                             <div class="report_form_wrapper" data-thread="<%= thread.uuid %>">
                                 <!-- <form class="edit_form" name="edit_form" accept-charset="utf-8"> -->
@@ -98,6 +96,8 @@
                             <p class="thread_author"> user </p>
                             <p class="thread_postdate"> some time </p>
                         </div>
+                        <div class="thread_replies" data-thread="<%= thread.uuid %>" name="thread_replies">
+                        </div>
                     </div>
                     <% }); %>
                 </div>
@@ -120,8 +120,7 @@
         </div>
 
         <script>
-var classTitle = "<%= classTitle %>";
-var classID = "<%= classID %>";
+            var classID = "<%= classID %>";
         </script>
         <script src="/js/classroom-bundle.js"></script>
     </body>

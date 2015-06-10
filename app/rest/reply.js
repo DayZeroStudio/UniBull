@@ -37,6 +37,13 @@ module.exports = function(dbModels) {
         return Reply.findAll({
             where: {ThreadUuid: threadID},
             raw: true
+        }).map(function(reply) {
+            return User.find({
+                where: {uuid: reply.UserUuid}
+            }).then(function(user) {
+                reply.username = user.username;
+                return reply;
+            });
         }).then(function(replies) {
             return res.json({replies: processReplies(replies)});
         }).catch(function(err) {

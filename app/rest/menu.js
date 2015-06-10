@@ -103,6 +103,11 @@ module.exports = function(dbModels, routePrefix) {
                 item: req.params.menuItem
             }
         }).then(function(menuItem) {
+            if (!menuItem) {
+                return res.json({
+                    avg: 0
+                });
+            }
             return res.json({
                 avg: parseFloat(menuItem.avg).toFixed(1)
             });

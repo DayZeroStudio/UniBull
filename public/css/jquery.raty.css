@@ -13,6 +13,15 @@
   src: url("fonts/raty.woff") format("woff");
 }
 
+.imageRight {
+    display: inline;
+    float: right;
+    position: relative;
+}
+
+.liLeft {
+}
+
 .cancel-on-png, .cancel-off-png, .star-on-png, .star-off-png, .star-half-png {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;

@@ -3,6 +3,7 @@
 $("#menutitle").append("<h1><center>Click on a dining hall!</center></h1>");
 
 var menuData;
+var top_name;
 $( ".menutab" ).tabs({ disabled: [0, 1, 2] });
 
 $( "#menutab").hide();
@@ -10,13 +11,25 @@ $( "#menutab").hide();
 $( "#selectable" ).selectable();
 
 function stuff(tabSel, mealData) {
+    var bundle = require("menu")($);
+    var getRatings = bundle.getRatings;
+    var rating_stars;
     $(tabSel).empty();
     $.each(mealData, function(i, val) {
-        var item = $(tabSel).append($("<li></li>").addClass("ui-widget-content")
-            .append($("<div></div>").html(val)).append($("<div id='rate'></div>")));
-        $(item).find("div#rate").raty({
-            score: 3,
-            path: "images/"
+        getRatings(top_name, val, function(err, data) {
+            if (err) {
+                return console.error(err);
+            }
+            if (data) {
+                rating_stars = data;
+                console.log("setting stars:", rating_stars);
+                var item = $(tabSel).append($("<li></li>").addClass("ui-widget-content liLeft")
+                    .append($("<div style='float: left;'></div>").html(val)).append($("<div id='rate' style='float: right;'></div>")));
+                $(item).find("div#rate").raty({
+                    score: rating_stars,
+                    path: "images/"
+                });
+            }
         });
     });
 }
@@ -68,6 +81,7 @@ $( "#menu" ).menu({
     select: function(event, ui) {
         $( "#menutab").show();
         var name = ui.item.attr("id");
+        top_name = name;
         $("#menutitle").empty();
         $("#menutitle").append("<h1><center>" + name + "'s Menu</center></h1>");
         getFood(name, function(err, menu) {

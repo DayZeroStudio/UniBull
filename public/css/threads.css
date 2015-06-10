@@ -1,5 +1,5 @@
 /*top level container for threads*/
-.thread_container{
+.thread_container, .reply_container{
     border: thin solid;
     padding: 3px 3px 3px 10px;
     background: #F6F6F6;
@@ -32,11 +32,11 @@
     text-transform: uppercase;
 }
 /*wrapper for thread_content, author, date, buttons */
-.thread_content_wrapper{
+.thread_content_wrapper, .reply_content_wrapper{
     display: none;
 }
 /*content container for threads*/
-.thread_content{
+.thread_content, .reply_content{
     padding-left: 2.5%;
     padding-right: 2.5%;
     font-family: Georgia;
@@ -50,7 +50,7 @@
 .thread_auth_date{
 
 }
-.thread_author{
+.thread_author, .reply_author{
     padding-left: 1%;
     float: left;
     width:33.33333%;
@@ -64,7 +64,7 @@
     border-bottom: 1px solid #000;
 }
 
-.thread_postdate{
+.thread_postdate, .reply_postdate{
     float: left;
     width:65%;
     text-align:right;
@@ -77,13 +77,13 @@
     border-bottom: 1px solid #000;
 }
 /*actions (buttons) container for threads*/
-.thread_actionsrply{
+.thread_actionsrply, .reply_actionsrply{
     padding-left: 1%;
     width: auto;
     display:inline-block;
 }
 
-.thread_actionsspam{
+.thread_actionsspam, .reply_actionsspam{
     padding-left: 1%;
     float: right;
     display:inline-block;
@@ -156,7 +156,7 @@
 }
 
 /*css properties for buttons on threads and replies*/
-.thread_button{
+.thread_button, .reply_button{
     background: none;
     border: none;
     font-family: "Lucida Console", Monaco, monospace;
