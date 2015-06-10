@@ -12,8 +12,8 @@ $( "#selectable" ).selectable();
 function stuff(tabSel, mealData) {
     $(tabSel).empty();
     $.each(mealData, function(i, val) {
-        var item = $(tabSel).append($("<li></li>").addClass("ui-widget-content")
-            .append($("<div></div>").html(val)).append($("<div id='rate'></div>")));
+        var item = $(tabSel).append($("<li></li>").addClass("ui-widget-content liLeft")
+            .append($("<div style='float: left;'></div>").html(val)).append($("<div id='rate' style='float: right;'></div>")));
         $(item).find("div#rate").raty({
             score: 3,
             path: "images/"
