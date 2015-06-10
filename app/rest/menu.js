@@ -68,7 +68,6 @@ module.exports = function(dbModels, routePrefix) {
                 log.debug("meals:", meals);
 
                 var menu = _.reduce(meals, _.merge);
-                log.warn(menu);
                 menu.title = title;
                 menu.date = date;
                 menu.name = dhName;
@@ -104,6 +103,11 @@ module.exports = function(dbModels, routePrefix) {
                 item: req.params.menuItem
             }
         }).then(function(menuItem) {
+            if (!menuItem) {
+                return res.json({
+                    avg: 0
+                });
+            }
             return res.json({
                 avg: parseFloat(menuItem.avg).toFixed(1)
             });

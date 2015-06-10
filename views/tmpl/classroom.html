@@ -72,6 +72,25 @@
                                 <button class="thread_button" data-thread="<%= thread.uuid %>" name="cancel_postEdit">Cancel</button>
                                 <button class="thread_button" data-thread="<%= thread.uuid %>" name="submit_postEdit">Submit</button>
                             </div>
+                            <div class="report_form_wrapper" data-thread="<%= thread.uuid %>">
+                                <!-- <form class="edit_form" name="edit_form" accept-charset="utf-8"> -->
+                                    <button class="thread_button" data-thread="<%= thread.uuid %>" name="report_reason">Select Reason for Reporting</button>
+                                    <input class="report_form_wrapper" src="reportPost" data-thread="<%= thread.uuid %>" type="text" name="reason">
+                                <ul class="report_reason_list" data-thread="<%= thread.uuid %>">
+                                  <li sel="spam">Spam</li>
+                                  <li sel="offensive">Offensive</li>
+                                  <li sel="explicit">Explicit</li>
+                                  <li sel="off-topic">Off-Topic</li>
+                                  <li sel="other">Other</li>
+                                 </ul>
+                                 <div class="report_other_reason" data-thread="<%= thread.uuid %>">
+                                     <br>
+                                     <textarea class="report_form_content" src="reportPost" data-thread="<%= thread.uuid %>" type="text" name="reason" cols="65" rows="5"></textarea>
+                                 </div>
+                                 <br>
+                                <button class="thread_button" data-thread="<%= thread.uuid %>" name="cancel_reportThread">Cancel</button>
+                                <button class="thread_button" data-thread="<%= thread.uuid %>" data-title="<%= thread.title %>" name="submit_reportThread">Submit</button>
+                            </div>
                         </div>
                         <div class="thread_auth_date" data-thread="<%= thread.uuid %>">
                             <p class="thread_author"> user </p>

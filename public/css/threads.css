@@ -148,6 +148,13 @@
     margin: 10px;
 }
 
+.report_form_wrapper{
+    display: none;
+    text-align: left;
+    border: thin solid black;
+    padding: 10px;
+}
+
 /*css properties for buttons on threads and replies*/
 .thread_button, .reply_button{
     background: none;
@@ -159,6 +166,10 @@
 
 .thread_button:hover {
     text-decoration:underline;
+}
+
+.report_other_reason {
+    display: none;
 }
 /*wrapper for thread submission form*/
 .submit_wrapper{

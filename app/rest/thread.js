@@ -187,6 +187,7 @@ module.exports = function(dbModels) {
         var classID = req.params.classID;
         var threadID = req.params.threadID;
         var reason = req.body.reason;
+        console.log("reason", reason);
         Class.find({
             where: {uuid: classID}
         }).bind({}).then(function(klass) {
