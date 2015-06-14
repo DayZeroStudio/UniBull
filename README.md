@@ -1,5 +1,23 @@
 #UniBull
 
+###Intro:
+Welcome to the github page for our UCSC Independent Study project, UniBull!
+
+The idea is for UniBull to be an online hub local to your university, where you can
+create forums for your school's classes and clubs to discuss homework problems,
+create group study guides, find partners for group projects,
+or just talk about similar interests.
+
+There will also be an online bulletin board where
+you can view flyers and ads that other students have posted, whether they are
+flyers for upcoming guest speakers and lectures, local concerts and shows, ads
+for tutoring or job opportunities, and more. For UCSC specifically, we have also
+added a place to view the dining hall menus for each day, where you can rate and
+comment on different items at specific dining halls.
+
+###Table of Contents
+???
+
 ##Announcements:
 * **`5/7`** I've synced the prod branch with heroku, so deploys will automagically happen!
 * **`4/27`** I've successfully uploaded the app to [heroku!](https://unibull.herokuapp.com/)
