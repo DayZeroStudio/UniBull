@@ -1,5 +1,9 @@
 #UniBull
 
+[GitHub Page](https://github.com/Pancia/UniBull)
+
+[GitHub Wiki](https://github.com/Pancia/UniBull/wiki)
+
 ###Intro:
 Welcome to the github page for our UCSC Independent Study project, UniBull!
 
@@ -14,6 +18,12 @@ flyers for upcoming guest speakers and lectures, local concerts and shows, ads
 for tutoring or job opportunities, and more. For UCSC specifically, we have also
 added a place to view the dining hall menus for each day, where you can rate and
 comment on different items at specific dining halls.
+
+
+###Approach
+We spent the first couple weeks just designing and coming up with ideas on how we thought
+we might approach doing this projects. You can view our planning documents for use cases and
+sprint plans on the wiki. This was a quarter (10 weeks) long project.
 
 ###Table of Contents
 ???
