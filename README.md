@@ -42,6 +42,9 @@ sprint plans on the wiki. This was a quarter (10 weeks) long project.
 * [index.js](https://github.com/Pancia/UniBull/tree/master/index.js) - Entry point for application
 * [package.json](https://github.com/Pancia/UniBull/tree/master/package.json) - Contains list of all dependencies
 
+##WARNING:
+* Our application and numerous tools are not windows compatible, please use a unix based system (eg: linux or OSX)
+
 ##Installation:
 * Clone repo using `git clone ${url}`
 * Install [node.js and npm](https://nodejs.org/download/)
