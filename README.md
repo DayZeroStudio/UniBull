@@ -41,6 +41,13 @@ sprint plans on the wiki. This was a quarter (10 weeks) long project.
 * [index.js](https://github.com/Pancia/UniBull/tree/master/index.js) - Entry point for application
 * [package.json](https://github.com/Pancia/UniBull/tree/master/package.json) - Contains list of all dependencies
 
+##Installation:
+* Clone repo using `git clone ${url}`
+
+#Running:
+* Run `make install`
+* Run `make`
+
 ##Announcements:
 * **`5/7`** I've synced the prod branch with heroku, so deploys will automagically happen!
 * **`4/27`** I've successfully uploaded the app to [heroku!](https://unibull.herokuapp.com/)
