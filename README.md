@@ -45,7 +45,10 @@ sprint plans on the wiki. This was a quarter (10 weeks) long project.
 ##Installation:
 * Clone repo using `git clone ${url}`
 * Install [node.js and npm](https://nodejs.org/download/)
+* Install [postgres](http://postgresapp.com/)
 * Run `sudo npm i -g nodemon`
+* Run `sudo npm i -g eslint`
+* Install [Selenium Standalone Server](http://www.seleniumhq.org/download/)
 
 #Running:
 * Run `make install`
