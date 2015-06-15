@@ -38,11 +38,13 @@ sprint plans on the wiki. This was a quarter (10 weeks) long project.
 * [tmp/screenshots](https://github.com/Pancia/UniBull/tree/master/tmp/screenshots) - Contains screenshots from when testing the front-end using selenium
 * [views](https://github.com/Pancia/UniBull/tree/master/views) - Holds HTML and templates
 * [.eslintrc](https://github.com/Pancia/UniBull/tree/master/.eslintrc) - Contains configuration for our linter (statically checks code for style and syntax)
+* [Makefile](https://github.com/Pancia/UniBull/tree/master/Makefile) - A Makefile! has targets for installing, running, testing and more!
 * [index.js](https://github.com/Pancia/UniBull/tree/master/index.js) - Entry point for application
 * [package.json](https://github.com/Pancia/UniBull/tree/master/package.json) - Contains list of all dependencies
 
 ##Installation:
 * Clone repo using `git clone ${url}`
+* Install [node.js and npm](https://nodejs.org/download/)
 
 #Running:
 * Run `make install`
