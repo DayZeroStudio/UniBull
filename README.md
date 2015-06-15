@@ -45,6 +45,7 @@ sprint plans on the wiki. This was a quarter (10 weeks) long project.
 ##Installation:
 * Clone repo using `git clone ${url}`
 * Install [node.js and npm](https://nodejs.org/download/)
+* Run `sudo npm i -g nodemon`
 
 #Running:
 * Run `make install`
