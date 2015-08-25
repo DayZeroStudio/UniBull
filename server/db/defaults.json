@@ -1,0 +1,45 @@
+{
+  "users": [
+    {
+      "username": "FirstUser",
+      "password": "mypasswd",
+      "email": "first.user@email.com",
+      "classes": ["WebDev101", "TestClass"]
+    },
+    {
+      "username": "FirstInstructor",
+      "password": "mypasswd",
+      "email" : "first.instructor@email.com",
+      "role": "professor"
+    },
+    {
+      "username": "root",
+      "password": "rootroot",
+      "email": "root@email.com",
+      "role": "root"
+    },
+    {
+      "username": "SecondUser",
+      "password": "mypasswd",
+      "email": "second.user@email.com"
+    }
+  ],
+  "classes": [
+    {
+      "title": "WebDev101",
+      "info": "WEB DEV WILL RUIN YOUR LIFE",
+      "school": "UC SANTA CRUZ",
+      "threads": [
+        {
+          "title": "syllabus",
+          "content": "heres the syllabus: lorem ipsum..."
+        }
+      ]
+    }, {
+    "title": "TestClass",
+    "info": "for testing purposes",
+    "school": "NOT SO SANTA CRUZ"
+    }
+  ]
+}
+

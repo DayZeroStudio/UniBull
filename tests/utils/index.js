@@ -12,11 +12,11 @@ module.exports = (function() {
         username: "FirstInstructor",
         password: "mypasswd"
     };
-
     Object.freeze(UTILS);
 
     var utils = {};
     utils.wd = _.curry(require("./webdriver"))(UTILS);
     utils.server = _.curry(require("./server"))(UTILS);
+
     return utils;
 })();

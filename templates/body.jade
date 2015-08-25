@@ -1,0 +1,18 @@
+body
+  nav.navbar.navbar-default
+    div.container-fluid
+      div.navbar-header
+        a.navbar-brand(href="/") My Amazing App
+      ul.nav.navbar-nav
+        - list = "home login classes".split(" ")
+        each item in list
+          li: a.nav-item.internal(href="/"+item, id="nav-item-"+item)= item
+
+  main.container(data-hook="page-container")
+
+  footer.footer-main
+    nav.nav-footer.cf
+      div
+        a.nav-item.external(href="http://ampersandjs.com/learn") Learn
+        a.nav-item.external(href="http://ampersandjs.com/docs")  Docs
+        a.nav-item.external(href="http://tools.ampersandjs.com")  Modules

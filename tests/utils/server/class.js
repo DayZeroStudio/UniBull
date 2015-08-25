@@ -18,14 +18,14 @@ module.exports = function(UTILS, agent) {
 
     utils.createClass = function(klass) {
         return agent
-            .post("/rest/class/create")
+            .post("/api/class/create")
             .send(klass)
             .toPromise();
     };
 
-    utils.joinClass = function(userID, classID) {
+    utils.joinClass = function(classID) {
         return agent
-            .post("/rest/user/"+ userID +"/joinClass")
+            .post("/api/user/joinClass")
             .send({classID: classID})
             .toPromise();
     };

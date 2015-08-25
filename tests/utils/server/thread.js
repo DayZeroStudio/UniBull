@@ -18,26 +18,26 @@ module.exports = function(UTILS, agent) {
 
     utils.submitThread = function(classID, thread) {
         return agent
-            .post("/rest/class/"+classID+"/submit")
+            .post("/api/class/"+classID+"/submit")
             .send(thread)
             .toPromise();
     };
 
-    utils.getThreads = function(classID) {
+    utils.getAllThreads = function(classID) {
         return agent
-            .get("/rest/class/"+classID+"/all")
+            .get("/api/class/"+classID)
             .toPromise();
     };
 
     utils.getThread = function(classID, threadID) {
         return agent
-            .get("/rest/class/"+classID+"/thread/"+threadID)
+            .get("/api/class/"+classID+"/thread/"+threadID)
             .toPromise();
     };
 
     utils.editThread = function(classID, threadID, content, title) {
         return agent
-            .put("/rest/class/"+classID+"/thread/"+threadID+"/edit")
+            .put("/api/class/"+classID+"/thread/"+threadID+"/edit")
             .send({
                 title: title,
                 content: content
@@ -46,22 +46,22 @@ module.exports = function(UTILS, agent) {
 
     utils.deleteThread = function(classID, threadID) {
         return agent
-            .delete("/rest/class/"+classID+"/thread/"+threadID+"/delete")
+            .delete("/api/class/"+classID+"/thread/"+threadID+"/delete")
             .toPromise();
     };
 
     utils.flagThread = function(classID, threadID, reason) {
         return agent
-            .post("/rest/class/"+classID+"/thread/"+threadID+"/flag")
+            .post("/api/class/"+classID+"/thread/"+threadID+"/flag")
             .send(reason)
             .toPromise();
     };
 
     utils.endorseThread = function(classID, threadID, reason) {
         return agent
-        .post("/rest/class/"+classID+"/thread/"+threadID+"/endorse")
-        .send(reason)
-        .toPromise();
+            .post("/api/class/"+classID+"/thread/"+threadID+"/endorse")
+            .send(reason)
+            .toPromise();
     };
 
     return utils;

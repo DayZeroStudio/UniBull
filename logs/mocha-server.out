@@ -1,0 +1,113 @@
+
+[0m[0m
+[0m  testing class endpoints[0m
+[0m    creating a class[0m
+[0m      with valid info[0m
+[0m        that does NOT already exist[0m
+        [32m  ✓[0m[90m should return the class information[0m
+        [32m  ✓[0m[90m should add it to the list of all classes[0m
+        [32m  ✓[0m[90m should redirect to the new class page[0m
+[0m        that already exists[0m
+        [32m  ✓[0m[90m should return an error[0m
+        [32m  ✓[0m[90m should redirect to the existing class[0m
+[0m      with invalid info[0m
+      [32m  ✓[0m[90m should return an error[0m
+[0m    getting all the classes[0m
+    [32m  ✓[0m[90m should return a list of all the classes[0m
+[0m    joining an existing class[0m
+[0m      that you are NOT enrolled in[0m
+      [32m  ✓[0m[90m should redirect to the class page[0m
+      [32m  ✓[0m[90m should add it to the users classes[0m[31m (304ms)[0m
+[0m      that you ARE enrolled in[0m
+      [32m  ✓[0m[90m should return an error[0m[31m (295ms)[0m
+
+[0m  testing reply endpoints[0m
+[0m    replying to a thread[0m
+[0m      given that you are enrolled in that thread's class[0m
+[0m        with required info[0m
+        [36m  - should add the reply to that thread's replies[0m
+        [36m  - should add the reply to the user's replies[0m
+        [36m  - should return the newly created reply[0m
+[0m    replying to a reply[0m
+[0m      given you are enrolled[0m
+[0m        with required info[0m
+        [36m  - should add the reply to the reply's replies[0m
+        [36m  - should add it to the user's replies[0m
+[0m    replying to a nested reply[0m
+[0m      given you are enrolled[0m
+[0m        with required info[0m
+        [36m  - should add the reply to the reply's replies[0m
+        [36m  - should be visible when getting all replies under a thread[0m
+[0m    getting all replies under a thread[0m
+    [36m  - should return a list of all the replies[0m
+[0m    editing a reply[0m
+[0m      that you created[0m
+      [36m  - should edit the reply[0m
+[0m      that you did not create[0m
+      [36m  - should return an error[0m
+[0m    deleting a reply[0m
+[0m      that you created[0m
+      [36m  - should delete the reply[0m
+[0m      that you did not create[0m
+      [36m  - should return an error[0m
+[0m    flagging a reply[0m
+    [36m  - should add to the list of reasons why that reply should be flagged[0m
+
+[0m  testing thread endpoints[0m
+[0m    creating a thread in a class[0m
+[0m      that you are enrolled in[0m
+[0m        with required info[0m
+        [32m  ✓[0m[90m should add the thread to the class[0m
+        [32m  ✓[0m[90m should return {action: 'refresh'}[0m
+        [32m  ✓[0m[90m should add it to the user's threads[0m
+[0m        without required info[0m
+        [32m  ✓[0m[90m should return an error[0m
+[0m      that you are NOT enrolled in[0m
+      [32m  ✓[0m[90m should return an error[0m
+[0m    viewing all threads in a class[0m
+    [32m  ✓[0m[90m should return a list of all the threads in the class[0m[33m (38ms)[0m
+[0m    viewing a single thread in a class[0m
+    [32m  ✓[0m[90m should return a single thread in the class[0m
+[0m    edting a thread in a class[0m
+[0m      that you created[0m
+      [32m  ✓[0m[90m should update the title and content of that thread[0m
+[0m      that you did not create[0m
+      [32m  ✓[0m[90m should return an error[0m[31m (284ms)[0m
+[0m    deleting a thread from a class[0m
+[0m      that you created[0m
+      [32m  ✓[0m[90m should remove that thread from that class[0m
+[0m      that you did not create[0m
+      [32m  ✓[0m[90m should return an error[0m[31m (286ms)[0m
+[0m    flagging a thread in a class[0m
+[0m      that you are enrolled in[0m
+      [32m  ✓[0m[90m should add to the list of reasons why that post should be flagged[0m
+
+[0m  testing user endpoints[0m
+[0m    without authentication[0m
+    [32m  ✓[0m[90m GET '/' should return a list of all users[0m
+    [32m  ✓[0m[90m POST '/restricted' should be unauthorized[0m
+[0m    logging in[0m
+[0m      with invalid credentials[0m
+      [32m  ✓[0m[90m (none) should return an error[0m
+      [32m  ✓[0m[90m (only username) should return an error[0m
+      [32m  ✓[0m[90m (both) should return an error[0m[31m (276ms)[0m
+[0m      with valid credentials[0m
+      [32m  ✓[0m[90m we are auth'd[0m[31m (281ms)[0m
+      [32m  ✓[0m[90m we can view restricted pages[0m[31m (286ms)[0m
+      [32m  ✓[0m[90m we can access our *public* user info[0m[31m (292ms)[0m
+[0m        for a long enough time[0m
+        [32m  ✓[0m[90m we are denied access[0m[31m (278ms)[0m
+[0m          but we've refreshed the token[0m
+          [32m  ✓[0m[90m we are NOT denied access[0m[31m (285ms)[0m
+[0m    after signing up[0m
+[0m      with valid user info[0m
+      [32m  ✓[0m[90m we are auth'd[0m[31m (286ms)[0m
+      [32m  ✓[0m[90m we are auth'd[0m[31m (288ms)[0m
+      [32m  ✓[0m[90m we can then login again successfully[0m[31m (572ms)[0m
+[0m      when the username is already take[0m
+      [32m  ✓[0m[90m should return an error[0m[31m (302ms)[0m
+
+
+[92m [0m[32m 36 passing[0m[90m (15s)[0m
+[36m [0m[36m 13 pending[0m
+

@@ -1,0 +1,17 @@
+
+[0m[0m
+[0m  testing front end home page[0m
+NOW LISTENING ON PORT 9092
+  [31m  1) "before all" hook[0m
+
+
+[92m [0m[32m 0 passing[0m[90m (4s)[0m
+[31m  1 failing[0m
+
+[0m  1) testing front end home page "before all" hook:
+[0m[31m     Error: Couldn't connect to selenium server[0m[90m
+      at Socket.socketErrorListener (_http_client.js:271:9)
+      at net.js:459:14
+[0m
+
+

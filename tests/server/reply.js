@@ -1,5 +1,4 @@
 "use strict";
-
 var chai = require("chai");
 /*var should = */chai.should();
 chai.use(require("chai-things"));
@@ -8,24 +7,18 @@ var request = require("supertest-as-promised");
 
 var express = require("express");
 var app = express();
-app.use(require("cookie-parser")());
 var agent = request.agent(app);
 var utils = require("../utils").server(agent);
 var cfg = require("../../config");
 // var log = cfg.log.makeLogger("tests,server,reply");
 
-cfg.coverage();
-describe("testing reply endpoints", function() {
+describe.skip("testing reply endpoints", function() {
     before(function() {
-        return require("../../db")().then(function(dbModels) {
-            return require("../../app/rest")(dbModels);
-        }).then(function(router) {
-            app.use(router);
-        });
+        return require("../../server")(app);
     });
     var klass, classID,
     thread, threadID,
-        user, userID;
+    user, userID;
     beforeEach(function() {
         klass = utils.class.makeNewClass();
         thread = utils.thread.makeNewThread();

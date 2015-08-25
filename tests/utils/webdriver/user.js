@@ -16,11 +16,13 @@ module.exports = function(UTILS, baseUrl, client) {
     };
 
     utils.loginWithUser = function(user) {
-        client.url(baseUrl)
-            .setValue("#username", user.username || "")
-            .setValue("#password", user.password || "")
-            .click("#loginButton")
-            .waitForExist("#loginButton", 500, true);
+        return client.url(baseUrl).then(function() {
+            return client
+                .setValue("#username", user.username || "")
+                .setValue("#password", user.password || "")
+                .click("#submit")
+                .waitForExist("#submit", 500, true);
+        });
     };
 
     utils.signupWithUser = function(user) {
@@ -28,18 +30,12 @@ module.exports = function(UTILS, baseUrl, client) {
             .setValue("#username", user.username)
             .setValue("#email", user.email)
             .setValue("#password", user.password)
-            .setValue("#confirmpassword", user.password)
+            //.setValue("#confirmpassword", user.password)
             .click("#submit")
-            .waitForExist("#submit", 100, true)
-            .title_async().then(function(res) {
+            .waitForExist("#submit", 500, true)
+            .title().then(function(res) {
                 return res.value;
             });
-    };
-
-    utils.goToClassPage = function() {
-        return client.url(baseUrl+"/home")
-            .click("#toclass")
-            .waitForExist("#toclass", 500, true);
     };
 
     return utils;
