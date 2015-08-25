@@ -2,10 +2,10 @@
 var RestCollection = require("ampersand-rest-collection");
 var Class = require("./class.js");
 
+var _ = require("lodash");
+
 module.exports = RestCollection.extend({
     model: Class,
     url: "/api/class/",
-    ajaxConfig: {
-        afterParse: "classes"
-    }
+    parse: _.partial(_.get, _, "classes")
 });
