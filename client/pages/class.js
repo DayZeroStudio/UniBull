@@ -5,7 +5,6 @@ var CollectionRenderer = require("ampersand-collection-view");
 var templates = require("../templates.js");
 var ThreadView = require("../views/thread.js");
 var AddThreadForm = require("../forms/add-thread.js");
-var _ = require("lodash");
 var toggleClass = require("amp-toggle-class");
 
 module.exports = View.extend({
@@ -38,12 +37,10 @@ module.exports = View.extend({
             prepareView: function(el) {
                 return new AddThreadForm({
                     el, submitCallback: function(data) {
-                        console.log("data", data);
-                        var id = _.uniqueId();
                         this.threads.create({
                             classUuid: this.threads.uuid,
-                            title: "thread_title_"+id,
-                            content: "thread_content_"+id
+                            title: data.title,
+                            content: data.content
                         }, {wait: true});
                         toggleClass(this.queryByHook("add-thread-form"), "hidden", true);
                         toggleClass(this.queryByHook("add-thread"), "hidden", false);
