@@ -1,5 +1,6 @@
 node_modules
 coverage.html
+client/templates.js
 
 #Ignore all hidden files
 .*
