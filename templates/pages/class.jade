@@ -1,8 +1,8 @@
-section.page.class-page
+include ../mixins/page.jade
+include ../mixins/form.jade
+
++page("class-page")
   h1 Class Page!
   div.container(data-hook="threads-list")
-  form.hidden(data-hook="add-thread-form")
-    fieldset(data-hook="field-container")
-    .buttons
-      button.btn#submit(type="submit") Submit
+  +form("add-thread-form")(class="hidden")
   button.btn(data-hook="add-thread") Add a Thread

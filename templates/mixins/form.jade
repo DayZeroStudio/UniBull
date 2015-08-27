@@ -1,0 +1,5 @@
+mixin form(name)
+  form(class!=attributes.class, data-hook=name)
+    fieldset(data-hook="field-container")
+    .buttons
+      button.btn#submit(type="submit") Submit

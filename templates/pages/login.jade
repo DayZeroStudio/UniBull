@@ -1,7 +1,7 @@
-section.page.login-page
+include ../mixins/page.jade
+include ../mixins/form.jade
+
++page("login-page")
   h1 Login Form
-  form(data-hook="user-login")
-    fieldset(data-hook="field-container")
-    .buttons
-      button.btn#submit(type="submit") Login
-      a.btn(href="/signup") Signup
+  +form("user-login")
+  a.btn(href="/signup") Signup
