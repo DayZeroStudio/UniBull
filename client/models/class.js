@@ -1,5 +1,6 @@
 "use strict";
 var AmpersandModel = require("ampersand-model");
+var _ = require("lodash");
 
 module.exports = AmpersandModel.extend({
     props: {
@@ -8,9 +9,6 @@ module.exports = AmpersandModel.extend({
         school: "string",
         title: "string"
     },
-    session: {
-        showAddThread: "boolean"
-    },
     derived: {
         viewUrl: {
             deps: ["uuid"],
@@ -18,5 +16,12 @@ module.exports = AmpersandModel.extend({
                 return "/class/" + this.uuid;
             }
         }
+    },
+    sync: function(method, model, options) {
+        console.log(options);
+        var sync = require("ampersand-sync");
+        var modelUrl = _.result(model, "url");
+        model.url = modelUrl + "?action=create";
+        return sync.apply(this, [method, model, options]);
     }
 });

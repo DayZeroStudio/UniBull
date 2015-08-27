@@ -16,24 +16,36 @@ module.exports = function(dbModels) {
             });
         },
 
-        createClass: function(req, res) {
-            log.info("POST - Create a class");
-            return Class.findOrCreate({
-                where: {
-                    title: req.body.title
-                }, defaults: {
-                    info: req.body.info,
-                    school: req.body.school
-                }
-            }).spread(function(klass, created) {
-                if (!created) {//ie found it
-                    throw new Error("Class already exists");
-                }
-                return res.json({
-                    class: klass.get(),
-                    redirect: "/class/"+klass.title
+        /**
+         * Required:
+         * - query: {action}
+         * - body: {title, info, school}
+         *
+         * Info:
+         * - action: #{create}
+         */
+        postClass: function(req, res) {
+            var action = req.query.action;
+            if (action === "create") {
+                log.info("POST - Create a class");
+                return Class.findOrCreate({
+                    where: {
+                        title: req.body.title
+                    }, defaults: {
+                        info: req.body.info,
+                        school: req.body.school
+                    }
+                }).spread(function(klass, created) {
+                    if (!created) {//ie found it
+                        throw new Error("Class already exists");
+                    }
+                    return res.json({
+                        class: klass.get(),
+                        redirect: "/class/"+klass.title
+                    });
                 });
-            });
+            }
+            return Promise.reject(new Error(`Action '${action}' not supported`));
         }
     }, cfg.wrapWithErrorHandler);
 };

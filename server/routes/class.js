@@ -5,8 +5,8 @@ module.exports = {
         type: "GET",
         auth: false
     },
-    createClass: {
-        url: "/create",
+    postClass: {
+        url: "/",
         type: "POST",
         auth: false
     }
