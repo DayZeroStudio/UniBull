@@ -41,6 +41,7 @@ module.exports = View.extend({
         }
         this.pageSwitcher.set(view);
         this.updateActiveNav();
+        this.hideOrShowLoginNav();
     },
     handleLinkClick: function(e) {
         var localLinks = require("local-links");
@@ -50,19 +51,33 @@ module.exports = View.extend({
             app.navigate(localPath);
         }
     },
-    //TODO:
-    // - should hide login tab if logged in?
-    // - and what about other tabs if not?
+    hideOrShowLoginNav: function() {
+        var path = window.location.pathname.slice(1);
+
+        this.queryAll(".nav a[href]").forEach(function(navTag) {
+            var navPath = navTag.pathname.slice(1);
+            if (path === "login" || path === "") {
+                if (navPath === "login") {
+                    dom.show(navTag); return;
+                }
+            } else {
+                if (navPath !== "login") {
+                    dom.show(navTag); return;
+                }
+            }
+            dom.hide(navTag);
+        });
+    },
     updateActiveNav: function() {
         var path = window.location.pathname.slice(1);
 
-        this.queryAll(".nav a[href]").forEach(function(aTag) {
-            var aPath = aTag.pathname.slice(1);
+        this.queryAll(".nav a[href]").forEach(function(navTag) {
+            var navPath = navTag.pathname.slice(1);
 
-            if ((!aPath && !path) || (aPath && path.indexOf(aPath) === 0)) {
-                dom.addClass(aTag.parentNode, "active");
+            if ((!navPath && !path) || (navPath && path.indexOf(navPath) === 0)) {
+                dom.addClass(navTag.parentNode, "active");
             } else {
-                dom.removeClass(aTag.parentNode, "active");
+                dom.removeClass(navTag.parentNode, "active");
             }
         });
     }
