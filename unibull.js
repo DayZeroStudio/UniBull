@@ -88,7 +88,7 @@ function run_cmd(cmd, args, std_out) {
 
 if (require.main === module) {
     var PORT = process.env.PORT || 8080;
-    unibull(PORT).then(function() {
+    unibull(PORT).then(function maybeLaunchSpaceMonkey() {
         var monkey = process.env.MONKEY;
         if (monkey === undefined) { return; }
         console.log("SPACEMONKEY SHENANIGANS ENGAGED");

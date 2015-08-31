@@ -7,7 +7,7 @@ var _ = require("lodash");
 var templates = require("../templates");
 
 module.exports = View.extend({
-    template: templates.body(),
+    template: templates.body,
     autoRender: true,
     initialize: function() {
         this.listenTo(app, "page", this.handleNewPage);
@@ -16,6 +16,7 @@ module.exports = View.extend({
         "click a[href]": "handleLinkClick"
     },
     render: function() {
+        console.log("rendering main view", this);
         document.head.appendChild(require("domify")(templates.head()));
         this.renderWithTemplate(this);
         this.pageSwitcher = new ViewSwitcher(this.queryByHook("page-container"), {
@@ -29,7 +30,7 @@ module.exports = View.extend({
         return this;
     },
     handleNewPage: function(view) {
-        var pageTitle =_.result(view, "pageTitle");
+        var pageTitle = _.result(view, "pageTitle");
         var isLoginOrSignupPage = _.contains(["Login", "Signup"], pageTitle);
         var isLoggedIn = app.user.username;
         // If not logged in, only show login page
