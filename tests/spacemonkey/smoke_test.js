@@ -32,15 +32,5 @@ test("basic app experience", function() {
         .confirm("I can delete them by clicking 'delete'")
         .goToPage("/info")
         .confirm("Info page is visible")
-        .instruct("testing")
-        .instruct("testing")
-        .instruct("testing")
-        .instruct("testing")
-        .instruct("testing")
-        .instruct("testing")
-        .instruct("testing")
-        .instruct("testing")
-        .instruct("testing")
-        .instruct("testing")
         .destroy();
 });

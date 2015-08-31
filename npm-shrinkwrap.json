@@ -10497,13 +10497,13 @@
       }
     },
     "semi-static": {
-      "version": "0.0.5",
-      "from": "semi-static@*",
-      "resolved": "https://registry.npmjs.org/semi-static/-/semi-static-0.0.5.tgz",
+      "version": "1.0.0",
+      "from": "https://registry.npmjs.org/semi-static/-/semi-static-1.0.0.tgz",
+      "resolved": "https://registry.npmjs.org/semi-static/-/semi-static-1.0.0.tgz",
       "dependencies": {
         "underscore": {
           "version": "1.5.2",
-          "from": "underscore@1.5.2",
+          "from": "https://registry.npmjs.org/underscore/-/underscore-1.5.2.tgz",
           "resolved": "https://registry.npmjs.org/underscore/-/underscore-1.5.2.tgz"
         }
       }

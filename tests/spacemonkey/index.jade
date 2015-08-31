@@ -1,16 +1,22 @@
 doctype
 html
   head
-    - var testName = query.name || "smoke";
+    link(rel="stylesheet", href="/ninja.css", type="text/css")
+    link(rel="stylesheet", href="/spacemonkey.css", type="text/css")
+    script(src="/jquery-1.9.1.min.js")
+    script(src="/qunit.js")
+    script(src="/lodash-3.6.0.js")
+    script(src="/spacemonkey.js")
+    script(src="/spacemonkey.demo.js")
+    - var find = function(elem, arr, dflt) {
+    -   var idx = arr.indexOf(elem);
+    -   if (idx < 0) { return dflt; }
+    -   return arr[idx];
+    - };
+    - var tests = "login".split(" ");
+    - var testName = find(req.query.name, tests, "smoke");
     title Testing: #{testName}
-    link(rel='stylesheet', href='/ninja.css', type='text/css')
-    link(rel='stylesheet', href='/spacemonkey.css', type='text/css')
-    script(src='/jquery-1.9.1.min.js')
-    script(src='/qunit.js')
-    script(src='/lodash-3.6.0.js')
-    script(src='/spacemonkey.js')
-    script(src='/spacemonkey.demo.js')
-    script(src='/#{testName}_test.js')
+    script(src="/#{testName}_test.js")
   body
     h1 SpaceMonkey Tests for: #{testName}
     #appContainer

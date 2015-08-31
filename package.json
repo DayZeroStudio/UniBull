@@ -62,7 +62,7 @@
     "passport-local": "^1.0.0",
     "pg": "^4.4.0",
     "pg-hstore": "^2.3.2",
-    "semi-static": "0.0.5",
+    "semi-static": "^1.0.0",
     "sequelize": "^3.5.1",
     "serve-static": "^1.10.0",
     "slinker": "^1.0.2",

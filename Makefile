@@ -39,7 +39,7 @@ run-heroku:
 	@ echo "WARNING: don't use this manually, use make start instead"
 	NODE_ENV=production node ./index.js | ${BUNYAN}
 
-test: lint test-server test-client test-web
+test: lint test-server test-client test-web test-monkey
 
 test-server: lint
 	@ set -o pipefail && NODE_ENV=test\
@@ -49,6 +49,9 @@ test-server: lint
 test-client: lint
 	@ set -o pipefail && NODE_ENV=test\
 		browserify ./tests/client | tape-run
+
+test-monkey: lint
+	@ MONKEY=${MONKEY} NODE_ENV=test node ${MAIN_FILE} | ${BUNYAN}
 
 test-web: lint
 	@ set -o pipefail && NODE_ENV=test\

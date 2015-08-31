@@ -21,13 +21,11 @@ function unibull(PORT) {
 
         app.use(helmet.xframe());
 
-        app.get("/test*", function(req, res, next) {
-            res.locals.query = req.query;
-            require("semi-static")({
-                folderPath: cfg.fixPath("tests/spacemonkey"),
-                root: "/test"
-            })(req, res, next);
-        });
+        app.get("/test*", require("semi-static")({
+            folderPath: cfg.fixPath("tests/spacemonkey"),
+            root: "/test",
+            passReq: true
+        }));
     }
 
     app.use(function(req, res, next) {
@@ -41,8 +39,8 @@ function unibull(PORT) {
         new Moonboots({
             server: app,
             moonboots: {
-                jsFileName: "my-amazing-app",
-                cssFileName: "my-amazing-app",
+                jsFileName: cfg.dfltTitle,
+                cssFileName: cfg.dfltTitle,
                 main: cfg.fixPath("./client/app.js"),
                 developmentMode: cfg.isDev,
                 timingMode: cfg.isDev,
@@ -82,8 +80,20 @@ function unibull(PORT) {
     });
 }
 
+function run_cmd(cmd, args, std_out) {
+    var spawn = require("child_process").spawn;
+    var child = spawn(cmd, args);
+    child.stdout.on("data", function(data) { std_out(data); });
+}
+
 if (require.main === module) {
-    unibull(process.env.PORT || 8080);
+    var PORT = process.env.PORT || 8080;
+    unibull(PORT).then(function() {
+        var monkey = process.env.MONKEY;
+        if (monkey === undefined) { return; }
+        console.log("SPACEMONKEY SHENANIGANS ENGAGED");
+        run_cmd("open", ["http://localhost:"+PORT+"/test?name="+monkey], console.log);
+    });
 } else {
     module.exports = unibull;
 }

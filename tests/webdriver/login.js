@@ -12,7 +12,7 @@ describe("testing front end home page", function() {
     var PORT = 9092;// Make sure is unique
     var baseUrl = "http://localhost:" + PORT;
     before(function() {
-        return require("../../app.js")(PORT).then(function() {
+        return require("../../unibull.js")(PORT).then(function() {
             client = driver.remote(cfg.webdriver.options);
             utils = require("../utils").wd(baseUrl).user(client);
             return client.init();
