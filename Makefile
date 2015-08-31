@@ -1,21 +1,25 @@
+#STUFF
 SHELL 	       := /bin/bash
 BIN		       := ./node_modules/.bin
 LINTER	       := eslint
+PORT		   := 8080
+
+#MAIN
 IGNORES        := --ignore client/templates.js --ignore ./node_modules --ignore '.[!.]*'
 BUNYAN         := ${BIN}/bunyan
-LINTER	       := eslint
-SEL_SERVER     := ./bin/selenium-server-standalone-2.45.0.jar
-PHANTOMJS      := ./bin/phantomjs
+MAIN_FILE      := ./unibull.js
+
+#TESTING
 MOCHA          := ${BIN}/mocha
 MOCHA_OPTS     := --compilers js:babel/register --recursive --colors
+SEL_SERVER     := ./bin/selenium-server-standalone-2.45.0.jar
+PHANTOMJS      := ./bin/phantomjs
 
 start:
-	nodemon ${IGNORES} --ext js,json,jade ./app.js | ${BUNYAN}
+	nodemon ${IGNORES} --ext js,json,jade ${MAIN_FILE} | ${BUNYAN}
 
 install:
-	npm prune
 	npm install
-	npm upgrade
 
 start-selenium:
 	@ java -jar ${SEL_SERVER}\
@@ -74,7 +78,6 @@ clean:
 	-@ rm ./tmp/**/* ./logs/* .todos\
 		2> /dev/null
 spotless: clean
-	#-@ rm ./public/js/*-bundle.js
 	-@ read -p "Are you sure you want rm node_modules? [y|N]" confirm;\
 		echo $${confirm,,};\
 		([[ $${confirm,,} =~ ^(yes|y)$$ ]]\
