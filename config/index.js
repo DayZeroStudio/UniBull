@@ -6,7 +6,7 @@ module.exports = (function() {
     /* CLIENT + SERVER STUFF */
     cfg.errmsgs = require("./errormessages.js");
 
-    cfg.dfltTitle = "My Amazing App";
+    cfg.dfltTitle = "UniBull";
     cfg.env = process.env;
     cfg.PORT = cfg.env.PORT || 8080;
 
